@@ -747,8 +747,10 @@
 
         async function carregarGraficoChamados(hostname) {
 
+        try{
+
             const resposta = await fetch(
-                `/jira/chamadosComponente/${fkFuncionario}/${fkEmpresa}/${hostname}`
+                `/jira/chamadosPorComponente/${fkFuncionario}/${fkEmpresa}/${hostname}`
             );
 
             const dados = await resposta.json();
@@ -769,19 +771,22 @@
                         labels: labels,
                         datasets: [{
                             label: "Chamados",
-                            data: valores
+                            data: valores,
+                            borderWidth: 1
                         }]
                     },
 
                     options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
                         scales: {
                             y: {
-                                min: 1,
-                                max: 100,
-                                ticks: {
-                                    stepSize: 25
+                              beginAtZero: true,
+                              ticks:{
+                                precision: 0
+                              }
                                 }
-                            }
+                            
                         },
 
                         plugins: {
@@ -796,6 +801,12 @@
                     }
                 }
             );
+        }catch(erro){
+            console.error(
+                "Erro ao carregar gráfico de chamados:",
+                erro
+            );
+        }
         }
 
         function resetarHistoricos() {
