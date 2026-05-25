@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Usuários | Horus </title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Jura:wght@300..700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="icon" href="./assets/icon/logo.png" />
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap"
+        rel="stylesheet">
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cabin:ital,wght@0,400..700;1,400..700&family=League+Spartan:wght@100..900&display=swap"
+        rel="stylesheet">
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="./js/script.js"></script>
+    <link rel="stylesheet" href="./style.css">
+    <link rel="stylesheet" href="style/dash_usuarios.css">
+    
+</head>
+
+<body>
+
+    <div class="container">
+        <aside class="lateral" id="lateral">
+            <div class="logo">
+                <img src="./assets/imgs/painel/logo.png" alt="" style="font-family: Jura, sans-serif;">
+                Horus
+            </div>
+
+            <nav class="menu">
+                <div class="categoria">Monitoramento</div>
+                <a href="painel.html" class="item-menu">
+                    <img src="./assets/imgs/painel/dash.png" alt="">Dashboard
+                </a>
+                
+
+                <div class="categoria">Administração</div>
+                <a href="dash_usuarios.html" class="item-menu selecionado">
+                    <img src="./assets/imgs/painel/cadastrar-usuario-selecionado.png" alt="">Usuários
+                </a>
+                <a href="servidor-componente.html" class="item-menu">
+                    <img src="./assets/imgs/painel/cadastrar-servidor.png" alt="">Cadastrar servidor
+                </a>
+
+                <div class="categoria">Agentes</div>
+
+            <div onclick="baixarAgente()" class="item-menu">
+                <img src="./assets/imgs/painel/agente.png" style="height: 19px; width: 19px;" alt="">
+                Instalar agente
+            </div>
+
+            <div class="categoria" style="padding-bottom: 10px !important;">Gestão de Incidentes</div>
+            <div>
+                <a href="https://horusmonitoring.atlassian.net/jira/software/projects/KAN/list?jql=project%20%3D%20KAN%20ORDER%20BY%20created%20DESC">
+                    <img src="assets/imgs/painel/jira.png" alt="" style="width: 25% !important;">
+                </a>
+                
+            </div>
+            <div>
+                <a href="https://app.slack.com/client/T0AQZ02KUJE/C0AQWUMQJBG?teamClassificationType=work">
+                    <img src="assets/imgs/painel/slack.png" alt="" style="width: 35% !important;">
+                </a>
+                
+            </div>
+
+            </nav>
+
+            <div onclick="limparSessionStorage()" class="sair">
+                <img src="./assets/imgs/painel/sair.png" alt="">
+                <p onclick="window.location.href='index.html'">Sair</p>
+            </div>
+        </aside>
+
+        <main class="main">
+
+            <header class="header">
+
+                <div class="header-topo">
+                    <div class="header-esquerda">
+                        <div class="hamburguer" id="hamburguer">
+                            <img src="./assets/imgs/painel/hamburguer.png" alt="Menu">
+                        </div>
+
+                         <div class="header-servidor">
+                            <span class="breadcrumb">
+                                Gestão de Usuários
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                        <div class="usuario">
+                        <div>
+                            <p id="nome_usuario"></p>
+                            <p id="funcao_usuario" class="cargo"></p>
+                        </div>
+                        <span id="inicial_usuario"></span>
+                    </div>
+                </div>
+            </header>
+
+            <section class="conteudo">
+                <div class="gestao-usuario">
+                    <p>Gestão de usuários</p>
+                    <button class="cadastrar">
+                        <img src="./assets/imgs/dash_user/+.png" width="20px" alt="">
+                        Cadastrar novo usuário</button>
+                </div>
+
+                <div class="cards" style="justify-content: space-between;">
+
+                    <div class="card-inicial card pequeno-filtro">
+                        <div class="card-pesquisar">
+                            <input type="text" name="" id="filtro_usuario" placeholder="Buscar usuário pelo nome..." oninput="filtrarUsuarios()">
+                            <img id="lupa" src="./assets/imgs/dash_user/lupa.png" alt="lupa">
+                        </div>
+                    </div>
+
+                    <div class="card pequeno-filtro total cargo" style="width: 19% !important;">
+                        <div>
+                            <img src="assets/imgs/dash_user/total.png" alt="">
+                        </div>
+                        <div>
+                            <span>Total de Usuários</span>
+                            <p class="quantidade_usuarios">3</p>
+                        </div>
+                    </div>
+
+                    <div class="card pequeno-filtro kpi-funcionario cargo" style="width: 19% !important;">
+                            <div>
+                                <img src="assets/imgs/dash_user/gestor.png" alt="">
+                            </div>
+                            <div>
+                                <span>Gestores</span>
+                                <p class="quantidade_usuarios">1</p>
+                            </div>
+                    </div>
+
+                    <div class="card pequeno-filtro cargo kpi-funcionario" style="width: 19% !important;">
+                            <div>
+                                <img src="assets/imgs/dash_user/analista.png" alt="">
+                            </div>
+                            <div>
+                                <span>Analistas</span>
+                                <p class="quantidade_usuarios">2</p>
+                            </div>
+                    </div>
+                </div>
+                
+                <div>
+                            <div class="box-servidor cabecario">
+                                <div class="metricas">
+                                    <b>Nome</b>
+                                </div>
+                                <div class="metricas">
+                                    <b>Email</b>
+                                </div>
+                                <div class="metricas">
+                                    <b>Função</b>
+                                </div>
+                                <div class="metricas">
+                                    <b>Data de cadastro</b>
+                                </div>
+                                <div class="metricas">
+                                    <b>Ações</b>
+                                </div>
+                            </div>
+                   <div id="usuarios" class="usuarios"></div>
+                    </div>            
+            </section>
+
+            <div class="popup" id="modal">
+                <div class="modal">
+                    <div class="box-cadastro head">
+                        <h2>Cadastrar novo usuário</h2>
+                        <img id="fechar" src="assets/imgs/dash_user/fechar.png" alt="">
+                    </div>
+                    <div class="box-cadastro campo">
+                        <div class="campos">
+                            Nome <br>
+                            <input id="nome" type="text">
+                        </div>
+                        <div class="campos">
+                            Senha <br>
+                            <input id="input_senha" type="password">
+                            <img id="img" src="assets/imgs/login/olho-fechado.png" alt="">
+                        </div>
+                    </div>
+                    <div class="box-cadastro campo">
+                        <div class="campos">
+                            Email <br>
+                            <input id="email" type="text">
+                        </div>
+                        <div class="campos">
+                            Confirmar Senha <br>
+                            <input id="input_senha_conf" type="password">
+                            <img id="imgC" src="assets/imgs/login/olho-fechado.png" alt="">
+                        </div>
+                    </div>
+                    <div class="box-cadastro campo">
+                        <div class="campos">
+                            CPF <br>
+                            <input id="cpf" type="text">
+                        </div>
+                        <div class="campos">
+                            Função <br>
+                            <select name="" id="select_funcao">
+                                <option value="#" selected disabled>--Selecione--</option>
+                                <option value="Gestor">Gestor</option>
+                                <option value="Analista">Analista</option>
+                            </select>
+                        </div>
+
+                    </div>
+                    <div class="box-cadastro">
+                        <button class="btnCancelar">Cancelar</button>
+                        <button onclick="cadastrarUsuario()" class="btnCadastrar">Cadastrar</button>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="popup" id="modal2">
+                <div class="modal2">
+                    <div class="box-excluir">
+                        <h2>Tem certeza que deseja excluir este usuário?</h2>
+
+                    </div>
+                    <div class="box-excluir">
+                        <button id="btnCancelarExcluir" class="btnCancelarExcluir">Cancelar</button>
+                        <button class="btnExcluir" onclick="excluir()">Excluir</button>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="popup" id="modal3">
+                <div class="modal3">
+                    
+                    <div class="box-servidor head">
+                        <h2>Gerenciamento de Servidores</h2>
+                    </div>
+
+                    <div class="lista-checkbox">
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="servidor_1">
+                            <label for="servidor_1">Servidor Exemplo</label>
+                        </div>
+                    </div>
+
+                    <div class="box-acoes">
+                        <button class="btnCancelar" onclick="modal3.classList.remove('ativo')">Fechar</button>
+                        <button class="btnCadastrar" onclick="salvarServidores()">Salvar Alterações</button>
+                    </div>
+
+                </div>
+            </div>
+
+        </main>
+
+    </div>
+
+</body>
+
+</html>
+
+<script>
+    //Verificar tipo de usuário
+    window.onload = () => {const funcao = sessionStorage.getItem("FUNCAO_USUARIO");
+
+    if (funcao != "Gestor") {
+        alert("Você não tem autorização de acessar essa página!");
+        window.location = "painel.html";
+    }
+    }
+
+
+    //Visualizar senha
+    var senha = document.getElementById("input_senha");
+    var trocarImg = document.getElementById("img");
+    var idUsuarioParaExcluir = null;
+
+    // adiciona um evento de clique (quando o usuário clicar no icone de "olho" vai executar o código abaixo)
+    // === (serve para fazer uma comparação entre o valor e o tipo)
+    trocarImg.addEventListener("click", () => {
+        if (senha.type === "password") { // valida se o tipo do input é password 
+            senha.type = "text";
+            trocarImg.src = "assets/imgs/login/olho-aberto.png";
+        } else {
+            senha.type = "password";
+            trocarImg.src = "assets/imgs/login/olho-fechado.png";
+        }
+    });
+
+    //Visualizar senha confirmação
+
+    var senhaC = document.getElementById("input_senha_conf")
+    var trocarImgC = document.getElementById("imgC");
+
+    // adiciona um evento de clique (quando o usuário clicar no icone de "olho" vai executar o código abaixo)
+    // === (serve para fazer uma comparação entre o valor e o tipo)
+    trocarImgC.addEventListener("click", () => {
+        if (senhaC.type === "password") { // valida se o tipo do input é password 
+            senhaC.type = "text";
+            trocarImgC.src = "assets/imgs/login/olho-aberto.png";
+        } else {
+            senhaC.type = "password";
+            trocarImgC.src = "assets/imgs/login/olho-fechado.png";
+        }
+    });
+
+    //Modal para o menu sanduíche
+
+    const btnHamburguer = document.getElementById('hamburguer');
+    const lateral = document.getElementById('lateral');
+
+    function abrirMenu() {
+        lateral.classList.add('ativo');
+    }
+
+    function fecharMenu() {
+        lateral.classList.remove('ativo');
+    }
+
+    btnHamburguer.addEventListener('click', () => {
+        lateral.classList.contains('ativo') ? fecharMenu() : abrirMenu();
+    });
+
+
+    document.addEventListener('click', (e) => {
+        if (!lateral.contains(e.target) && !btnHamburguer.contains(e.target)) {
+            fecharMenu();
+        }
+    });
+
+    // Modal para o cadastro
+
+    const modal = document.getElementById('modal');
+
+    document.querySelectorAll('.cadastrar').forEach(btn => {
+        btn.addEventListener('click', () => {
+            modal.classList.add('ativo');
+        });
+    });
+
+    document.getElementById('fechar').addEventListener('click', () => {
+        modal.classList.remove('ativo');
+    });
+
+    modal.addEventListener('click', e => {
+        if (e.target === modal) modal.classList.remove('ativo');
+    });
+
+    // Modal para excluir usuários
+
+    const modal2 = document.getElementById('modal2');
+
+    function abrirModalExcluir(id) {
+    idUsuarioParaExcluir = id;
+    modal2.classList.add('ativo');
+}
+
+    document.querySelectorAll('.apagar').forEach(btn => {
+        btn.addEventListener('click', () => {
+            modal2.classList.add('ativo');
+        });
+    });
+
+    document.getElementById('btnCancelarExcluir').addEventListener('click', () => {
+        modal2.classList.remove('ativo');
+    });
+
+    modal2.addEventListener('click', e => {
+        if (e.target === modal2) modal2.classList.remove('ativo');
+    });
+
+    // Modal para gerenciar servidores
+
+    const modal3 = document.getElementById('modal3');
+
+    function abrirModalGerenciarServidores(id) {
+    idUsuarioParaGerenciar = id;
+    modal3.classList.add('ativo');
+}
+
+    document.querySelectorAll('.gerenciarServidor').forEach(btn => {
+        btn.addEventListener('click', () => {
+            modal3.classList.add('ativo');
+        });
+    });
+
+    document.getElementById('btnCancelarExcluir').addEventListener('click', () => {
+        modal3.classList.remove('ativo');
+    });
+
+    modal3.addEventListener('click', e => {
+        if (e.target === modal3) modal3.classList.remove('ativo');
+    });
+
+       function cadastrarUsuario() {
+            var empresaVar = sessionStorage.ID_EMPRESA;
+
+            var nomeVar = nome.value.trim();
+            var senhaVar = input_senha.value.trim();
+            var confirmacaoSenhaVar = input_senha_conf.value.trim();
+            var emailVar = email.value.trim();
+            var cpfVar = cpf.value.trim();
+            var funcaoVar = select_funcao.value;
+
+            if (
+                nomeVar == "" ||
+                senhaVar == "" ||
+                confirmacaoSenhaVar == "" ||
+                emailVar == "" ||
+                cpfVar == "" ||
+                funcaoVar == "#"
+            ) {
+                alert("Preencha todos os campos!");
+                return;
+            }
+
+            if (!emailVar.includes('@') || !emailVar.endsWith('.com')) {
+                alert("Email inválido");
+                return;
+            }
+
+            // VALIDAÇÃO DE SENHA
+            var incluiMaiuscula = senhaVar !== senhaVar.toLowerCase();
+            var incluiMinuscula = senhaVar !== senhaVar.toUpperCase();
+
+            var especiais = ['!', '@', '#', '$', '%', '&', '*'];
+            var temEspecial = especiais.some(e => senhaVar.includes(e));
+
+            var temNumero = /\d/.test(senhaVar);
+
+            if (senhaVar.length < 14 || !incluiMaiuscula || !incluiMinuscula) {
+                alert("Senha fraca: mínimo 14 caracteres, com maiúscula e minúscula.");
+                return;
+            }
+
+            if (!temEspecial || !temNumero) {
+                alert("Senha deve ter número e caractere especial.");
+                return;
+            }
+
+            if (senhaVar !== confirmacaoSenhaVar) {
+                alert("As senhas não coincidem.");
+                return;
+            }
+
+            // VALIDAÇÃO DE CPF
+            cpfVar = cpfVar.replace(/\D/g, '');
+
+            if (cpfVar.length !== 11) {
+                alert("CPF inválido");
+                return;
+            }
+
+            var soma = 0;
+
+            for (var i = 0; i < 9; i++) {
+                soma += Number(cpfVar[i]) * (10 - i);
+            }
+
+            var verificador1 = (soma * 10) % 11;
+            if (verificador1 == 10) verificador1 = 0;
+
+            soma = 0;
+
+            for (var i = 0; i < 10; i++) {
+                soma += Number(cpfVar[i]) * (11 - i);
+            }
+
+            var verificador2 = (soma * 10) % 11;
+            if (verificador2 == 10) verificador2 = 0;
+
+            if (cpfVar[9] != verificador1 || cpfVar[10] != verificador2) {
+                alert("CPF inválido");
+                return;
+            }
+
+            fetch("/usuario/cadastrarUsuario", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    empresaServer: empresaVar,
+                    nomeServer: nomeVar,
+                    senhaServer: senhaVar,
+                    emailServer: emailVar,
+                    cpfServer: cpfVar,
+                    funcaoServer: funcaoVar
+                }),
+            })
+            .then(resposta => {
+                if (resposta.ok) {
+                    alert("Cadastrado com sucesso!");
+                    exibirUsuarios();
+                } else {
+                    throw "Erro no cadastro";
+                }
+            })
+            .catch(erro => {
+                console.log(`#ERRO: ${erro}`);
+            });
+        }
+
+        function excluir() {
+    if (idUsuarioParaExcluir != null) {
+        deletarUsuario(idUsuarioParaExcluir);
+        modal2.classList.remove('ativo');
+        idUsuarioParaExcluir = null;
+    }
+}
+
+        function deletarUsuario(id) {
+            fetch(`/usuario/deletarUsuario/${id}`, {
+                method: 'DELETE'
+            })
+            .then(resposta => {
+                if (resposta.ok) {
+                    alert('usuario deletado com sucesso!');
+                   exibirUsuarios();
+                } else {
+                    alert('Erro ao deletar usuario')
+                    exibirUsuarios();
+                }
+                 
+            })
+            .catch((erro) => {
+                console.log(`ERRO: ${erro}`);
+            })
+        }
+
+        function gerarIniciais(nome) {
+    if (!nome) return "";
+
+    let partes = nome.trim().split(" ");
+
+    if (partes.length === 1) {
+        return partes[0][0].toUpperCase();
+    }
+
+    return (partes[0][0] + partes[partes.length - 1][0]).toUpperCase();
+}
+
+    function corAvatar(nome) {
+    const cores = [
+        "#274690", "#576CA8", "#1B264F",
+        "#3A86FF", "#8338EC", "#FF006E",
+        "#FB5607", "#2EC4B6"
+    ];
+
+    let soma = 0;
+    for (let i = 0; i < nome.length; i++) {
+        soma += nome.charCodeAt(i);
+    }
+
+    return cores[soma % cores.length];
+}
+
+        function exibirUsuarios() {
+        var id = sessionStorage.ID_EMPRESA;
+
+    fetch(`/usuario/exibirUsuarios/${id}`)
+        .then(resposta => resposta.json())
+        .then((lista) => {
+
+    
+            var total = lista.length;
+            var gestores = lista.filter(u => u.funcao == "Gestor").length;
+            var analistas = lista.filter(u => u.funcao == "Analista").length;
+
+            var qtds = document.querySelectorAll(".quantidade_usuarios");
+            if (qtds[0]) qtds[0].textContent = total;
+            if (qtds[1]) qtds[1].textContent = gestores;
+            if (qtds[2]) qtds[2].textContent = analistas;
+
+    
+            document.getElementById("usuarios").innerHTML = lista.map(usuario => `
+  <div class="box-servidor">
+
+    <div style="display:flex; align-items:center; gap:12px;">
+      <div class="imagem" style = "background:${corAvatar(usuario.nome)}">${gerarIniciais(usuario.nome)}</div>
+      <span class="nome-servidor">${usuario.nome}</span>
+    </div>
+
+    <div>
+      <span class="subtexto">${usuario.email}</span>
+    </div>
+
+    <div>
+      <span class="badge-funcao ${usuario.funcao == 'Gestor' ? 'badge-gestor' : 'badge-analista'}">
+            ${usuario.funcao}
+        </span>
+    </div>
+
+    <div>
+      <span class="subtexto-info">${
+        usuario.data_cadastro
+          ? new Date(usuario.data_cadastro).toLocaleDateString("pt-BR")
+          : "—"
+      }</span>
+    </div>
+
+    <div style="display:flex; gap:10px; align-items:center;">
+      <img onclick="abrirModalExcluir(${usuario.id_funcionario})"
+           class="apagar" src="./assets/imgs/painel/lixo.png" alt="Excluir">
+      <img onclick="abrirModalGerenciarServidores(${usuario.id_funcionario})"
+           class="gerenciarServidor" src="./assets/imgs/painel/cadastrar-servidor-selecionado.png" alt="Gerenciar">
+    </div>
+
+  </div>
+`).join('');
+
+            document.querySelectorAll('.apagar').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    modal2.classList.add('ativo');
+                });
+            });
+        })
+        .catch(function (error) {
+            console.error(`Erro na obtenção dos usuários: ${error.message}`);
+        });
+}
+
+exibirUsuarios();
+
+exibirUsuarioAtivo();
+
+//Filtro para usuário
+    function filtrarUsuarios() {
+    var id = sessionStorage.ID_EMPRESA;
+    var nomeFiltro = filtro_usuario.value.toLowerCase(); 
+
+    fetch(`/usuario/exibirUsuarios/${id}`)
+        .then(resposta => resposta.json())
+        .then((lista) => {
+            var total = lista.length;
+            var gestores = lista.filter(u => u.funcao == "Gestor").length;
+            var analistas = lista.filter(u => u.funcao == "Analista").length;
+
+            var qtds = document.querySelectorAll(".quantidade_usuarios");
+            if (qtds[0]) qtds[0].textContent = total;
+            if (qtds[1]) qtds[1].textContent = gestores;
+            if (qtds[2]) qtds[2].textContent = analistas;
+
+            var listaFiltrada = lista.filter(usuario => 
+                usuario.nome.toLowerCase().includes(nomeFiltro)
+            );
+
+            var container = document.getElementById("usuarios");
+            container.innerHTML = ""; // Limpa antes de renderizar
+
+            if (listaFiltrada.length === 0) {
+                container.innerHTML = "<p>Nenhum usuário encontrado.</p>";
+                return;
+            }
+
+            listaFiltrada.forEach(usuario => {
+                container.innerHTML += `
+                    <div class="box-servidor">
+                        <div style="display:flex; align-items:center; gap:12px;">
+                            <div class="imagem" style="background:${corAvatar(usuario.nome)}">${gerarIniciais(usuario.nome)}</div>
+                            <span class="nome-servidor">${usuario.nome}</span>
+                        </div>
+                        <div><span class="subtexto">${usuario.email}</span></div>
+                        <div>
+                            <span class="badge-funcao ${usuario.funcao == 'Gestor' ? 'badge-gestor' : 'badge-analista'}">
+                                ${usuario.funcao}
+                            </span>
+                        </div>
+                        <div>
+                            <span class="subtexto-info">${usuario.data_cadastro ? new Date(usuario.data_cadastro).toLocaleDateString("pt-BR") : "—"}</span>
+                        </div>
+                        <div style="display:flex; gap:10px; align-items:center;">
+                            <img onclick="abrirModalExcluir(${usuario.id_funcionario})" class="apagar" src="./assets/imgs/painel/lixo.png" alt="Excluir">
+                            <img onclick="abrirModalGerenciarServidores(${usuario.id_funcionario})" class="gerenciarServidor" src="./assets/imgs/painel/cadastrar-servidor-selecionado.png" alt="Gerenciar">
+                        </div>
+                    </div>
+                `;
+            });
+        })
+        .catch(error => console.error('Erro ao buscar usuários:', error));
+}
+
+// Checkbox para registro de servidores
+function abrirModalGerenciarServidores(id) {
+    idUsuarioParaGerenciar = id;
+
+    const fkEmpresa = sessionStorage.ID_EMPRESA;
+
+    fetch(`/servidores/listarServidoresComAcesso/${fkEmpresa}/${id}`)
+        .then(res => res.json())
+        .then(lista => {
+            const container = document.querySelector(".lista-checkbox");
+
+            container.innerHTML = lista.map(servidor => `
+                <div class="checkbox-item">
+                    <input type="checkbox" 
+                           value="${servidor.id_servidor}"
+                           ${servidor.tem_acesso ? "checked" : ""}>
+                    <label>${servidor.hostname}</label>
+                </div>
+            `).join("");
+        });
+
+    modal3.classList.add('ativo');
+}
+
+function salvarServidores() {
+    const checkboxes = document.querySelectorAll(".lista-checkbox input");
+    const selecionados = [];
+
+    checkboxes.forEach(cb => {
+        if (cb.checked) {
+            selecionados.push(cb.value);
+        }
+    });
+
+    fetch("/servidores/atualizarAcessos", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            fkFuncionario: idUsuarioParaGerenciar,
+            servidores: selecionados
+        })
+    })
+    .then(res => {
+        if (res.ok) {
+            alert("Acessos atualizados");
+            modal3.classList.remove("ativo");
+        }
+    });
+}
+
+</script>

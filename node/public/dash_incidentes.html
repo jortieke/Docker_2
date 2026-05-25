@@ -1,0 +1,1222 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Incidentes | Horus </title>
+    <link rel="icon" href="./assets/icon/logo.png" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Jura:wght@300..700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap"
+        rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="./js/script.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./style.css">
+    <link rel="stylesheet" href="style/dash_incidentes.css">
+
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+</head>
+
+<body>
+    <div class="modal-lateral" id="overlay"></div>
+
+    <div class="container">
+
+        <aside class="lateral" id="lateral">
+            <div class="logo">
+                <img src="./assets/imgs/painel/logo.png" alt="">
+                Horus
+            </div>
+
+            <nav class="menu">
+                <div class="categoria">Monitoramento</div>
+                <a class="item-menu selecionado">
+                    <img src="./assets/imgs/painel/dash-selecionado.png" alt="">Dashboard
+                </a>
+
+                <div class="categoria adm" id="administracao">Administração </div>
+                <a href="dash_usuarios.html" class="item-menu adm" id="cadastrarUsuario">
+                    <img src="./assets/imgs/painel/cadastrar-usuario.png" alt="">Usuários
+                </a>
+                <a href="servidor-componente.html" class="item-menu adm" id="cadastrarServidor">
+                    <img src="./assets/imgs/painel/cadastrar-servidor.png" alt="">Cadastrar servidor
+                </a>
+
+            </nav>
+
+            <div onclick="limparSessionStorage()" class="sair">
+                <img src="./assets/imgs/painel/sair.png" alt="">
+                <p onclick="window.location.href='index.html'">Sair</p>
+            </div>
+        </aside>
+
+        <main class="main">
+
+            <header class="header">
+
+                <div class="header-topo">
+                    <div class="header-esquerda">
+                        <div class="hamburguer" id="hamburguer">
+                            <img src="./assets/imgs/painel/hamburguer.png" alt="Menu">
+                        </div>
+
+                        <div class="header-servidor">
+                            <span class="breadcrumb">
+                                Servidores /
+                                <span class="renomear">Incidentes</span>
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="usuario">
+                        <div>
+                            <p id="nome_usuario"></p>
+                            <p id="funcao_usuario" class="cargo"></p>
+                        </div>
+                        <span id="inicial_usuario"></span>
+                    </div>
+                </div>
+
+                <div class="header-nav-scroll">
+                    <nav class="header-nav">
+                        <a href="dash_incidentes.html" class="ativo">Incidentes</a>
+                        <a href="dash_analista.html">Resumo</a>
+                        <a href="processos.html">Processos</a>
+                        <a href="dash_rede.html">Comunicação e rede</a>
+                        <a href="Temperatura.html">Temperatura</a>
+                    </nav>
+                </div>
+
+            </header>
+            <section>
+                <div class="kpis" id="kpis-todos">
+                    <div style="border: 1px solid #FFCC00;" class="kpi">
+                        <div class="informacoes">
+                            <div>
+                                <div class="borda-icon" id="icone-total-ativos-geral"
+                                    style="border: 1px solid #FFCC00;">
+                                    <i data-lucide="triangle-alert"
+                                        style="width: 40px; height: 40px; color: #FFCC00; stroke-width: 1.5px;"></i>
+                                </div>
+                                <div class="informacoes-principais">
+                                    <span>Total de Alertas Ativos</span>
+                                    <h1 id="kpi_total_alertas_todos">10</h1>
+                                </div>
+                            </div>
+                            <div class="tooltip-info">
+                                <img src="assets/imgs/incidentes/info.png" alt="Informação">
+
+                                <div class="tooltip-box">
+                                    Soma de falhas de hardware pendentes. Volumes altos indicam instabilidade e risco de
+                                    perda de posição de aeronaves e rotas.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="niveis-ativos">
+                            <div class="ativos-severidade " style="margin-right: 30px;">
+                                <div class="especificacoes-metricas" style="color: #C70C0C;">
+                                    <div class="severidade">
+                                        <span style="background-color: #C70C0C;" class="indicador-severidade"></span>
+                                        <span>Crítica</span>
+                                    </div>
+                                    <h2 id="ativos_critica"></h2>
+                                </div>
+                                <div class="especificacoes-metricas" style="color: #FF8904;">
+                                    <div class="severidade">
+                                        <span style="background-color: #FF8904;" class="indicador-severidade"></span>
+                                        <span>Alta</span>
+                                    </div>
+                                    <h2 id="ativos_alta"></h2>
+                                </div>
+                            </div>
+                            <div class="ativos-severidade ">
+                                <div class="especificacoes-metricas" style="color: #FFCC00;">
+                                    <div class="severidade">
+                                        <span style="background-color: #FFCC00;" class="indicador-severidade"></span>
+                                        <span>Média</span>
+                                    </div>
+                                    <h2 id="ativos_media"></h2>
+                                </div>
+
+                                <div class="especificacoes-metricas" style="color: #308CFF;">
+                                    <div class="severidade">
+                                        <span style="background-color: #308CFF;" class="indicador-severidade"></span>
+                                        <span>Baixa</span>
+                                    </div>
+                                    <h2 id="ativos_baixa"></h2>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tempo_dash">
+                            <img id="relogio" src="./assets/imgs/dash_analista/relogio.png" alt="">
+                            <select class="tempo" name="" id="tempo_total_alertas_todos">
+                                <option value="1">Última hora</option>
+                                <option value="24">Últimas 24 horas</option>
+                                <option value="7">Última Semana</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div style="border: 1px solid #C70C0C;" class="kpi">
+                        <div class="informacoes">
+                            <div>
+                                <div class="borda-icon" id="icone-servidor" style="border: 1px solid #C70C0C;">
+                                    <i data-lucide="server"
+                                        style="width: 40px; height: 40px; color: #C70C0C; stroke-width: 1.5px;"></i>
+                                </div>
+                                <div class="informacoes-principais">
+                                    <span>Servidor com mais Alertas</span>
+                                    <h1 id="kpi_mais_alertas">10</h1>
+                                </div>
+                            </div>
+                            <div class="tooltip-info">
+                                <img src="assets/imgs/incidentes/info.png" alt="Informação">
+
+                                <div class="tooltip-box">
+                                    Identifica o servidor com maior frequência de incidentes. Estabilizá-lo é prioridade
+                                    para evitar incidentes de alta escala.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tempo_dash">
+                            <img id="relogio" src="./assets/imgs/dash_analista/relogio.png" alt="">
+                            <select class="tempo" name="" id="tempo_mais_alertas">
+                                <option value="1">Última hora</option>
+                                <option value="24">Últimas 24 horas</option>
+                                <option value="7">Última Semana</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div style="border: 1px solid #C70C0C;" class="kpi">
+                        <div class="informacoes">
+                            <div>
+                                <div class="borda-icon" id="icone-mttr" style="border: 1px solid #C70C0C;">
+                                    <i data-lucide="clock-check"
+                                        style="width: 40px; height: 40px; color: #C70C0C; stroke-width: 1.7px;"></i>
+                                </div>
+                                <div class="informacoes-principais">
+                                    <span>Tempo Médio para Reparo</span>
+                                    <h1 id="kpi_mttr">5 minutos</h1>
+                                </div>
+                            </div>
+                            <div class="tooltip-info alinhar-esquerda">
+                                <img src="assets/imgs/incidentes/info.png" alt="Informação">
+
+                                <div class="tooltip-box">
+                                    Agilidade na resolução de alertas de cada severidade. Reduzi-lo é vital para manter
+                                    a disponibilidade de 99,9% e o equilíbrio real do sistema SAGITARIO.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="niveis-ativos">
+                            <div class="ativos-severidade" style="margin-right: 30px;">
+                                <div class="especificacoes-metricas" style="color: #C70C0C;">
+                                    <div class="severidade">
+                                        <span style="background-color: #C70C0C;" class="indicador-severidade"></span>
+                                        <span>Crítica</span>
+                                    </div>
+                                    <h2 id="mttr_critica"></h2>
+                                </div>
+                                <div class="especificacoes-metricas" style="color: #FF8904;">
+                                    <div class="severidade">
+                                        <span style="background-color: #FF8904;" class="indicador-severidade"></span>
+                                        <span>Alta</span>
+                                    </div>
+                                    <h2 id="mttr_alta"></h2>
+                                </div>
+                            </div>
+                            <div class="ativos-severidade">
+                                <div class="especificacoes-metricas" style="color: #FFCC00;">
+                                    <div class="severidade">
+                                        <span style="background-color: #FFCC00;" class="indicador-severidade"></span>
+                                        <span>Média</span>
+                                    </div>
+                                    <h2 id="mttr_media"></h2>
+                                </div>
+
+                                <div class="especificacoes-metricas" style="color: #308CFF;">
+                                    <div class="severidade">
+                                        <span style="background-color: #308CFF;" class="indicador-severidade"></span>
+                                        <span>Baixa</span>
+                                    </div>
+                                    <h2 id="mttr_baixa"></h2>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="tempo_dash">
+                            <img id="relogio" src="./assets/imgs/dash_analista/relogio.png" alt="">
+                            <select class="tempo" name="" id="tempo_mttr">
+                                <option value="1">Última hora</option>
+                                <option value="24">Últimas 24 horas</option>
+                                <option value="7">Última Semana</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="corpo-dashboard" id="corpo-dashboard-todos">
+                    <div class="painel-saude card">
+                        <div class="titulo">
+                            <h1>Painel de Saúde de Servidores</h1>
+                            <div class="tooltip-info">
+                                <img src="assets/imgs/incidentes/info.png" alt="Informação">
+
+                                <div class="tooltip-box">
+                                    Status operacional de cada nó em tempo real. Alertas visuais (<span
+                                        style="color: #FFCC00;">amarelo</span> ou <span
+                                        style="color: #C70C0C;">vermelho</span>) indicam instabilidade e risco de Lag de
+                                    Tela ou Drop de Etiqueta.
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="lista_servidores" class="lista-servidores">
+
+                        </div>
+
+                        <div class="opcao-ocultar-servidores">
+                            <input id="checkbox-servidores" type="checkbox" onchange="mostrarPainelSaude()">
+                            <span>Ocultar servidores estáveis</span>
+                        </div>
+                    </div>
+
+
+                    <div class="painel-saude card">
+                        <div style="margin-bottom: 0px;" class="titulo">
+                            <h1>Horários críticos de falhas</h1>
+                            <div class="tooltip-info alinhar-esquerda">
+                                <img src="assets/imgs/incidentes/info.png" alt="Informação">
+
+                                <div class="tooltip-box">
+                                    Mapa térmico que identifica padrões e picos de incidentes por dia/hora. Essencial
+                                    para antecipar períodos de risco e garantir a alta disponibilidade do SAGITARIO.
+                                </div>
+                            </div>
+                        </div>
+                        <div id="heatmapFalhas"></div>
+
+                        <div class="legenda-heatmap">
+
+                            <span>Baixa</span>
+
+                            <div class="cores-legenda">
+                                <div class="cor"></div>
+                                <div style="background-color: #F3F4F6;" class="cor"></div>
+                                <div style="background-color: #B9F8CF;" class="cor"></div>
+                                <div style="background-color: #FFDF20;" class="cor"></div>
+                                <div style="background-color: #FF8904;" class="cor"></div>
+                                <div style="background-color: #FB2C36;" class="cor"></div>
+                            </div>
+
+                            <span>Alta</span>
+
+                        </div>
+                    </div>
+                </div>
+
+                <div class="status-servidor card">
+
+                    <div style="display: flex; flex-direction: row; gap: 10px; padding: 20px 25px;">
+                        <h3>Selecione um servidor para ver seus alertas:</h3>
+
+                        <div class="select-status">
+                            <span id="status-dot" class="status-dot verde"></span>
+
+                            <select id="select_servidor" onchange="selecionar()">
+                                <option value="#" disabled selected>selecione</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div style="display: flex; align-items: center; gap: 20px;">
+                        <a
+                            href="https://horusmonitoring.atlassian.net/jira/software/projects/KAN/list?jql=project%20%3D%20KAN%20ORDER%20BY%20created%20DESC">
+                            <img height="20px" src="./assets/imgs/incidentes/jira.png" alt="">
+                        </a>
+                        <a href="https://app.slack.com/client/T0AQZ02KUJE/C0AQWUMQJBG?teamClassificationType=work">
+                            <img height="40px" src="./assets/imgs/incidentes/slack.png" alt="">
+                        </a>
+                    </div>
+                </div>
+
+                <div class="corpo-dashboard" id="corpo-dashboard-servidor">
+                    <div class="kpis" id="kpis-servidor">
+                        <div style="border: 1px solid #FFCC00;" class="kpi">
+                            <div class="informacoes">
+                                <div>
+                                    <div class="borda-icon" id="icone-total-ativos" style="border: 1px solid #FFCC00;">
+                                        <i data-lucide="triangle-alert"
+                                            style="width: 40px; height: 40px; color: #FFCC00; stroke-width: 1.5px;"></i>
+                                    </div>
+                                    <div class="informacoes-principais">
+                                        <span>Total de Alertas Ativos</span>
+                                        <h1 id="kpi_valor_total_alertas">10</h1>
+                                    </div>
+                                </div>
+                                <div class="tooltip-info">
+                                    <img src="assets/imgs/incidentes/info.png" alt="Informação">
+
+                                    <div class="tooltip-box">
+                                        Soma de falhas de hardware pendentes. Volumes altos indicam instabilidade e
+                                        risco de perda de posição de aeronaves e rotas.
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tempo_dash">
+                                <img id="relogio" src="./assets/imgs/dash_analista/relogio.png" alt="">
+                                <select class="tempo" name="" id="tempo_total_alertas">
+                                    <option value="1">Última hora</option>
+                                    <option value="24">Últimas 24 horas</option>
+                                    <option value="7">Última Semana</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div style="border: 1px solid #C70C0C;" class="kpi">
+                            <div class="informacoes">
+                                <div>
+                                    <div class="borda-icon" id="icone-disponilidade" style="border: 1px solid #C70C0C;">
+                                        <i data-lucide="server"
+                                            style="width: 40px; height: 40px; color: #C70C0C; stroke-width: 1.5px;"></i>
+                                    </div>
+                                    <div class="informacoes-principais">
+                                        <span>Disponibilidade do Servidor</span>
+                                        <h1 id="kpi_disponibilidade">100%</h1>
+                                    </div>
+                                </div>
+                                <div class="tooltip-info">
+                                    <img src="assets/imgs/incidentes/info.png" alt="Informação">
+
+                                    <div class="tooltip-box">
+                                        Percentual de tempo operacional ininterrupto. Manter o índice de 99% é vital
+                                        para evitar quedas no monitoramento e garantir a segurança das trajetórias de
+                                        voo.
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tempo_dash">
+                                <img id="relogio" src="./assets/imgs/dash_analista/relogio.png" alt="">
+                                <select class="tempo" name="" id="tempo_disponibilidade">
+                                    <option value="1">Última hora</option>
+                                    <option value="24">Últimas 24 horas</option>
+                                    <option value="7">Última Semana</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div style="border: 1px solid #FFCC00;" class="kpi">
+                            <div class="informacoes">
+                                <div>
+                                    <div class="borda-icon" id="icone-confiabilidade"
+                                        style="border: 1px solid #FFCC00;">
+                                        <i data-lucide="gauge"
+                                            style="width: 40px; height: 40px; color: #FFCC00; stroke-width: 1.7px;"></i>
+                                    </div>
+                                    <div class="informacoes-principais">
+                                        <span>índice de Confiabilidade</span>
+                                        <h1 id="indice_confiabilidade">50</h1>
+                                    </div>
+                                </div>
+                                <div class="tooltip-info alinhar-esquerda">
+                                    <img src="assets/imgs/incidentes/info.png" alt="Informação">
+
+                                    <div class="tooltip-box">
+                                        Score sintetizado de saúde (0-100) baseado na estabilidade e eficiência de
+                                        recuperação do nó. Notas baixas alertam para o risco iminente de degradação
+                                        sistêmica.
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tempo_dash">
+                                <img id="relogio" src="./assets/imgs/dash_analista/relogio.png" alt="">
+                                <select class="tempo" name="" id="tempo_indice_confiabilidade">
+                                    <option value="1h">Última hora</option>
+                                    <option value="24h">Últimas 24 horas</option>
+                                    <option value="7d">Última Semana</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div style="border: 1px solid #E7E4E4;" class="kpi filtros">
+                            <div class="filtro">
+                                <h4>Filtrar por Severidade:</h4>
+
+                                <div>
+                                    <span class="box-filtro filt-severidade filt-ativo"
+                                        onclick="alterarFiltroSeveridade(this, 'Todos')">Todos</span>
+                                    <span class="box-filtro filt-severidade"
+                                        onclick="alterarFiltroSeveridade(this, 'Baixa')">Baixa</span>
+                                    <span class="box-filtro filt-severidade"
+                                        onclick="alterarFiltroSeveridade(this, 'Média')">Média</span>
+                                    <span class="box-filtro filt-severidade"
+                                        onclick="alterarFiltroSeveridade(this, 'Alta')">Alta</span>
+                                    <span class="box-filtro filt-severidade"
+                                        onclick="alterarFiltroSeveridade(this, 'Crítica')">Crítica</span>
+                                </div>
+                            </div>
+
+                            <div class="filtro">
+                                <h4>Filtrar por Status:</h4>
+
+                                <div>
+                                    <span class="box-filtro filt-status filt-ativo"
+                                        onclick="alterarFiltroStatus(this, 'Todos')">Todos</span>
+                                    <span class="box-filtro filt-status"
+                                        onclick="alterarFiltroStatus(this, 'Ativos')">Ativos</span>
+                                    <span class="box-filtro filt-status"
+                                        onclick="alterarFiltroStatus(this, 'Resolvidos')">Resolvidos</span>
+                                </div>
+                            </div>
+
+                            <div style="margin: 0;" class="tempo_dash">
+                                <img id="relogio" src="./assets/imgs/dash_analista/relogio.png" alt="">
+                                <select class="tempo" name="" id="tempo_lista_alertas">
+                                    <option value="1">Última hora</option>
+                                    <option value="24">Últimas 24 horas</option>
+                                    <option value="7">Última Semana</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="width: 100%; padding: 25px 50px;" class="lista-alertas card" id="lista_alertas">
+                    </div>
+                </div>
+            </section>
+
+        </main>
+
+    </div>
+
+    <script>
+        lucide.createIcons();
+
+        let dadosGlobaisAlertas = null;
+        let severidadeAtiva = "Todos";
+        let statusAtivo = "Todos";
+        let servidoresPermitidos = [];
+        let graficoHeatmap = null;
+
+        const prioridades = {
+
+            Highest: {
+                tipo: "Crítico",
+                borda: "#C70C0C",
+                fundo: "#FCA5A5",
+                texto: "#C70C0C",
+                imagem:
+                    "./assets/imgs/incidentes/alerta-critico.png"
+            },
+
+            High: {
+                tipo: "Alto",
+                borda: "#E67E22",
+                fundo: "#FDEBD0",
+                texto: "#CA6F1E",
+                imagem:
+                    "./assets/imgs/incidentes/alerta-alto.png"
+            },
+
+            Medium: {
+                tipo: "Médio",
+                borda: "#F1C40F",
+                fundo: "#FCF3CF",
+                texto: "#B7950B",
+                imagem:
+                    "./assets/imgs/incidentes/alerta-medio.png"
+            },
+
+            Low: {
+                tipo: "Baixo",
+                borda: "#308CFF",
+                fundo: "#BCF6FF",
+                texto: "#308CFF",
+                imagem:
+                    "./assets/imgs/incidentes/alerta-baixo.png"
+            }
+        };
+
+        const componentes = {
+            cpu: {
+                texto: "#1E40AF",  // Azul Escuro
+                fundo: "#EFF6FF",  // Azul bem clarinho
+                dashboard: "padrao_dash.html"
+            },
+            ram: {
+                texto: "#6D28D9",  // Roxo Vivo
+                fundo: "#F5F3FF",  // Roxo bem clarinho
+                dashboard: "ram_dash.html"
+            },
+            disco: {
+                texto: "#0369A1",  // Ciano/Azul Oceano
+                fundo: "#F0F9FF",  // Ciano bem clarinho
+                dashboard: "disco_dash.html"
+            },
+            processos: {
+                texto: "#BE185D",  // Rosa Escuro / Magenta
+                fundo: "#FDF2F8",  // Rosa bem clarinho
+                dashboard: "processos_dash.html"
+            },
+            temperatura: {
+                texto: "#C2410C",  // Laranja Escuro / Terracota (não confunde com amarelo de alerta)
+                fundo: "#FFF7ED",  // Tom de areia/creme bem clarinho
+                dashboard: "temperatura_dash.html"
+            },
+            rede: {
+                texto: "#374151",  // Grafite / Cinza Escuro
+                fundo: "#F9FAFB",  // Cinza bem clarinho
+                dashboard: "dash_rede.html"
+            }
+        };
+
+        const filtros_tempo = {
+            "1": 60 * 60 * 1000,          // 1 hora em ms
+            "24": 24 * 60 * 60 * 1000,    // 24 horas em ms
+            "7": 7 * 24 * 60 * 60 * 1000  // 7 dias em ms
+        };
+
+        const status_servidor = {
+            Online: {
+                fundo: "#BFFBB0",
+                borda: "#20A200"
+            },
+            'Atenção': {
+                fundo: "#FAFCA5",
+                borda: "#FFCC00"
+            },
+            'Crítico': {
+                fundo: "#FFB9B9",
+                borda: "#C70C0C"
+            },
+            'Offline': {
+                fundo: "#FFB9B9",
+                borda: "#C70C0C"
+            }
+        };
+
+
+
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+</body>
+
+</html>
+
+
+<script>
+
+    /* window.onload = () => {
+         const funcao = sessionStorage.getItem("FUNCAO_USUARIO");
+ 
+         if (funcao == "Gestor") {
+             document.getElementById("administracao").style.display = "block";
+             document.getElementById("gerarRelatorio").style.display = "block";
+             document.getElementById("cadastrarServidor").style.display = "flex";
+             document.getElementById("cadastrarUsuario").style.display = "flex";
+         }
+     }
+ 
+     exibirUsuarioAtivo();*/
+
+    //Modal para o menu sanduíche
+
+    const btnHamburguer = document.getElementById("hamburguer");
+    const lateral = document.getElementById("lateral");
+    const overlay = document.getElementById("overlay");
+
+    function abrirMenu() {
+        lateral.classList.add("ativo");
+        overlay.classList.add("ativo");
+    }
+
+    function fecharMenu() {
+        lateral.classList.remove("ativo");
+        overlay.classList.remove("ativo");
+    }
+
+    if (btnHamburguer) {
+        btnHamburguer.addEventListener("click", function (e) {
+            e.stopPropagation();
+
+            if (lateral.classList.contains("ativo")) {
+                fecharMenu();
+            } else {
+                abrirMenu();
+            }
+        });
+    }
+
+    overlay.addEventListener("click", fecharMenu);
+
+    document.addEventListener("click", function (e) {
+        if (
+            lateral.classList.contains("ativo") &&
+            !lateral.contains(e.target) &&
+            !btnHamburguer.contains(e.target)
+        ) {
+            fecharMenu();
+        }
+    });
+
+
+    function listarServidores() {
+        const fkEmpresa = sessionStorage.ID_EMPRESA;
+        const idUsuario = sessionStorage.ID_USUARIO;
+
+        fetch(`/servidores/listarServidoresComAcesso/${fkEmpresa}/${idUsuario}`)
+            .then(resposta => resposta.json())
+            .then((lista) => {
+                var servidoresComAcesso = lista.filter(servidor => servidor.tem_acesso == 1);
+
+                servidoresPermitidos = servidoresComAcesso.map(s => [s.hostname, s.status_servidor]);
+
+                select_servidor.innerHTML += servidoresComAcesso.map(servidor =>
+                    `<option value = "${servidor.hostname.toLowerCase()}" id="${servidor.mac_address}">${servidor.hostname}</option>`
+                ).join('')
+
+                carregarAlertas()
+            });
+
+        select_servidor.addEventListener("change", selecionar);
+    }
+
+    function mostrarPainelSaude() {
+        const checkbox = document.getElementById('checkbox-servidores');
+        var listarPainelFiltro = servidoresPermitidos;
+        console.log(listarPainelFiltro)
+
+        if (checkbox.checked) {
+            listarPainelFiltro = servidoresPermitidos.filter(servidor => {
+                return !servidor.includes("Online")
+            })
+        }
+
+        lista_servidores.innerHTML = listarPainelFiltro.map(servidor => {
+            const visual = status_servidor[servidor[1]];
+
+            return `
+                <div style="border: 3px solid ${visual.borda}; background-color: ${visual.fundo};"
+                    class="card-servidor">
+                    <img height="24" src="./assets/imgs/incidentes/icon-server.svg" alt="">
+                    <h2>${servidor[0]}</h2>
+                </div>
+            `;
+        }).join('');
+    }
+
+    async function carregarAlertas() {
+        const fkEmpresa = sessionStorage.ID_EMPRESA;
+        const idUsuario = sessionStorage.ID_USUARIO;
+
+        const resposta = await fetch(`/jira/dashboard/${fkEmpresa}/${idUsuario}`);
+
+        dadosGlobaisAlertas = await resposta.json();
+
+        selecionar();
+
+    }
+
+    function listarAlertas() {
+        if (!dadosGlobaisAlertas || !dadosGlobaisAlertas.incidentes) return;
+
+        const alertas = dadosGlobaisAlertas.incidentes;
+        const servidorSelecionado = select_servidor.value;
+        const filtroTempoSelecionado = tempo_lista_alertas.value;
+
+        const agora = new Date();
+        const limiteTempo = agora.getTime() - filtros_tempo[filtroTempoSelecionado];
+
+        const alertasFiltrados = alertas.filter(alerta => {
+            const dataCriacao = new Date(alerta.criadoEm).getTime();
+
+            const filtroServidor = alerta.servidor == servidorSelecionado;
+            const estaNoPeriodo = dataCriacao >= limiteTempo;
+
+            // traduzindo os niveis de severidade do Jira
+            var severidadeAlerta = "Baixa";
+            if (alerta.prioridade === "Highest") severidadeAlerta = "Crítica";
+            else if (alerta.prioridade === "High") severidadeAlerta = "Alta";
+            else if (alerta.prioridade === "Medium") severidadeAlerta = "Média";
+
+            // ou a severidadeAtiva é TODOS ou a SeveridadeAlerta é especifica
+            const filtroSeveridade = severidadeAtiva === "Todos" || severidadeAlerta === severidadeAtiva;
+
+            // traduzindo o status do ticket do Jira
+            const statusAlerta = alerta.status === "Concluído" ? "Resolvidos" : "Ativos";
+            // ou o statusAtivo é TODOS ou o StatusAlerta é especifico
+            const filtroStatus = statusAtivo === "Todos" || statusAlerta === statusAtivo;
+
+            return filtroServidor && estaNoPeriodo && filtroSeveridade && filtroStatus;
+        });
+
+
+        if (alertasFiltrados.length == 0) {
+            lista_alertas.innerHTML = `
+                <div class="sem-alertas-container">
+                    <i data-lucide="smile" style="width: 70px; height: 70px;" stroke-width="2"></i>  
+                    <h2>Nenhum incidente encontrado</h2>
+                    <p>Ótimas notícias! Não existem alertas registrados para os filtros selecionados.</p>
+                </div>
+            `;
+            lucide.createIcons();
+        } else {
+            lista_alertas.innerHTML = alertasFiltrados.map(alerta => {
+                const visual = prioridades[alerta.prioridade];
+                const componente = componentes[alerta.componente]
+
+                return `
+                        <div style="border: 1.5px solid ${visual.borda};" class="card-alerta">
+                            <div class="principal">
+                                <img width="65px" height="65px" src="${visual.imagem}"
+                                    alt="">
+                                <div class="informacoes-alerta">
+                                    <h1>${alerta.titulo}</h1>
+                                    <h2>${alerta.servidor}</h2>
+                                    <h4>${formatarData(alerta.criadoEm)}</h4>
+                                </div>
+                                <div class="classificacao-alerta">
+                                    <span style="background-color: ${visual.fundo}; color: ${visual.texto};">${visual.tipo}</span>
+                                    <span style="background-color: ${componente.fundo}; color: ${componente.texto};">${alerta.componente}</span>
+                                    ${alerta.status == "Concluído" ? `<span style="background-color: #BFFBB0; color: #20A200;">Resolvido</span>` : ""}
+                                </div>
+                            </div>
+
+                            <a href="${componente.dashboard}" style="text-decoration: none;">
+                                <button>
+                                    Investigar
+                                    <img src="./assets/imgs/incidentes/icon-investigar.svg" alt="">
+                                </button>
+                            </a>
+                        </div>
+            `}).join('');
+        }
+    }
+
+    function formatarData(dataIso) {
+        const data = new Date(dataIso);
+
+        const dia = String(data.getDate()).padStart(2, '0');
+        const mes = String(data.getMonth() + 1).padStart(2, '0');
+        const ano = data.getFullYear();
+        const hora = String(data.getHours()).padStart(2, '0');
+        const minuto = String(data.getMinutes()).padStart(2, '0');
+
+        return `${dia}/${mes}/${ano} às ${hora}:${minuto}`;
+    }
+
+    function alterarFiltroSeveridade(elementoBotao, valorSelecionado) {
+        const botoes = document.querySelectorAll('.filt-severidade');
+
+        for (let i = 0; i < botoes.length; i++) {
+            botoes[i].classList.remove('filt-ativo');
+        }
+
+        elementoBotao.classList.add('filt-ativo');
+
+        severidadeAtiva = valorSelecionado;
+        listarAlertas();
+    }
+
+    function alterarFiltroStatus(elementoBotao, valorSelecionado) {
+        const botoes = document.querySelectorAll('.filt-status');
+
+        for (let i = 0; i < botoes.length; i++) {
+            botoes[i].classList.remove('filt-ativo');
+        }
+
+        elementoBotao.classList.add('filt-ativo');
+
+        statusAtivo = valorSelecionado;
+        listarAlertas();
+    }
+
+    function mostrarKPIs() {
+        // se dadosGlobais não for definida, a função não continua
+        if (!dadosGlobaisAlertas || !dadosGlobaisAlertas.incidentes) return;
+
+        const alertas = dadosGlobaisAlertas.incidentes;
+        const filtroSelecionado = tempo_total_alertas.value;
+        const servidorSelecionado = select_servidor.value;
+
+        const agora = new Date();
+        const limiteTempo = agora.getTime() - filtros_tempo[filtroSelecionado];
+
+        const incidentesFiltrados = alertas.filter(alertas => {
+            const dataCriacao = new Date(alertas.criadoEm).getTime();
+            const estaNoPeriodo = dataCriacao >= limiteTempo;
+            const estaAtivo = alertas.status !== "Concluído" && alertas.resolvidoEm === null;
+            const filtroServidor = alertas.servidor === servidorSelecionado;
+
+            return estaNoPeriodo && estaAtivo && filtroServidor;
+        })
+
+        kpi_valor_total_alertas.innerText = incidentesFiltrados.length;
+
+        // disponibilidade do servidor
+        const filtroTempoUptime = tempo_disponibilidade.value;
+        const tempoTotalPeriodoMs = filtros_tempo[filtroTempoUptime];
+        const limiteTempoUptime = agora.getTime() - tempoTotalPeriodoMs;
+
+        const paradasDoServidor = alertas.filter(alerta => {
+            const dataResolucao = alerta.resolvidoEm ? new Date(alerta.resolvidoEm).getTime() : null;
+            const ehDesteServidor = alerta.servidor === servidorSelecionado;
+
+            return ehDesteServidor && dataResolucao && dataResolucao >= limiteTempoUptime;
+        });
+
+        let tempoForaDoArMs = 0;
+
+
+        for (let i = 0; i < paradasDoServidor.length; i++) {
+            const inicio = new Date(paradasDoServidor[i].criadoEm).getTime();
+            const fim = new Date(paradasDoServidor[i].resolvidoEm).getTime();
+
+            const inicioReal = Math.max(inicio, limiteTempoUptime);
+
+            tempoForaDoArMs += (fim - inicioReal);
+        }
+
+        if (tempoForaDoArMs >= tempoTotalPeriodoMs) {
+            kpi_disponibilidade.innerText = "0.00%";
+        } else {
+            const tempoOnlineMs = tempoTotalPeriodoMs - tempoForaDoArMs;
+            const porcentagemUptime = (tempoOnlineMs / tempoTotalPeriodoMs) * 100;
+
+            kpi_disponibilidade.innerText = `${porcentagemUptime.toFixed(2)}%`;
+        }
+    }
+
+    async function obterDadosScore() {
+
+        const fkEmpresa = sessionStorage.ID_EMPRESA;
+        const opcaoSelecionada = select_servidor.options[select_servidor.selectedIndex];
+        console.log(opcaoSelecionada.id)
+        const mac_address = opcaoSelecionada.id;
+
+        const resposta = await fetch(`/incidentes/calcularIndice/${fkEmpresa}/${mac_address}`);
+
+        const dados = resposta.json();
+        return dados;
+    }
+
+    async function mostrarKPIScore() {
+        const dados = await obterDadosScore();
+
+        const filtroTempoSelecionado = tempo_indice_confiabilidade.value;
+
+        const dadosFiltrados = dados[filtroTempoSelecionado];
+        indice_confiabilidade.innerText = dadosFiltrados.score;
+        console.log(dadosFiltrados)
+
+    }
+
+    function mostrarKPITodos() {
+        if (!dadosGlobaisAlertas || !dadosGlobaisAlertas.incidentes) return;
+
+        const alertas = dadosGlobaisAlertas.incidentes;
+        const filtroTempoSelecionado = tempo_total_alertas_todos.value;
+
+        const agora = new Date();
+        const limiteTempo = agora.getTime() - filtros_tempo[filtroTempoSelecionado];
+
+        const alertasFiltrados = alertas.filter(alerta => {
+            const dataCriacao = new Date(alerta.criadoEm).getTime();
+            const estaAtivo = alerta.status !== "Concluído" && alerta.resolvidoEm === null;
+
+            return dataCriacao >= limiteTempo && estaAtivo;
+        })
+
+        kpi_total_alertas_todos.innerText = alertasFiltrados.length;
+        function contarAtivosPorSeveridade(listaAlertas, nivelSeveridade) {
+            const filtrados = listaAlertas.filter(alerta => alerta.prioridade === nivelSeveridade);
+            return filtrados.length;
+        }
+
+        ativos_critica.innerText = contarAtivosPorSeveridade(alertasFiltrados, "Highest");
+        ativos_alta.innerText = contarAtivosPorSeveridade(alertasFiltrados, "High");
+        ativos_media.innerText = contarAtivosPorSeveridade(alertasFiltrados, "Medium");
+        ativos_baixa.innerText = contarAtivosPorSeveridade(alertasFiltrados, "Low");
+
+
+        // servidor com mais alertas
+        const filtroTempoSelecionadoServidor = tempo_mais_alertas.value;
+        const limiteTempoServidor = agora.getTime() - filtros_tempo[filtroTempoSelecionadoServidor];
+
+        const alertasFiltradosServidor = alertas.filter(alerta => {
+            const dataCriacao = new Date(alerta.criadoEm).getTime();
+
+            return dataCriacao >= limiteTempoServidor;
+        })
+
+        var hostname_mais_alertas = "Nenhum";
+        var qtd_mais_alertas = 0;
+
+        const contagemServidores = {};
+
+        for (let i = 0; i < alertasFiltradosServidor.length; i++) {
+            const hostname = alertasFiltradosServidor[i].servidor;
+            if (contagemServidores[hostname] === undefined) {
+                contagemServidores[hostname] = 1;
+            } else {
+                contagemServidores[hostname]++;
+            }
+        }
+
+        for (const hostname in contagemServidores) {
+            if (contagemServidores[hostname] > qtd_mais_alertas) {
+                hostname_mais_alertas = hostname;
+                qtd_mais_alertas = contagemServidores[hostname];
+            }
+        }
+
+        kpi_mais_alertas.innerText = `${hostname_mais_alertas} (${qtd_mais_alertas})`;
+
+        // MTTR
+        const filtroTempoMTTR = tempo_mttr.value;
+        const limiteTempoMTTR = agora.getTime() - filtros_tempo[filtroTempoMTTR];
+
+        const alertasResolvidos = alertas.filter(alerta => {
+            const dataResolucao = alerta.resolvidoEm ? new Date(alerta.resolvidoEm).getTime() : null;
+
+            return dataResolucao && dataResolucao >= limiteTempoMTTR;
+        });
+
+        var somaTempoResolucaoMs = 0;
+
+        for (let i = 0; i < alertasResolvidos.length; i++) {
+            const inicio = new Date(alertasResolvidos[i].criadoEm).getTime();
+            const fim = new Date(alertasResolvidos[i].resolvidoEm).getTime();
+            somaTempoResolucaoMs += (fim - inicio);
+        }
+
+        const mttrMedioMs = alertasResolvidos.length > 0 ? (somaTempoResolucaoMs / alertasResolvidos.length) : 0;
+
+        if (mttrMedioMs === 0) {
+            kpi_mttr.innerText = "Sem dados";
+        } else {
+            const totalMinutos = Math.floor(mttrMedioMs / (1000 * 60));
+
+            if (totalMinutos < 60) {
+                kpi_mttr.innerText = `${totalMinutos}m`;
+            } else {
+                const horas = Math.floor(totalMinutos / 60);
+                const minutos = totalMinutos % 60;
+                kpi_mttr.innerText = `${horas}h ${minutos}m`;
+            }
+        }
+
+
+        function obterMTTRPorSeveridade(listaAlertas, nivelSeveridade) {
+            const filtrados = listaAlertas.filter(alerta => alerta.prioridade === nivelSeveridade);
+
+            if (filtrados.length === 0) return "-";
+
+            let somaMs = 0;
+            for (let i = 0; i < filtrados.length; i++) {
+                const inicio = new Date(filtrados[i].criadoEm).getTime();
+                const fim = new Date(filtrados[i].resolvidoEm).getTime();
+                somaMs += (fim - inicio);
+            }
+
+            const mediaMs = somaMs / filtrados.length;
+            const totalMinutos = Math.floor(mediaMs / (1000 * 60));
+
+            if (totalMinutos < 60) {
+                return `${totalMinutos}m`;
+            } else {
+                const horas = Math.floor(totalMinutos / 60);
+                const minutos = totalMinutos % 60;
+                return `${horas}h ${minutos}m`;
+            }
+        }
+
+        mttr_critica.innerText = obterMTTRPorSeveridade(alertasResolvidos, "Highest");
+        mttr_alta.innerText = obterMTTRPorSeveridade(alertasResolvidos, "High");
+        mttr_media.innerText = obterMTTRPorSeveridade(alertasResolvidos, "Medium");
+        mttr_baixa.innerText = obterMTTRPorSeveridade(alertasResolvidos, "Low");
+    }
+
+    function plotarHeatmap() {
+        if (!dadosGlobaisAlertas || !dadosGlobaisAlertas.incidentes) return;
+        const alertas = dadosGlobaisAlertas.incidentes;
+
+        const diasSemana = ["Sáb", "Sex", "Qui", "Qua", "Ter", "Seg", "Dom"];
+
+        var seriesDinamica = diasSemana.map(dia => {
+            return {
+                name: dia,
+                data: [0, 0, 0, 0, 0, 0]
+            }
+        })
+
+        alertas.forEach(alerta => {
+            const dataCriacao = new Date(alerta.criadoEm);
+            const diaCriacao = dataCriacao.getDay();
+            const horaCriacao = dataCriacao.getHours();
+
+            // ajusta dias da semana com dias do mapa, domingo é 6 no diasSemana mas é 0 no gráfico
+            const mapaIndicesDias = { 6: 0, 5: 1, 4: 2, 3: 3, 2: 4, 1: 5, 0: 6 };
+            const indiceDia = mapaIndicesDias[diaCriacao];
+
+            // define de que bloco de 4 horas o alerta percente
+            const indiceBlocoHora = Math.floor(horaCriacao / 4);
+
+            // adiciona mais um incidente no indice dia (dom, seg) no bloco de quatro horas 
+            seriesDinamica[indiceDia].data[indiceBlocoHora]++;
+        });
+
+        const options = {
+            chart: {
+                type: 'heatmap',
+                height: 250,
+                toolbar: {
+                    show: false
+                }
+            }, legend: {
+                show: false
+            },
+
+            series: seriesDinamica,
+
+            xaxis: {
+                categories: ['00h', '04h', '08h', '12h', '16h', '20h']
+            },
+
+            dataLabels: {
+                enabled: true
+            },
+
+            colors: ['#B8F1C6'],
+
+            plotOptions: {
+                heatmap: {
+                    radius: 4,
+
+                    colorScale: {
+                        ranges: [
+                            { from: 0, to: 0, color: '#E9E9E9' },
+                            { from: 1, to: 2, color: '#B8F1C6' },
+                            { from: 3, to: 4, color: '#FFD633' },
+                            { from: 5, to: 6, color: '#FF8A00' },
+                            { from: 7, to: 10, color: '#FB2C36' }
+                        ]
+                    }
+                }
+            },
+
+            stroke: {
+                width: 4,
+                colors: ['#FFFFFF']
+            }
+        };
+
+        graficoHeatmap = new ApexCharts(document.querySelector("#heatmapFalhas"), options);
+        graficoHeatmap.render();
+    }
+
+
+
+    function selecionar() {
+        select = document.getElementById("select_servidor");
+
+        if (select.value != "#") {
+            document.getElementById("corpo-dashboard-servidor").style.display = "block";
+            document.getElementById("status-dot").style.display = "block";
+
+            listarAlertas();
+            mostrarKPIs();
+            mostrarKPIScore();
+
+        } else {
+            document.getElementById("corpo-dashboard-servidor").style.display = "none";
+            document.getElementById("status-dot").style.display = "none";
+
+            mostrarKPITodos();
+            mostrarPainelSaude();
+            plotarHeatmap();
+        }
+
+    }
+
+    // Quando o tempo mudar, apenas a KPI precisa recalcular
+    tempo_total_alertas.addEventListener("change", mostrarKPIs);
+    tempo_disponibilidade.addEventListener("change", mostrarKPIs);
+
+    tempo_lista_alertas.addEventListener("change", listarAlertas);
+
+    tempo_total_alertas_todos.addEventListener("change", mostrarKPITodos);
+    tempo_mais_alertas.addEventListener("change", mostrarKPITodos);
+    tempo_mttr.addEventListener("change", mostrarKPITodos);
+
+    // Quando o servidor mudar, AMBOS precisam atualizar
+    select_servidor.addEventListener("change", selecionar);
+
+    select_servidor.addEventListener('change', function () {
+        if (this.value !== "#") {
+            window.scrollTo({
+                top: document.body.scrollHeight,
+                behavior: 'smooth'
+            })
+        }
+    })
+    async function atualizarStatus() {
+
+        const hostnameSelecionado = select_servidor.value;
+
+        if (!hostnameSelecionado || hostnameSelecionado === "#") return;
+
+        const servidor = servidoresPermitidos.find(
+            s => s[0].toLowerCase() === hostnameSelecionado.toLowerCase()
+        );
+
+        if (!servidor) return;
+
+        const status = servidor[1];
+
+        const dot = document.getElementById("status-dot");
+
+        dot.classList.remove("verde", "amarelo", "vermelho");
+
+        if (status === "Crítico") {
+
+            dot.classList.add("vermelho");
+
+        } else if (status === "Atenção") {
+
+            dot.classList.add("amarelo");
+
+        } else {
+
+            dot.classList.add("verde");
+        }
+    }
+
+    select_servidor.addEventListener("change", async function () {
+
+        selecionar();
+
+        await atualizarStatus();
+    });
+
+    async function iniciarPagina() {
+
+        listarServidores();
+
+        exibirUsuarioAtivo();
+    }
+
+    iniciarPagina();
+
+
+
+</script>

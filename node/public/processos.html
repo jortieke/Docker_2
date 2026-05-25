@@ -1,0 +1,1387 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> Processos | Horus </title>
+    <link rel="icon" href="./assets/icon/logo.png" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Jura:wght@300..700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap"
+        rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="./js/script.js"></script>
+
+    <link rel="stylesheet" href="./style.css">
+    <link rel="stylesheet" href="style/padrao_dash.css">
+    <link rel="stylesheet" href="style/processos.css">
+    
+</head>
+
+<body>
+
+    <div class="modal-lateral" id="overlay"></div>
+
+    <div class="container">
+
+        <aside class="lateral" id="lateral">
+            <div class="logo">
+                <img src="./assets/imgs/painel/logo.png" alt="">
+                Horus
+            </div>
+
+            <nav class="menu">
+                <div class="categoria">Monitoramento</div>
+                <a class="item-menu selecionado">
+                    <img src="./assets/imgs/painel/dash-selecionado.png" alt="">Dashboard
+                </a>
+
+                <div class="categoria adm" id="administracao">Administração </div>
+                <a href="dash_usuarios.html" class="item-menu adm" id="cadastrarUsuario">
+                    <img src="./assets/imgs/painel/cadastrar-usuario.png" alt="">Usuários
+                </a>
+                <a href="servidor-componente.html" class="item-menu adm" id="cadastrarServidor">
+                    <img src="./assets/imgs/painel/cadastrar-servidor.png" alt="">Cadastrar servidor
+                </a>
+
+            </nav>
+
+            <div onclick="limparSessionStorage()" class="sair">
+                <img src="./assets/imgs/painel/sair.png" alt="">
+                <p onclick="window.location.href='index.html'">Sair</p>
+            </div>
+        </aside>
+
+        <main class="main">
+
+            <header class="header">
+
+                <div class="header-topo">
+                    <div class="header-esquerda">
+                        <div class="hamburguer" id="hamburguer">
+                            <img src="./assets/imgs/painel/hamburguer.png" alt="Menu">
+                        </div>
+
+                        <div class="header-servidor">
+                            <span class="breadcrumb">
+                                Servidores /
+                                <strong id="nomeServidor"></strong> /
+                                <span class="renomear">Processos</span>
+                            </span>
+
+                            <div class="status-servidor">
+                                <div class="select-status">
+                                    <span id="status-dot" class="status-dot verde"></span>
+
+                                    <select id="select_servidor">
+                                    </select>
+                                </div>
+
+                                
+                                <!-- <div class="alertas">
+                                    <img src="assets/imgs/processos/alerta-lar.png" alt="" style="height: 12px !important; width: 12px !important;"> 3 alertas
+                                </div> -->
+
+                                <div class="ultima-atualizacao">
+                                    <span class="texto-atualizacao">
+                                        Última Atualização:
+                                    </span>
+
+                                    <span id="ultimaAtualizacao" class="horario-atualizacao">
+                                        <span id="data"></span> às <span id="hora"></span>
+                                    </span>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="usuario">
+                        <div>
+                            <p id="nome_usuario"></p>
+                            <p id="funcao_usuario" class="cargo"></p>
+                        </div>
+                        <span id="inicial_usuario"></span>
+                    </div>
+                </div>
+
+                <div class="header-nav-scroll">
+                    <nav class="header-nav">
+                        <a href="dash_incidentes.html">Incidentes</a>
+                        <a href="dash_analista.html">Resumo</a>
+                        <a href="processos.html" class="ativo">Processos</a>
+                        <a href="dash_rede.html">Comunicação e Rede</a>
+                        <a href="Temperatura.html">Temperatura</a>
+                    </nav>
+                </div>
+
+            </header>
+
+            <section class="conteudo" id="conteudo">
+                <div class="cards">
+
+                    <div id="critico" class="card pequeno">
+                        <div class="indicador">
+                            <div class="titulo">
+                                <div class="card-img" style="background-color: #FAAAAA;">
+                                    <img src="./assets/imgs/processos/alerta.png">
+                                </div>
+                                <div class="tipo-kpi">
+                                    <span class="nome-kpi">Processos Críticos</span>
+                                </div>
+                            </div>
+                            <div class="info-critico">
+                                <span id="qtdProcessosCriticos"
+                                    style="color: #5f5f5f; font-weight: bold; font-size: 25px;">1</span>
+                                <span id="texto-processo" style="color: #5f5f5f; font-size: 15px;">processo
+                                    afetado</span>
+                            </div>
+                            <div class="qtd-critico">
+                                <div id="latenciaQtdDiv" class="info-qtd">
+                                    <span id="latenciaQtd">1</span>
+                                    <span>Latência</span>
+                                </div>
+                                <div id="cpuQtdDiv" class="info-qtd">
+                                    <span id="cpuQtd">0</span>
+                                    <span>CPU</span>
+                                </div>
+                                <div id="ramQtdDiv" class="info-qtd">
+                                    <span id="ramQtd">0</span>
+                                    <span>RAM</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card pequeno">
+                        <div class="indicador">
+                            <div class="titulo">
+                                <div class="card-img" style="background-color: #e5edff;">
+                                    <img src="./assets/imgs/processos/info.png">
+                                </div>
+                                <div class="tipo-kpi">
+                                    <span class="nome-kpi">Status do Sistema</span>
+                                </div>
+                            </div>
+                            <div class="info-status">
+                                <div class="running">
+                                    <div class="status">
+                                        <div class="tipo-proc">
+                                            <img src="./assets/imgs/processos/bolinha-verde.png">
+                                            <span class="texto-status">Running</span>
+                                        </div>
+                                        <span id="qtdRunning"
+                                            style="color: #20A200; font-weight: bold; font-size: 15px;">10</span>
+                                    </div>
+                                </div>
+                                <div class="sleeping">
+                                    <div class="status">
+                                        <div class="tipo-proc">
+                                            <img src="./assets/imgs/processos/lua.png">
+                                            <span class="texto-status">Sleeping</span>
+                                        </div>
+                                        <span id="qtdSleeping"
+                                            style="color: #308CFF; font-weight: bold; font-size: 15px;">3</span>
+                                    </div>
+                                </div>
+                                <div class="stopped">
+                                    <div class="status">
+                                        <div class="tipo-proc">
+                                            <img src="./assets/imgs/processos/retangulo-amarelo.png">
+                                            <span class="texto-status">Stopped</span>
+                                        </div>
+                                        <span id="qtdStopped"
+                                            style="color: #FFCC00; font-weight: bold; font-size: 15px;">2</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card pequeno">
+                        <div class="indicador">
+                            <div class="titulo">
+                                <div class="card-img" style="background-color: #FAAAAA;">
+                                    <img src="./assets/imgs/processos/raio.png">
+                                </div>
+                                <div class="tipo-kpi">
+                                    <span class="nome-kpi">Maior Latência</span>
+                                </div>
+                            </div>
+                            <div class="info-latencia">
+                                <span id="nome-proc" class="nome-proc">node</span>
+                                <div>
+                                    <span id="latencia-proc" class="latencia-proc"></span>
+                                    <span class="latencia-proc">ms</span>
+                                </div>
+                                <div>
+                                    <span class="pid-proc">PID:</span>
+                                    <span id="pid-proc" class="pid-proc"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <section class="linha">
+                    <div class="card card-grafico">
+                        <div class="topo-grafico">
+                            <h3 class="tipo-grafico">
+                                Top 5 processos que mais estão consumindo recursos
+                            </h3>
+
+                            <div class="alternador">
+                                <button id="btnCPU" class="ativo">CPU</button>
+                                <button id="btnRAM">RAM</button>
+                            </div>
+                        </div>
+                        <div class="interface-grafico">
+                            <canvas id="grafico-top5"></canvas>
+                        </div>
+                    </div>
+                    <div class="card card-grafico">
+                        <div class="topo-grafico">
+                            <h3 class="tipo-grafico">
+                                Quantidade de Processos Críticos nas Últimas 24h
+                            </h3>
+                        </div>
+                        <div class="interface-grafico">
+                            <canvas id="processos-criticos"></canvas>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="linha">
+                    <div class="card card-pesquisa">
+                        <div class="pesquisar">
+                            <img src="./assets/imgs/processos/lupa.png">
+                            <input type="text" id="procurar-processo" placeholder="Buscar por PID ou Nome...">
+                        </div>
+                        <div class="alternador-pesquisar">
+                            <button id="btnTodos" class="ativo">Todos (<span id="qtdTodos">0</span>)</button>
+                            <button id="btnRunning">Running (<span id="Running">0</span>)</button>
+                            <button id="btnSleeping">Sleeping (<span id="Sleeping">0</span>)</button>
+                            <button id="btnStopped">Stopped (<span id="Stopped">0</span>)</button>
+                        </div>   
+                    </div>
+                </section>
+
+                <div class="tabela-container">
+                    <table class="tabela-processos">
+                        <thead>
+                            <tr>
+                                <th>PID</th>
+                                <th>Nome</th>
+                                <th>Usuário</th>
+                                <!-- <th>CPU</th> -->
+                                <th onclick="ordenarTabela('cpu')">
+                                    <div class="teste">
+                                        <span>CPU</span> 
+                                        <span class="setas">
+                                            <img class="seta-cinza cres" id="cpuSetaCres" src="./assets/imgs/processos/seta-cinza.png" alt="">
+                                            <img class="seta-cinza" id="cpuSetaDecres" src="./assets/imgs/processos/seta-cinza.png" alt="">
+                                        </span>
+                                    </div>
+                                </th>
+                                <th onclick="ordenarTabela('ram')">
+                                    <div class="teste">
+                                        <span>RAM</span> 
+                                        <span class="setas">
+                                            <img class="seta-cinza cres" id="ramSetaCres" src="./assets/imgs/processos/seta-cinza.png" alt="">
+                                            <img class="seta-cinza" id="ramSetaDecres" src="./assets/imgs/processos/seta-cinza.png" alt="">
+                                        </span>
+                                    </div>
+                                </th>
+                                <th onclick="ordenarTabela('latencia')">
+                                    <div class="teste">
+                                        <span>Latência</span> 
+                                        <span class="setas">
+                                            <img class="seta-cinza cres" id="latSetaCres" src="./assets/imgs/processos/seta-cinza.png" alt="">
+                                            <img class="seta-cinza" id="latSetaDecres" src="./assets/imgs/processos/seta-cinza.png" alt="">
+                                        </span>
+                                    </div>
+                                </th>
+                                <!-- <th>RAM</th> -->
+                                <!-- <th>Latência</th> -->
+                                <th>Status</th>
+                                <!-- <th>Tempo de Execução</th> -->
+                                <th onclick="ordenarTabela('tempo_execucao')">
+                                    <div class="teste">
+                                        <span>Tempo de Execução</span> 
+                                        <span class="setas">
+                                            <img class="seta-cinza cres" id="tempSetaCres" src="./assets/imgs/processos/seta-cinza.png" alt="">
+                                            <img class="seta-cinza" id="tempSetaDecres" src="./assets/imgs/processos/seta-cinza.png" alt="">
+                                        </span>
+                                    </div>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody id="corpoTabela">
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="paginacao">
+                        <button id="btnPrev">Anterior</button>
+                        <span id="infoPagina"></span>
+                        <button id="btnNext">Próximo</button>
+                    </div>
+
+            </section>
+        </main>
+
+    </div>
+
+    <script>
+
+        const agora = new Date();
+        listarServidores()
+
+        /*window.onload = () => {const funcao = sessionStorage.getItem("FUNCAO_USUARIO");
+
+                    if (funcao == "Gestor") {
+                        document.getElementById("administracao").style.display = "block";
+                        document.getElementById("gerarRelatorio").style.display = "block";
+                        document.getElementById("cadastrarServidor").style.display = "flex";
+                        document.getElementById("cadastrarUsuario").style.display = "flex";
+                    }
+        }*/
+
+        // exibirUsuarioAtivo();
+
+        //Modal para o menu sanduíche
+
+        const btnHamburguer = document.getElementById("hamburguer");
+        const lateral = document.getElementById("lateral");
+        const overlay = document.getElementById("overlay");
+
+        function abrirMenu() {
+            lateral.classList.add("ativo");
+            overlay.classList.add("ativo");
+        }
+
+        function fecharMenu() {
+            lateral.classList.remove("ativo");
+            overlay.classList.remove("ativo");
+        }
+
+        if (btnHamburguer) {
+            btnHamburguer.addEventListener("click", function (e) {
+                e.stopPropagation();
+
+                if (lateral.classList.contains("ativo")) {
+                    fecharMenu();
+                } else {
+                    abrirMenu();
+                }
+            });
+        }
+
+        overlay.addEventListener("click", fecharMenu);
+
+        document.addEventListener("click", function (e) {
+            if (
+                lateral.classList.contains("ativo") &&
+                !lateral.contains(e.target) &&
+                !btnHamburguer.contains(e.target)
+            ) {
+                fecharMenu();
+            }
+        });
+
+        const btnCPU = document.getElementById('btnCPU');
+        const btnRAM = document.getElementById('btnRAM');
+
+        const btnTodos = document.getElementById('btnTodos');
+        const btnRunning = document.getElementById('btnRunning');
+        const btnSleeping = document.getElementById('btnSleeping');
+        const btnStopped = document.getElementById('btnStopped');
+
+        const inputPesquisar = document.getElementById("procurar-processo");
+
+
+        let dados;
+        let dadosGrafico = { cpu: [], ram: [] };
+        let graficoTop5 = null
+        let criticos = null
+        let graficoAtual = "cpu"
+
+        function atualizarStatusServidor(dados) {
+
+            const dot = document.getElementById("status-dot");
+
+            if (!dot || !dados?.processos?.kpis) return;
+
+            dot.classList.remove(
+                "verde",
+                "amarelo",
+                "vermelho"
+            );
+
+            const kpis = dados.processos.kpis;
+
+            const possuiCritico =
+                kpis.total > 0 ||
+                kpis.cpu > 0 ||
+                kpis.ram > 0 ||
+                kpis.latencia > 0;
+
+            const possuiAlerta =
+                kpis.running < 3;
+
+            if (possuiCritico) {
+
+                dot.classList.add("vermelho");
+
+            } else if (possuiAlerta) {
+
+                dot.classList.add("amarelo");
+
+            } else {
+
+                dot.classList.add("verde");
+            }
+        }
+
+        async function capturarDados() {
+
+            const id_empresa = sessionStorage.ID_EMPRESA;
+            const opcaoSelecionada =
+                select_servidor.options[
+                select_servidor.selectedIndex
+                ];
+
+            const mac_address =
+                opcaoSelecionada.id;
+
+            try {
+
+                const resposta = await fetch(`/processos/capturarDados/${id_empresa}/${mac_address}`);
+
+
+                if (!resposta.ok) {
+                    throw new Error(`HTTP ${resposta.status}`);
+                }
+
+                
+                const agora = new Date();
+                const horas = agora.getHours();       
+                const minutos = agora.getMinutes();
+                    
+                dados = await resposta.json();
+                atualizarStatusServidor(dados);
+
+
+                if (dados.processos.kpis.total > 0) {
+                    critico.classList.add('card-critico');
+                    document.getElementById("qtdProcessosCriticos")
+                    qtdProcessosCriticos.classList.add('vermelho-texto');
+                }
+
+                document.getElementById("qtdProcessosCriticos").innerHTML =
+                    dados.processos.kpis.total;
+
+                if (dados.processos.kpis.total > 1) {
+                    document.getElementById("texto-processo").innerHTML = "processos afetados"
+                }
+
+                if (dados.processos.kpis.latencia > 0) {
+                    document.getElementById("latenciaQtdDiv");
+                    latenciaQtdDiv.classList.add("info-alerta");
+                }
+
+                if (dados.processos.kpis.cpu > 0) {
+                    document.getElementById("cpuQtdDiv");
+                    cpuQtdDiv.classList.add("info-alerta");
+                }
+
+                if (dados.processos.kpis.ram > 0) {
+                    document.getElementById("ramQtdDiv");
+                    ramQtdDiv.classList.add("info-alerta");
+                }
+
+                let running = dados.processos.kpis.running;
+                let sleeping = dados.processos.kpis.sleeping;
+                let stopped= dados.processos.kpis.stopped;
+                let total = running + sleeping + stopped;
+
+                document.getElementById("latenciaQtd").innerHTML = dados.processos.kpis.latencia;
+                document.getElementById("cpuQtd").innerHTML = dados.processos.kpis.cpu;
+                document.getElementById("ramQtd").innerHTML = dados.processos.kpis.ram;
+                document.getElementById("qtdTodos").innerHTML = total;
+                document.getElementById("qtdRunning").innerHTML = running;
+                document.getElementById("qtdSleeping").innerHTML = sleeping;
+                document.getElementById("qtdStopped").innerHTML = stopped;
+                document.getElementById("Running").innerHTML = running;
+                document.getElementById("Sleeping").innerHTML = sleeping;
+                document.getElementById("Stopped").innerHTML = stopped;
+                document.getElementById("nome-proc").innerHTML = dados.processos.kpis.nome;
+                document.getElementById("latencia-proc").innerHTML = dados.processos.kpis.latencia_ms;
+                document.getElementById("pid-proc").innerHTML = dados.processos.kpis.pid;
+                document.getElementById("hora").innerHTML = fazHora(horas, minutos);
+                document.getElementById("data").innerHTML = agora.toLocaleDateString("pt-BR");
+
+                carregarDados();
+                carregarTabela(filtroAtual, pesquisarAtual);
+
+                setTimeout(capturarDados, 60000)
+
+
+            } catch (erro) {
+                console.error("Erro ao carregar dashboards:", erro);
+            }
+
+
+        }
+
+        capturarDados();
+       
+
+        function carregarDados() {
+
+            const agora = new Date();
+            const horas = agora.getHours();
+            const minutos = agora.getMinutes();
+
+            dadosGrafico.cpu = [
+                dados.processos.kpis["cpu_1"],
+                dados.processos.kpis["cpu_2"],
+                dados.processos.kpis["cpu_3"],
+                dados.processos.kpis["cpu_4"],
+                dados.processos.kpis["cpu_5"]
+            ];
+
+            dadosGrafico.ram = [
+                dados.processos.kpis["ram_1"],
+                dados.processos.kpis["ram_2"],
+                dados.processos.kpis["ram_3"],
+                dados.processos.kpis["ram_4"],
+                dados.processos.kpis["ram_5"]
+            ];
+
+            if (graficoTop5) {
+                graficoTop5.destroy()
+                graficoTop5 = null;
+            }
+
+
+            if (criticos) {
+                criticos.destroy()
+                criticos = null;
+            }
+
+            graficoTop5 = new Chart(document.getElementById('grafico-top5'), {
+                type: 'bar',
+
+                data: {
+                    labels: [dados.processos.kpis["nome_cpu_1"], dados.processos.kpis["nome_cpu_2"], dados.processos.kpis["nome_cpu_3"],
+                    dados.processos.kpis["nome_cpu_4"], dados.processos.kpis["nome_cpu_5"]],
+
+                    datasets: [{
+                        label: 'CPU %',
+
+                        data: dadosGrafico.cpu,
+
+                        backgroundColor: 'rgba(139, 92, 246, 0.75)',
+
+                        borderRadius: 0,
+
+                        barThickness: 25
+                    }]
+                },
+
+                options: {
+
+                    indexAxis: 'y',
+
+                    responsive: true,
+
+                    maintainAspectRatio: false,
+
+                    layout: {
+                        padding: {
+                            right: 70
+                        }
+                    },
+
+                    plugins: {
+
+                        legend: {
+                            position: 'bottom',
+
+                            labels: {
+                                boxWidth: 14,
+                                color: '#5f5f5f',
+                                font: {
+                                    size: 14
+                                }
+                            }
+                        },
+
+                        tooltip: {
+                            backgroundColor: '#fff',
+                            titleColor: '#111',
+                            bodyColor: '#555',
+                            borderColor: '#ddd',
+                            borderWidth: 1
+                        }
+                    },
+
+                    scales: {
+
+                        x: {
+
+                            min: 0,
+                            max: 100,
+
+                            grid: {
+                                color: '#dddddd',
+                                borderDash: [5, 5]
+                            },
+
+                            ticks: {
+                                color: '#5f5f5f'
+                            }
+                        },
+
+                        y: {
+
+                            grid: {
+                                display: false
+                            },
+
+                            ticks: {
+                                color: '#5f5f5f',
+                                font: {
+                                    size: 14
+                                }
+                            }
+                        }
+                    }
+                },
+
+                plugins: [{
+                    id: 'valorNasBarras',
+
+                    afterDatasetsDraw(chart) {
+
+                        const { ctx } = chart;
+
+                        chart.data.datasets.forEach((dataset, i) => {
+
+                            const meta = chart.getDatasetMeta(i);
+
+                            meta.data.forEach((bar, index) => {
+
+                                const valor = dataset.data[index];
+
+                                ctx.fillStyle = '#5f5f5f';
+
+                                ctx.font = window.innerWidth <= 768
+                                    ? '11px Inter'
+                                    : '14px Inter';
+
+                                ctx.fillText(
+                                    valor,
+                                    window.innerWidth <= 768
+                                        ? bar.x + 4
+                                        : bar.x + 8,
+                                    bar.y + 5
+                                );
+                            });
+                        });
+                    }
+                }]
+            });
+
+            if (graficoAtual === "ram") {
+                btnRAM.click();
+            } else {
+                btnCPU.click();
+            }
+
+            const ctx = document.getElementById('processos-criticos');
+            const gradient = ctx.getContext('2d').createLinearGradient(0, 0, 0, 500);
+
+
+            gradient.addColorStop(0, 'rgba(255, 0, 111, 0.35)');
+            gradient.addColorStop(1, 'rgba(255, 0, 111, 0)');   
+
+
+            criticos = new Chart(ctx, {
+                type: 'line',
+
+                data: {
+                    labels: [
+                        fazHora(horas - 24, minutos),
+                        fazHora(horas - 21, minutos),
+                        fazHora(horas - 18, minutos),
+                        fazHora(horas - 15, minutos),
+                        fazHora(horas - 12, minutos),
+                        fazHora(horas - 9, minutos),
+                        fazHora(horas - 6, minutos),
+                        fazHora(horas - 3, minutos),
+                        fazHora(horas, minutos)
+                    ],
+
+                    datasets: [
+                        {
+                            label: 'Processos Críticos',
+
+                            data: [dados.criticos["21-23h59min"], dados.criticos["18-20h59min"], dados.criticos["15-17h59min"], dados.criticos["12-14h59min"],
+                            dados.criticos["9-11h59min"], dados.criticos["6-8h59min"], dados.criticos["3-5h59min"], dados.criticos["0-2h59min"], dados.criticos["atual"]],
+
+                            borderColor: '#c9023e',
+
+                            backgroundColor: gradient,
+
+                            fill: true,
+
+                            tension: 0.4,
+
+                            borderWidth: 2,
+
+                            pointRadius: 2,
+
+                            pointHoverRadius: 2,
+
+                            pointBackgroundColor: '#ffffff',
+
+                            pointBorderColor: '#c9023e',
+
+                            pointBorderWidth: 3
+                        },
+
+                        {
+                            label: 'Limite de Criticidade (30%)',
+
+                            data: Array(Object.keys(dados.criticos).length).fill(dados.processos.kpis.limite),
+
+                            borderColor: '#ff3b30',
+
+                            borderDash: [10, 10],
+
+                            borderWidth: 2,
+
+                            pointRadius: 0,
+
+                            fill: false
+                        }
+                    ]
+                },
+
+                options: {
+                    responsive: true,
+
+                    maintainAspectRatio: false,
+
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+
+                            labels: {
+                                usePointStyle: true,
+
+                                pointStyle: 'circle',
+
+                                boxWidth: 6,
+
+                                boxHeight: 6,
+
+                                padding: 15,
+
+                                color: '#5f5f5f',
+
+                                font: {
+                                    size: 14
+                                },
+
+                                generateLabels(chart) {
+
+                                    const datasets = chart.data.datasets;
+
+                                    return datasets.map((dataset, i) => {
+
+                                        if (dataset.label === 'Limite de Criticidade (30%)') {
+
+                                            return {
+                                                text: dataset.label,
+
+                                                strokeStyle: dataset.borderColor,
+
+                                                lineDash: dataset.borderDash,
+
+                                                lineWidth: 2,
+
+                                                pointStyle: 'line',
+
+                                                hidden: !chart.isDatasetVisible(i),
+
+                                                datasetIndex: i
+                                            };
+                                        }
+
+                                        return {
+                                            text: dataset.label,
+
+                                            fillStyle: dataset.borderColor,
+
+                                            strokeStyle: dataset.borderColor,
+
+                                            pointStyle: 'circle',
+
+                                            hidden: !chart.isDatasetVisible(i),
+
+                                            datasetIndex: i
+                                        };
+                                    });
+                                }
+                            }
+                        },
+
+                        tooltip: {
+                            backgroundColor: '#2f2f2f',
+                            padding: 12,
+
+                            titleFont: {
+                                size: 14
+                            },
+
+                            bodyFont: {
+                                size: 14
+                            }
+                        }
+                    },
+
+                    scales: {
+                        x: {
+                            grid: {
+                                color: '#e7e7e7',
+                                borderDash: [5, 5]
+                            },
+
+                            ticks: {
+                                color: '#555',
+
+                                font: {
+                                    size: 16
+                                }
+                            }
+                        },
+
+                        y: {
+                            beginAtZero: true,
+
+                            grid: {
+                                color: '#e7e7e7',
+                                borderDash: [5, 5]
+                            },
+
+                            ticks: {
+                                color: '#555',
+
+                                stepSize: 160,
+
+                                font: {
+                                    size: 16
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+        }
+
+            let filtroAtual = "todos";
+            let pesquisarAtual = "";
+            let paginaAtual = 1;
+            const itensPorPagina = 15;
+            let colunaOrdenacao = "";
+            let direcaoOrdenacao = "desc";
+
+        function obterProcessosFiltrados() {
+
+            return dados.processos.dados.filter(processo => {
+
+                if (filtroAtual !== "todos" &&
+                    processo.status.toLowerCase() !== filtroAtual.toLowerCase()) {
+                    return false;
+                }
+
+                const termo = pesquisarAtual.toLowerCase().trim();
+                const nomeProcesso = (processo.nome || "").toLowerCase();
+                const pidProcesso = String(processo.pid);
+
+                const correspondePesquisa =
+                    nomeProcesso.startsWith(termo) ||
+                    pidProcesso.startsWith(termo);
+
+                if (termo !== "" && !correspondePesquisa) {
+                    return false;
+                }
+
+                return true;
+            });
+        }
+
+        function totalPaginas() {
+            const processosFiltrados = obterProcessosFiltrados();
+            return Math.ceil(processosFiltrados.length / itensPorPagina);
+        }
+
+            function mudarPagina(novaPagina) {
+                paginaAtual = novaPagina;
+                carregarTabela(filtroAtual, pesquisarAtual);
+            }
+
+            function atualizarSetas() {
+
+                const colunas = ["cpu", "ram", "lat", "temp"];
+
+                colunas.forEach(prefixo => {
+
+                    const setaCres = document.getElementById(`${prefixo}SetaCres`);
+                    const setaDecres = document.getElementById(`${prefixo}SetaDecres`);
+
+                    setaCres.src = "./assets/imgs/processos/seta-cinza.png";
+                    setaDecres.src = "./assets/imgs/processos/seta-cinza.png";
+                });
+
+                let prefixoAtual = "";
+
+                if (colunaOrdenacao === "cpu") {
+                    prefixoAtual = "cpu";
+                } else if (colunaOrdenacao === "ram") {
+                    prefixoAtual = "ram";
+                } else if (colunaOrdenacao === "latencia") {
+                    prefixoAtual = "lat";
+                } else if (colunaOrdenacao === "tempo_execucao") {
+                    prefixoAtual = "temp";
+                }
+
+                if (!prefixoAtual) return;
+
+                if (direcaoOrdenacao === "asc") {
+                    document.getElementById(`${prefixoAtual}SetaCres`).src =
+                        "./assets/imgs/processos/seta-preta.png";
+                } else {
+                    document.getElementById(`${prefixoAtual}SetaDecres`).src =
+                        "./assets/imgs/processos/seta-preta.png";
+                }
+            }
+
+            function ordenarTabela(coluna) {
+
+                if (colunaOrdenacao === coluna) {
+
+                    if (direcaoOrdenacao === "asc") {
+                        direcaoOrdenacao = "desc";
+                    } else {
+                    direcaoOrdenacao = "asc";
+                    }
+
+                } else {
+
+                    colunaOrdenacao = coluna;
+                    direcaoOrdenacao = "desc";
+                }
+
+                paginaAtual = 1;
+                atualizarSetas();
+                carregarTabela(filtroAtual, pesquisarAtual);
+            }
+
+            function converterTempoParaSegundos(tempo) {
+
+                if (!tempo) return 0;
+
+                let dias = 0;
+                let horas = 0;
+                let minutos = 0;
+
+                const diasEncontrados = tempo.match(/(\d+)d/);
+                const horasEncontradas = tempo.match(/(\d+)h/);
+                const minutosEncontrados = tempo.match(/(\d+)min/);
+
+                if (diasEncontrados) {
+                    dias = Number(diasEncontrados[1]);
+                }
+
+                if (horasEncontradas) {
+                    horas = Number(horasEncontradas[1]);
+                }
+
+                if (minutosEncontrados) {
+                    minutos = Number(minutosEncontrados[1]);
+                }
+
+                return (
+                    dias * 86400 +
+                    horas * 3600 +
+                    minutos * 60
+                );
+            }
+            
+
+        function carregarTabela(statusFiltro = "todos", textoPesquisa = "") {
+
+                const processosFiltrados = obterProcessosFiltrados();
+                const tbody = document.getElementById("corpoTabela");
+                
+                if (colunaOrdenacao) {
+
+                    processosFiltrados.sort((a, b) => {
+
+                        let valorA;
+                        let valorB;
+
+                        if (colunaOrdenacao === "cpu") {
+                            valorA = a.cpu;
+                            valorB = b.cpu;
+                        }
+
+                        else if (colunaOrdenacao === "ram") {
+                            valorA = a.ram_percent;
+                            valorB = b.ram_percent;
+                        }
+
+                        else if (colunaOrdenacao === "latencia") {
+                            valorA = a.latencia_ms;
+                            valorB = b.latencia_ms;
+                        }
+
+                        else if (colunaOrdenacao === "tempo_execucao") {
+                            valorA = converterTempoParaSegundos(a.tempo_execucao);
+                            valorB = converterTempoParaSegundos(b.tempo_execucao);
+                        }
+
+                        if (direcaoOrdenacao === "asc") {
+                            return valorA - valorB;
+                        } else {
+                            return valorB - valorA;
+                        }
+
+                    });
+                }
+
+            const inicio = (paginaAtual - 1) * itensPorPagina;
+            const fim = inicio + itensPorPagina;
+
+            const pagina = processosFiltrados.slice(inicio, fim);
+
+            let linhas = "";
+
+
+            pagina.forEach(processo => {
+
+                    let classeCPU = "";
+                    let classeRAM = "";
+                    let classeLatencia = "";
+                    let usuario = "";
+                    let nome = "";
+                    let unidade = "";
+
+                if (processo.cpu >= 80) {
+                    classeCPU = "proc-grave";
+                } else if (processo.cpu > 50) {
+                    classeCPU = "proc-alerta";
+                } else {
+                    classeCPU = "proc-estavel";
+                }
+
+                if (processo.ram_percent > 20) {
+                    classeRAM = "proc-grave";
+                } else if (processo.ram_percent > 10) {
+                    classeRAM = "proc-alerta";
+                } else {
+                    classeRAM = "proc-estavel";
+                }
+
+                if (processo.latencia_ms > 100) {
+                    classeLatencia = "proc-grave";
+                } else if (processo.latencia_ms > 50) {
+                    classeLatencia = "proc-alerta";
+                } else {
+                    classeLatencia = "proc-estavel";
+                }
+
+                let corFundo = "";
+                let corTexto = "";
+                let icone = "";
+
+                if (processo.status === "running") {
+                    corFundo = "#b9f8cf";
+                    corTexto = "#20A200";
+                    icone = "./assets/imgs/processos/bolinha-verde.png";
+
+                } else if (processo.status === "sleeping") {
+                    corFundo = "#9bcffa";
+                    corTexto = "#308CFF";
+                    icone = "./assets/imgs/processos/lua.png";
+
+                } else {
+                    corFundo = "#f8eab2";
+                    corTexto = "#FFCC00";
+                    icone = "./assets/imgs/processos/retangulo-amarelo.png";
+                }
+
+                if (processo.usuario == "") {
+                    usuario = `<i>usuário não identificado</i>`
+                } else {
+                    usuario = processo.usuario
+                }
+
+                if (processo.nome == "") {
+                    nome = `<i>nome não identificado</i>`
+                } else {
+                    nome = processo.nome
+                }
+
+                    if (processo.ram_mb >= 1000) {
+                        processo.ram_mb = processo.ram_mb / 1000;
+                        unidade = "GB";
+                    } else {
+                        unidade = "MB";
+                    }
+
+                    linhas += `
+                        <tr>
+                            <td class="proc-cinza">${processo.pid}</td>
+                            <td class="proc-cinza">${nome}</td>
+                            <td class="proc-cinza">${usuario}</td>
+
+                            <td>
+                                <span class="${classeCPU}">
+                                    ${processo.cpu}%
+                                </span>
+                            </td>
+
+                            <td>
+                                <span class="${classeRAM}">
+                                    <div class = "ram_tabela">
+                                        <span>${processo.ram_percent}%</span>
+                                        <span>${processo.ram_mb.toFixed(2)} ${unidade}</span>
+                                    </div>
+                                </span>
+                            </td>
+
+                            <td>
+                                <span class="${classeLatencia}">
+                                    ${processo.latencia_ms}ms
+                                </span>
+                            </td>
+
+                            <td class="td-status">
+                                <div class="cor-status"
+                                    style="background-color:${corFundo};">
+
+                                    <img style="width:8px; height:8px;"
+                                        src="${icone}">
+
+                                    <span style="
+                                        color:${corTexto};
+                                        font-weight:bold;
+                                        font-size:15px;
+                                    ">
+                                        ${processo.status}
+                                    </span>
+                                </div>
+                            </td>
+
+                            <td>
+                                <span class="proc-cinza">
+                                    ${processo.tempo_execucao}
+                                </span>
+                            </td>
+                        </tr>
+                    `;
+            });
+
+            tbody.innerHTML = linhas;
+            infoPagina.innerHTML = `Página ${paginaAtual} de ${totalPaginas()}`;
+            btnPrev.disabled = paginaAtual === 1;
+            btnNext.disabled = paginaAtual === totalPaginas();
+        }
+
+        const btnPrev = document.getElementById("btnPrev");
+        const btnNext = document.getElementById("btnNext");
+        const infoPagina = document.getElementById("infoPagina");
+
+        btnPrev.addEventListener("click", () => {
+            if (paginaAtual > 1) {
+                paginaAtual--;
+                carregarTabela(filtroAtual, pesquisarAtual);
+            }
+        });
+
+        btnNext.addEventListener("click", () => {
+            if (paginaAtual < totalPaginas()) {
+                paginaAtual++;
+                carregarTabela(filtroAtual, pesquisarAtual);
+            }
+        });
+
+        btnCPU.addEventListener('click', () => {
+
+            graficoAtual = "cpu";
+
+            graficoTop5.data.datasets[0].data = dadosGrafico.cpu;
+            graficoTop5.data.datasets[0].label = 'CPU %';
+            graficoTop5.data.datasets[0].backgroundColor = 'rgba(139, 92, 246, 0.75)';
+            graficoTop5.options.scales.x.max = 100;
+            graficoTop5.options.scales.x.min = 0;
+            graficoTop5.data.labels = [dados.processos.kpis["nome_cpu_1"], dados.processos.kpis["nome_cpu_2"], dados.processos.kpis["nome_cpu_3"],
+            dados.processos.kpis["nome_cpu_4"], dados.processos.kpis["nome_cpu_5"]];
+            graficoTop5.update();
+
+            btnCPU.classList.add('ativo');
+            btnRAM.classList.remove('ativo');
+        });
+
+        btnRAM.addEventListener('click', () => {
+
+            graficoAtual = "ram";
+
+            graficoTop5.data.datasets[0].data = dadosGrafico.ram;
+            graficoTop5.data.datasets[0].label = 'RAM %';
+            graficoTop5.data.datasets[0].backgroundColor = 'rgba(59, 130, 246, 0.75)';
+            const maiorRAM = Math.max(...dadosGrafico.ram);
+            graficoTop5.options.scales.x.max = Math.ceil(maiorRAM);
+            graficoTop5.options.scales.x.min = 0;
+            graficoTop5.data.labels = [dados.processos.kpis["nome_ram_1"], dados.processos.kpis["nome_ram_2"], dados.processos.kpis["nome_ram_3"],
+            dados.processos.kpis["nome_ram_4"], dados.processos.kpis["nome_ram_5"]];
+            graficoTop5.update();
+
+            btnRAM.classList.add('ativo');
+            btnCPU.classList.remove('ativo');
+        });
+
+
+        btnTodos.addEventListener('click', () => {
+            paginaAtual = 1;
+            filtroAtual = "todos";
+            carregarTabela(filtroAtual, pesquisarAtual);
+
+            btnTodos.classList.add('ativo');
+            btnRunning.classList.remove('ativo');
+            btnSleeping.classList.remove('ativo');
+            btnStopped.classList.remove('ativo');
+        });
+
+        btnRunning.addEventListener('click', () => {
+            paginaAtual = 1;
+            filtroAtual = "running";
+            carregarTabela(filtroAtual, pesquisarAtual);
+
+            btnRunning.classList.add('ativo');
+            btnTodos.classList.remove('ativo');
+            btnSleeping.classList.remove('ativo');
+            btnStopped.classList.remove('ativo');
+        });
+
+        btnSleeping.addEventListener('click', () => {
+            paginaAtual = 1;
+            filtroAtual = "sleeping";
+            carregarTabela(filtroAtual, pesquisarAtual);
+
+            btnSleeping.classList.add('ativo');
+            btnTodos.classList.remove('ativo');
+            btnRunning.classList.remove('ativo');
+            btnStopped.classList.remove('ativo');
+        });
+
+        btnStopped.addEventListener('click', () => {
+            paginaAtual = 1;
+            filtroAtual = "stopped";
+            carregarTabela(filtroAtual, pesquisarAtual);
+
+            btnStopped.classList.add('ativo');
+            btnTodos.classList.remove('ativo');
+            btnRunning.classList.remove('ativo');
+            btnSleeping.classList.remove('ativo');
+        });
+
+        inputPesquisar.addEventListener("input", () => {
+
+            pesquisarAtual = inputPesquisar.value;
+            paginaAtual = 1;
+            carregarTabela(filtroAtual, pesquisarAtual);
+        });
+
+        function fazHora(horas, minutos) {
+            const data = new Date();
+
+            data.setHours(horas, minutos, 0, 0);
+
+            const hValida = data.getHours();
+            const mValida = data.getMinutes();
+
+            return [hValida, mValida]
+                .map(unidade => String(unidade).padStart(2, '0'))
+                .join(':');
+        }
+
+        function listarServidores() {
+
+            const fkEmpresa = sessionStorage.ID_EMPRESA;
+
+            // transforma string em array
+            const servidores = JSON.parse(sessionStorage.ACESSO_SERVIDORES);
+
+            fetch(`/servidores/listarServidores`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    fkEmpresaServer: fkEmpresa,
+                    servidoresServer: servidores
+                })
+            })
+
+                .then(resposta => resposta.json())
+
+                .then((lista) => {
+
+                    select_servidor.innerHTML =
+                        lista.map(servidor =>
+
+                            `<option value="${servidor.id_servidor}" id="${servidor.mac_address}">
+                        ${servidor.hostname}
+                    </option>`
+
+                        ).join('');
+
+                    nomeServidor.textContent =
+                        select_servidor.options[
+                            select_servidor.selectedIndex
+                        ].text;
+
+                    capturarDados()
+                });
+
+            select_servidor.addEventListener("change", () => {
+
+                nomeServidor.textContent =
+                    select_servidor.options[
+                        select_servidor.selectedIndex
+                    ].text;
+
+                capturarDados()
+            });
+        }
+
+
+    </script>
+
+</body>
+
+</html>

@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Incidentes | Horus</title>
+  <link rel="stylesheet" href="./style/telaIncidente.css">
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" href="./assets/icon/logo.png" />
+
+  <link href="https://fonts.googleapis.com/css2?family=Jura:wght@300..700&display=swap" rel="stylesheet">
+  <script src="./js/script.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+
+  <div class="modal" id="modal"></div>
+
+  <div class="container">
+
+    <aside class="lateral" id="lateral">
+      <div class="logo">
+        <img src="./assets/imgs/painel/logo.png" alt="" style="font-family: Jura, sans-serif;">
+        Horus
+      </div>
+
+      <nav class="menu">
+        <div class="categoria">Monitoramento</div>
+        <div onclick="window.location.href='painel.html'" class="item-menu">
+          <img src="./assets/imgs/painel/dash.png" alt="">Dashboard
+        </div>
+        <div onclick="window.location.href='dash_analista.html'" class="item-menu">
+          <img src="./assets/imgs/painel/servidores.png" alt="">Servidores
+        </div>
+        <div onclick="window.location.href='telaIncidente.html'" class="item-menu selecionado">
+          <img src="./assets/imgs/painel/alerta-selecionado.png" alt="" width="18px">Incidentes
+        </div>
+
+        <div class="categoria adm" id="administracao">Administração</div>
+            <div onclick="window.location.href='dash_usuarios.html'" class="item-menu adm" id="cadastrarUsuario">
+              <img src="./assets/imgs/painel/cadastrar-usuario.png" alt="">Usuários
+            </div>
+            <div onclick="window.location.href='servidor-componente.html'" class="item-menu adm" id="cadastrarServidor">
+              <img src="./assets/imgs/painel/cadastrar-servidor.png" alt="">Cadastrar servidor
+            </div>
+        
+
+        <button id="gerarRelatorio" class="adm" style="justify-content: center;">Gerar Relatório em PDF</button>
+      </nav>
+
+      <div onclick="limparSessionStorage()" class="sair">
+        <img src="./assets/imgs/painel/sair.png" alt="">
+        <p onclick="window.location.href='index.html'">Sair</p>
+      </div>
+    </aside>
+
+    <main class="main">
+
+      <header class="header">
+        <div class="hamburguer" id="hamburguer">
+          <img src="./assets/imgs/painel/hamburguer.png" alt="Menu">
+        </div>
+
+        <span class="header-titulo">Alertas e Incidentes</span>
+
+        <div class="usuario">
+                    <div>
+                        <p  id="nome_usuario"></p>
+                        <p id="funcao_usuario" class="cargo"></p>
+                    </div>
+                    <span id="inicial_usuario"></span>
+                </div>
+      </header>
+
+      <section class="conteudo">
+
+        <div class="indicadores-incidentes">
+          <div class="card pequeno-filtro indicadores">
+
+            <div class="chamados">
+              <h5>Abertos</h5>
+              <h1 id="qtdAbertos">4</h1>
+            </div>
+
+            <div class="chamados">
+              <h5>Andamento</h5>
+              <h1 id="qtdAndamento">2</h1>
+            </div>
+
+            <div class="chamados">
+              <h5>Concluídos</h5>
+              <h1 id="qtdConcluidos">2</h1>
+            </div>
+
+            <div class="chamados">
+              <a href="https://horusmonitoring.atlassian.net/jira/software/projects/KAN/list?jql=project%20%3D%20KAN%20ORDER%20BY%20cf%5B10019%5D%20ASC"
+                class="link-jira" target="_blank">
+                <img src="assets/imgs/incidentes/jira.png" alt="" width="100px">
+              </a>
+            </div>
+
+          </div>
+
+          <div class="card pequeno-filtro botoes-filtro">
+
+            <div class="grupo-filtro">
+              <p class="titulo">Filtrar por Severidade:</p>
+
+              <div class="botoes">
+                <button data-filtro="todas">Todas</button>
+                <button data-filtro="critico" >Crítica</button>
+                <button data-filtro="alta" >Alta</button>
+                <button data-filtro="media" >Média</button>
+                <button data-filtro="baixa" >Baixa</button>
+              </div>
+            </div>
+
+            <div class="grupo-filtro">
+              <p class="titulo">Filtrar por Status:</p>
+
+              <div class="botoes">
+                <button data-filtro="todos">Todos</button>
+                <button data-filtro="ativo" >Ativos</button>
+                <button data-filtro="resolvido" >Resolvidos</button>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+
+        <div class="card lista-container">
+          <div class="lista-servidores" id="listaIncidentes">
+
+
+            <div class="box-servidor servidor-critico">
+
+              <div class="info-servidor">
+                <div class="icone alerta-critico">
+                  <img src="./assets/imgs/incidentes/alertaVermelho.png" alt="critico" class="img-icone">
+                </div>
+
+                <div>
+                  <p class="nome-servidor">Queda de Servidor</p>
+                  <p class="endereco">ATC-SVR-01</p>
+                  <p class="descricao">Servidor offline sem resposta</p>
+                  <span class="data">22/03/2026 14:39</span>
+                </div>
+              </div>
+
+              <div class="lado-direito">
+                <div class="status">
+                  <span class="status critica ">Crítica</span>
+                  <span class="status ativo">Ativo</span>
+                </div>
+              </div>
+
+            </div>
+            <div class="box-servidor servidor-baixa">
+
+              <div class="info-servidor">
+                <div class="icone alerta-baixa">
+                  <img src="./assets/imgs/incidentes/AvisoAzul.png" alt="baixa" class="img-icone">
+                </div>
+
+                <div>
+                  <p class="nome-servidor">Queda de Servidor</p>
+                  <p class="endereco">ATC-SVR-01</p>
+                  <p class="descricao">Servidor offline sem resposta</p>
+                  <span class="data">22/03/2026 14:39</span>
+                </div>
+              </div>
+
+              <div class="lado-direito">
+                <div class="status">
+                  <span class="status baixa">Baixa</span>
+                  <span class="status ativo">Ativo</span>
+                </div>
+              </div>
+
+            </div>
+            <div class="box-servidor servidor-media">
+
+              <div class="info-servidor">
+                <div class="icone alerta-media">
+                  <img src="./assets/imgs/incidentes/AvisoAmarelo.png" alt="media" class="img-icone">
+                </div>
+
+                <div>
+                  <p class="nome-servidor">Queda de Servidor</p>
+                  <p class="endereco">ATC-SVR-01</p>
+                  <p class="descricao">Servidor offline sem resposta</p>
+                  <span class="data">22/03/2026 14:39</span>
+                </div>
+              </div>
+
+              <div class="lado-direito">
+                <div class="status">
+                  <span class="status media">Média</span>
+                  <span class="status resolvido">Resolvido</span>
+                </div>
+              </div>
+
+            </div>
+            <div class="box-servidor servidor-alta">
+
+              <div class="info-servidor">
+                <div class="icone alerta-alta">
+                  <img src="./assets/imgs/incidentes/AvisoLaranja.png" alt="alta" class="img-icone">
+                </div>
+
+                <div>
+                  <p class="nome-servidor">Queda de Servidor</p>
+                  <p class="endereco">ATC-SVR-01</p>
+                  <p class="descricao">Servidor offline sem resposta</p>
+                  <span class="data">22/03/2026 14:39</span>
+                </div>
+              </div>
+
+              <div class="lado-direito">
+                <div class="status">
+                  <span class="status alta">Alta</span>
+                  <span class="status resolvido">Resolvido</span>
+                </div>
+              </div>
+            </div>
+
+
+          </div>
+        </div>
+
+      </section>
+
+    </main>
+
+  </div>
+</body>
+<script>
+  exibirUsuarioAtivo();
+
+  window.onload = () => {
+  
+  const funcao = sessionStorage.getItem("FUNCAO_USUARIO");
+        console.log(funcao)
+             if (funcao == "Gestor") {
+                document.getElementById("administracao").style.display = "block";
+                document.getElementById("gerarRelatorio").style.display = "block";
+                document.getElementById("cadastrarServidor").style.display = "flex";
+                document.getElementById("cadastrarUsuario").style.display = "flex";
+            }
+   }
+
+  const hamburguer = document.getElementById("hamburguer");
+  const lateral = document.getElementById("lateral");
+  const overlay = document.getElementById("modal");
+
+  hamburguer.addEventListener("click", () => {
+    lateral.classList.toggle("ativo");
+  });
+
+  overlay.addEventListener("click", () => {
+    lateral.classList.remove("ativo");
+  });
+
+let filtroTipo = "todas";
+let filtroStatus = "todos";
+
+document.querySelectorAll('[data-filtro]').forEach(btn => {
+    btn.addEventListener('click', function () {
+
+        const valor = this.dataset.filtro;
+
+        if (["todas","critico","alta","media","baixa"].includes(valor)) {
+            filtroTipo = valor;
+        } else {
+            filtroStatus = valor;
+        }
+
+        aplicarFiltros();
+    });
+});
+
+function aplicarFiltros(){
+    const incidentes = document.querySelectorAll('.box-servidor');
+
+    incidentes.forEach(div => {
+
+        const matchTipo = 
+            (filtroTipo === "todas") || 
+            div.classList.contains(`servidor-${filtroTipo}`);
+
+        const matchStatus = 
+            (filtroStatus === "todos") || 
+            div.querySelector('.status span:last-child').classList.contains(filtroStatus);
+
+        div.style.display = (matchTipo && matchStatus) ? "flex" : "none";
+    });
+}
+
+document.querySelectorAll('[data-filtro]').forEach(btn => {
+    btn.addEventListener('click', function () {
+
+        const valor = this.dataset.filtro;
+        const grupo = this.closest('.grupo-filtro');
+
+        // Remove ativo de todos do mesmo grupo
+        grupo.querySelectorAll('button').forEach(b => {
+            b.classList.remove('botao-ativo');
+        });
+
+        // Ativa o clicado
+        this.classList.add('botao-ativo');
+
+        // Atualiza filtros
+        if (["todas","critico","alta","media","baixa"].includes(valor)) {
+            filtroTipo = valor;
+        } else {
+            filtroStatus = valor;
+        }
+
+        aplicarFiltros();
+    });
+});
+
+  
+</script>
+
+</html>

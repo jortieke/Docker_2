@@ -1,0 +1,346 @@
+@import url('https://googleapis.com');
+* {
+  border: 0;
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+  font-family: 'Cabin', sans-serif;
+}
+
+:root {
+  --turquesa: #1b264f;
+  --azul: #274690;
+  --ciano: #576ca8;
+  --preto: #302b27;
+  --cinza: #f6f6f6;
+  --borda: #ebe6e7;
+  --texto: #111827;
+  --subtexto: #6b7280;
+  --verde: #22c55e;
+  --vermelho: #ef4444;
+}
+
+body {
+   background: var(--cinza);
+  height: 100vh;
+  overflow: hidden;
+}
+
+.main {
+ flex: auto;
+  display: flex;
+  flex-direction: column;
+  margin-left: 260px;
+  min-height: 0;
+}
+
+.conteudo {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 20px;
+}
+
+.indicadores-incidentes {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.card {
+  background: white;
+  border-radius: 12px;
+  border: 1px solid #ddd;
+}
+
+
+.indicadores {
+  display: flex;
+  padding: 20px;
+  max-width: 30%;
+  gap: 10px;
+}
+
+.link-jira img{
+  max-width: 100%;
+}
+
+.indicadores h5 {
+  font-size: 12px;
+  color: #888;
+}
+
+.botoes-filtro {
+  display: flex;
+  justify-content: space-between;
+  padding: 15px;
+  gap: 15px;
+  max-width: 80%;
+}
+
+.grupo-filtro {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+
+.titulo {
+  font-size: 12px;
+  color: #888;
+}
+
+.botoes {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.botoes button {
+  padding: 8px 12px;
+  border-radius: 5px;
+  border: 1px solid #ddd;
+  background: #eee;
+  cursor: pointer;
+  margin: 10px;
+}
+
+.botoes button:hover {
+  background: #ddd;
+}
+
+.lista-container {
+  padding: 20px;
+}
+
+.lista-servidores {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.box-servidor {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px;
+  border-radius: 12px;
+}
+
+.categoria {
+  color: #a0a5a8;
+  margin: 16px 0 4px 10px;
+  font-size: 11px;
+  text-transform: uppercase;
+}
+
+.item-menu.adm{
+  display: none;
+}
+
+.adm{
+  display: none;
+}
+
+
+.servidor-critico {
+  border: 1px solid #ff4d4d;
+}
+
+.servidor-alta {
+  border: 1px solid #ff944d;
+}
+
+.servidor-media {
+  border: 1px solid #ffd11a;
+}
+
+.servidor-baixa {
+  border: 1px solid #4da6ff;
+}
+
+.info-servidor {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.nome-servidor {
+  font-weight: bold;
+}
+
+.endereco {
+  font-size: 12px;
+  color: #777;
+}
+
+.descricao {
+  font-size: 13px;
+}
+
+.lado-direito {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+}
+
+.status {
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+}
+
+.status.ativo {
+  background: #ffcccc;
+  color: red;
+}
+
+.status.resolvido {
+  background: #ccffcc;
+  color: green;
+}
+
+.status.media{
+  background-color: #FFF9DF;
+  color: #FFCC00;
+}
+
+.status.baixa{
+  background-color: #E1EFFF;
+   color: #274690;
+}
+
+.status.alta{
+  background-color: #FFF0DF;
+  color: #FF8400;
+}
+
+.status.critica{
+  background-color: #FFEFEF;
+  color: #C70C0C;
+}
+
+.img-icone{
+  width: 35px;
+}
+
+.data {
+  font-size: 12px;
+  color: #777;
+}
+
+.hamburguer {
+  display: none;
+  font-size: 22px;
+  cursor: pointer;
+  background: none;
+  border: none;
+  color: #1f2937;
+}
+
+.botao-ativo {
+  color: #576CA8;
+  background-color: #A0A5A8;
+}
+
+@media (max-width: 1024px) and (min-width: 768px) {
+  .lateral {
+    transform: translateX(-260px);
+    width: 260px;
+  }
+
+  .lateral.ativo {
+    transform: translateX(0);
+  }
+
+  .hamburguer {
+    display: block;
+  }
+  
+  .main {
+    margin-left: 0;
+  }
+
+  .indicadores-incidentes {
+    flex-direction: column;
+  }
+
+  .botoes-filtro {
+    flex-direction: column;
+  }
+
+  .indicadores {
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+
+  
+  .header {
+    padding: 12px;
+  }
+
+}
+
+@media (max-width: 767px) {
+  .lateral {
+    transform: translateX(-260px);
+    width: 260px;
+  }
+
+  .lateral.ativo {
+    transform: translateX(0);
+  }
+
+  .main {
+    margin-left: 0;
+    padding: 12px;
+  }
+
+  .hamburguer {
+    display: block;
+  }
+
+  .indicadores-incidentes {
+    flex-direction: column;
+  }
+
+  .botoes-filtro {
+    flex-direction: column;
+  }
+
+  .indicadores {
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .box-servidor {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .lado-direito {
+    align-items: flex-start;
+  }
+
+  .header {
+    padding: 12px;
+  }
+
+  .card.lista-container {
+    padding: 12px;
+  }
+  
+}
+.overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 998;
+}
+
+.overlay.ativo {
+  display: block;
+}

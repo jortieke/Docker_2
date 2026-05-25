@@ -1,0 +1,831 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard | Horus</title>
+    <link rel="icon" href="./assets/icon/logo.png" />
+
+    <link href="https://fonts.googleapis.com/css2?family=Jura:wght@300..700&display=swap" rel="stylesheet">
+    <script src="./js/script.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="./style.css">
+    <link rel="stylesheet" href="style/painel.css">
+</head>
+
+<body>
+    <div class="modal" id="modal"></div>
+
+    <div class="alerta-reatribuicao" id="alerta_reatribuicao">
+        <img src="assets/imgs/painel/bola-verde.png" alt="">
+        <span id="alerta_reatribuicao_mensagem"></span>
+    </div>
+
+    <div class="container">
+
+        <aside class="lateral" id="lateral">
+            <div class="logo">
+                <img src="./assets/imgs/painel/logo.png" alt="" style="font-family: Jura, sans-serif;">
+                Horus
+            </div>
+
+            <nav class="menu">
+                <div class="categoria">Monitoramento</div>
+                <div onclick="window.location.href='painel.html'" class="item-menu selecionado">
+                    <img src="./assets/imgs/painel/dash-selecionado.png" alt="">Dashboard
+                </div>
+
+
+                <div class="categoria adm" id="administracao">Administração</div>
+                <div onclick="window.location.href='dash_usuarios.html'" class="item-menu adm" id="cadastrarUsuario">
+                    <img src="./assets/imgs/painel/cadastrar-usuario.png" alt="">Usuários
+                </div>
+                <div onclick="window.location.href='servidor-componente.html'" class="item-menu adm"
+                    id="cadastrarServidor">
+                    <img src="./assets/imgs/painel/cadastrar-servidor.png" alt="">Cadastrar servidor
+                </div>
+
+
+                <div class="categoria">Agentes</div>
+
+                <div onclick="baixarAgente()" class="item-menu">
+                    <img src="./assets/imgs/painel/agente.png" style="height: 19px; width: 19px;" alt="">
+                    Instalar agente
+                </div>
+
+                <div class="categoria" style="padding-bottom: 10px !important;">Gestão de Incidentes</div>
+                <div>
+                    <a
+                        href="https://horusmonitoring.atlassian.net/jira/software/projects/KAN/list?jql=project%20%3D%20KAN%20ORDER%20BY%20created%20DESC">
+                        <img src="assets/imgs/painel/jira.png" alt="" style="width: 25% !important;">
+                    </a>
+
+                </div>
+                <div>
+                    <a href="https://app.slack.com/client/T0AQZ02KUJE/C0AQWUMQJBG?teamClassificationType=work">
+                        <img src="assets/imgs/painel/slack.png" alt="" style="width: 35% !important;">
+                    </a>
+
+                </div>
+
+            </nav>
+
+            <div onclick="limparSessionStorage()" class="sair">
+                <img src="./assets/imgs/painel/sair.png" alt="">
+                <p onclick="window.location.href='index.html'">Sair</p>
+            </div>
+        </aside>
+
+        <main class="main">
+
+            <header class="header">
+                <div class="hamburguer" id="hamburguer">
+                    <img src="./assets/imgs/painel/hamburguer.png" alt="Menu">
+                </div>
+
+                <span class="header-titulo">Dashboard</span>
+
+                <span id="hora" class="hora"></span>
+                <div class="usuario">
+
+                    <div>
+                        <p id="nome_usuario"></p>
+                        <p id="funcao_usuario" class="cargo"></p>
+                    </div>
+                    <span id="inicial_usuario"></span>
+                </div>
+            </header>
+
+            <section class="conteudo">
+                <div class="topo">
+                    <div class="topo-filtro">
+                        <span class="titulo-dash">Visão Operacional e Estratégica</span>
+
+                        <div class="box-topo">
+
+                            <span>Filtrar por:</span>
+                            <span class="filtro selecionado">24h</span>
+                            <span class="filtro">7d</span>
+                            <span class="filtro">30d</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="kpis">
+                    <div class="kpi" id="card_disponibilidade">
+                        <div class="topo-kpi">
+                            <span class="nome-kpi">DISPONIBILIDADE GLOBAL</span>
+                            <img src="assets/imgs/painel/online.png" alt="" style="background-color: #d7f5db;">
+                        </div>
+
+                        <div>
+                            <span id="kpi_disponibilidade" class="valor-kpi" style="color: green;"></span><span
+                                class="medida-kpi"> % </span>
+                        </div>
+
+                        <span>Meta: 99%</span>
+                    </div>
+
+                    <div class="kpi" id="card_risco">
+                        <div class="topo-kpi">
+                            <span class="nome-kpi">NÍVEL DE RISCO</span>
+                            <img src="assets/imgs/painel/escudo.png" alt="" style="background-color: #f3edce;">
+                        </div>
+
+                        <div>
+                            <span id="kpi_risco" class="valor-kpi" style="color: orange;"></span><span
+                                class="medida-kpi">
+                                /100
+                            </span>
+                        </div>
+
+                        <span>Ideal: abaixo de 30</span>
+                    </div>
+
+                    <div class="kpi" id="card_criticos">
+                        <div class="topo-kpi">
+                            <span class="nome-kpi">INCIDENTES CRÍTICOS</span>
+                            <img src="assets/imgs/painel/exclamacao.png" alt="" style="background-color: #f3bfbf;">
+                        </div>
+
+                        <div>
+                            <span id="kpi_criticos" class="valor-kpi" style="color: red;"></span><span
+                                class="medida-kpi">
+                                ativos </span>
+                        </div>
+                    </div>
+
+                    <div class="kpi" id="card_estabilidade">
+                        <div class="topo-kpi">
+                            <span class="nome-kpi">ESTABILIDADE OPERACIONAL</span>
+                            <img src="assets/imgs/painel/estavel.png" alt="" style="background-color: #d1eaff;">
+                        </div>
+
+                        <div>
+                            <span id="kpi_estabilidade" class="valor-kpi" style="color: rgb(0, 140, 255);"></span><span
+                                class="medida-kpi"> % </span>
+                        </div>
+
+                        <span>Meta: 85%</span>
+                    </div>
+
+                    <div class="kpi" id="card_previsao">
+                        <div class="topo-kpi">
+                            <span class="nome-kpi">TENDÊNCIA OPERACIONAL</span>
+                            <img src="assets/imgs/painel/tendencia.png" alt="" style="background-color: #e6bffc;">
+                        </div>
+
+                        <div>
+                            <span id="kpi_previsao" class="valor-kpi" style="color: rgb(154, 24, 194);"></span>
+                        </div>
+
+                        <span class="variacao-kpi">Na próxima hora</span>
+                    </div>
+                </div>
+
+                <div class="linha">
+                    <div class="grafico-estabilidade">
+                        <div class="topo-grafico-estabilidade">
+                            <span>ESTABILIDADE OPERACIONAL - ÚLTIMAS 7 HORAS</span>
+                        </div>
+
+                        <canvas id="graficoEstabilidade"></canvas>
+                    </div>
+
+                    <div id="previsao_falhas" class="tendencia-falhas">
+                        <div class="topo-tendencia">
+                            <img src="assets/imgs/painel/cerebro.png" alt="" width="40px" height="40px">
+                            <span>PREVISÃO DE RISCOS</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="linha">
+                    <div class="grafico-impacto">
+                        <div class="topo-grafico-impacto">
+                            <span>IMPACTO OPERACIONAL POR COMPONENTE</span>
+                            <span class="maior-impacto" id="alertaImpactoCritico" style="display: none;">CRÍTICO</span>
+                        </div>
+
+                        <canvas id="graficoImpacto"></canvas>
+                    </div>
+
+                    <div class="tabela-sistema">
+                        <div class="header-tabela">
+                            <span>Necessidade de Analistas</span>
+                            <span class="subtexto">Onde redistribuir equipe</span>
+                        </div>
+
+                        <table>
+                            <thead>
+                                <tr class="header-tabela-fixa">
+                                    <th>ÁREA / SISTEMA</th>
+                                    <th>INCIDENTES</th>
+                                    <th>ANALISTAS</th>
+                                    <th>SITUAÇÃO</th>
+                                    <th>AÇÃO</th>
+                                </tr>
+                            </thead>
+
+                            <tbody id="corpo_tabela_analistas">
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </section>
+
+            <div class="popup-reatribuicao" id="modalReatribuicao">
+                <div class="modal-reatribuicao">
+                    <div class="topo-modal-reatribuicao">
+                        <div>
+                            <h2>Reatribuir analista</h2>
+                            <span id="textoServidorReatribuicao"></span>
+                        </div>
+                        <button onclick="fecharModalReatribuicao()" class="btn-fechar-reatribuicao">X</button>
+                    </div>
+
+                    <div id="listaAnalistasReatribuicao" class="lista-analistas-reatribuicao"></div>
+
+                    <div class="acoes-reatribuicao">
+                        <button onclick="fecharModalReatribuicao()" class="btn-cancelar-reatribuicao">Cancelar</button>
+                        <button onclick="salvarReatribuicao()" id="btnSalvarReatribuicao"
+                            class="btn-salvar-reatribuicao" disabled>Atribuir</button>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+
+    </div>
+</body>
+
+<script>
+    window.onload = () => {
+        const funcao = sessionStorage.getItem("FUNCAO_USUARIO");
+
+        const btnHamburguer = document.getElementById('hamburguer');
+        const lateral = document.getElementById('lateral');
+        const modal = document.getElementById('modal');
+
+        try {
+            exibirUsuarioAtivo()
+        } catch (erro) {
+            console.warn("Erro ao exibir o usuario", erro)
+        }
+
+        function abrirMenu() {
+            lateral.classList.add('aberto');
+            modal.classList.add('ativo');
+        }
+
+        function fecharMenu() {
+            lateral.classList.remove('aberto');
+            modal.classList.remove('ativo');
+        }
+
+        btnHamburguer.addEventListener('click', () => {
+            lateral.classList.contains('aberto') ? fecharMenu() : abrirMenu();
+        });
+
+        modal.addEventListener('click', fecharMenu);
+    };
+
+    document.querySelectorAll('.filtro').forEach(filtro => {
+        filtro.addEventListener('click', () => {
+            document.querySelectorAll('.filtro').forEach(f => f.classList.remove('selecionado'));
+            filtro.classList.add('selecionado');
+            periodo = filtro.textContent.trim();
+            console.log("Filtro: " + periodo);
+            buscarDadosS3(periodo, sessionStorage.ID_EMPRESA);
+        })
+    });
+
+    function atualizarHora() {
+        const horaAtual = new Date();
+        const horas = String(horaAtual.getHours()).padStart(2, '0');
+        const minutos = String(horaAtual.getMinutes()).padStart(2, '0');
+        const segundos = String(horaAtual.getSeconds()).padStart(2, '0');
+
+        document.getElementById('hora').textContent = `${horas}:${minutos}:${segundos}`;
+    }
+    setInterval(atualizarHora, 1000);
+    atualizarHora();
+
+    const ctx_estabilidade = document.getElementById('graficoEstabilidade');
+
+    const graficoEstabilidade = new Chart(ctx_estabilidade, {
+        type: 'line',
+        data: {
+            labels: [],
+            datasets: [{
+                label: 'Estabilidade',
+                data: [],
+                borderColor: '#00d2c8',
+                backgroundColor: 'rgba(0, 210, 200, 0.15)',
+                fill: true,
+                tension: 0.2,
+                pointRadius: [],
+                pointBackgroundColor: [],
+            }, {
+                label: 'Meta mínima',
+                data: [],
+                borderColor: 'rgba(255, 100, 100, 0.5)',
+                borderDash: [4, 2],
+                borderWidth: 2,
+                pointRadius: 0,
+                fill: false,
+            }],
+        },
+        options: {
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { display: false }
+            },
+            scales: {
+                x: {
+                    ticks: { color: '#6b7280' },
+                    grid: {
+                        color: 'rgba(255,255,255,0.05)',
+                        display: false
+                    }
+                },
+                y: {
+                    min: 0,
+                    ticks: {
+                        color: '#6b7280',
+                        callback: i => i + '%'
+                    },
+                    grid: { color: 'rgba(255,255,255,0.05)' }
+                }
+            }
+        }
+    });
+
+    const ctx_impacto = document.getElementById('graficoImpacto');
+
+    function getCor(valor) {
+        if (valor >= 80) return '#ff4d6d';
+        if (valor >= 60) return '#f5a623';
+        return '#4a9eff';
+    }
+
+    const graficoImpacto = new Chart(ctx_impacto, {
+        type: 'bar',
+        data: {
+            labels: [
+                'CPU',
+                'RAM',
+                'Disco'
+            ],
+            datasets: [{
+                data: [],
+                backgroundColor: [],
+                borderRadius: 3,
+                borderSkipped: false,
+            }]
+        },
+        options: {
+            indexAxis: 'y',
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { display: false },
+                tooltip: {
+                    callbacks: {
+                        label: ctx => ` ${ctx.raw}%`
+                    }
+                }
+            },
+            scales: {
+                x: {
+                    min: 0,
+                    max: 100,
+                    ticks: {
+                        color: '#6b7280',
+                        callback: v => v + '%'
+                    },
+                    grid: { color: 'rgba(255,255,255,0.05)' }
+                },
+                y: {
+                    ticks: { color: '#9ca3af' },
+                    grid: { display: false }
+                }
+            }
+        }
+    });
+
+    var periodo = '24h'
+    var hostnameReatribuicao = '';
+    var botaoReatribuicao = null;
+    var analistaSelecionado = null;
+    var nomeAnalistaSelecionado = '';
+    var totalAnalistasEmpresa = 0;
+    var idColunaAnalistasReatribuicao = '';
+
+    function mostrarAlertaSucesso(mensagem) {
+        alerta_reatribuicao_mensagem.innerHTML = mensagem;
+        alerta_reatribuicao.classList.add('ativo');
+
+        setTimeout(function () {
+            alerta_reatribuicao.classList.remove('ativo');
+        }, 2500);
+    }
+
+    function reatribuirAnalista(hostname) {
+        var botao = document.getElementById('btn_reatribuir_' + hostname);
+        var idColunaAnalistas = 'qtd_analistas_' + hostname;
+
+        botao.disabled = true;
+
+        fetch('/servidores/listarAnalistasDisponiveis/' + sessionStorage.ID_EMPRESA + '/' + hostname)
+            .then(resposta => resposta.json())
+            .then((analistas) => {
+
+                if (analistas.length == 0) {
+                    botao.innerHTML = `
+                        <img src="assets/imgs/painel/adicionar.png" alt="">
+                        Sem analistas
+                    `;
+                    return;
+                }
+
+                hostnameReatribuicao = hostname;
+                botaoReatribuicao = botao;
+                analistaSelecionado = null;
+                nomeAnalistaSelecionado = '';
+                idColunaAnalistasReatribuicao = idColunaAnalistas;
+
+                textoServidorReatribuicao.textContent = `Servidor: ${hostname}`;
+                btnSalvarReatribuicao.disabled = true;
+
+                listaAnalistasReatribuicao.innerHTML = analistas.map(analista => `
+                    <button onclick="selecionarAnalista(${analista.id_funcionario}, '${analista.nome_analista}', this)" class="item-analista-reatribuicao">
+                        <span>${analista.nome_analista}</span>
+                        <small>${analista.email}</small>
+                    </button>
+                `).join("");
+
+                modalReatribuicao.classList.add('ativo');
+            })
+            .catch(erro => {
+                console.log(`#ERRO: ${erro}`);
+                botao.disabled = false;
+                alert('Erro ao carregar analistas');
+            });
+    }
+
+    function selecionarAnalista(idAnalista, nomeAnalista, botao) {
+        analistaSelecionado = idAnalista;
+        nomeAnalistaSelecionado = nomeAnalista;
+
+        document.querySelectorAll('.item-analista-reatribuicao').forEach(botaoAnalista => {
+            botaoAnalista.classList.remove('selecionado');
+        });
+
+        botao.classList.add('selecionado');
+        btnSalvarReatribuicao.disabled = false;
+    }
+
+    function fecharModalReatribuicao() {
+        modalReatribuicao.classList.remove('ativo');
+        listaAnalistasReatribuicao.innerHTML = '';
+        analistaSelecionado = null;
+        nomeAnalistaSelecionado = '';
+        hostnameReatribuicao = '';
+        idColunaAnalistasReatribuicao = '';
+
+        if (botaoReatribuicao != null) {
+            botaoReatribuicao.disabled = false;
+        }
+
+        botaoReatribuicao = null;
+    }
+
+    function salvarReatribuicao() {
+        if (analistaSelecionado == null) {
+            alert('Selecione um analista');
+            return;
+        }
+
+        btnSalvarReatribuicao.disabled = true;
+
+        fetch('/servidores/reatribuirAnalista', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                fkEmpresaServer: sessionStorage.ID_EMPRESA,
+                hostnameServer: hostnameReatribuicao,
+                fkFuncionarioServer: analistaSelecionado
+            })
+        })
+            .then((resposta) => {
+
+                if (!resposta.ok) {
+                    throw 'Erro ao reatribuir analista';
+                }
+
+                var botaoAtual = botaoReatribuicao;
+                var colunaAnalistas = document.getElementById(idColunaAnalistasReatribuicao);
+                var novaQtdAnalistas = Number(colunaAnalistas.textContent) + 1;
+                colunaAnalistas.textContent = novaQtdAnalistas;
+                var mensagemSucesso = `Analista ${nomeAnalistaSelecionado} atribuído para ${hostnameReatribuicao}`;
+
+                fecharModalReatribuicao();
+
+                if (totalAnalistasEmpresa > 0 && novaQtdAnalistas >= totalAnalistasEmpresa) {
+                    botaoAtual.disabled = true;
+                    botaoAtual.innerHTML = `
+                        <img src="assets/imgs/painel/adicionar.png" alt="">
+                        Sem analistas
+                    `;
+                }
+
+                mostrarAlertaSucesso(mensagemSucesso);
+            })
+            .catch(erro => {
+                console.log(`#ERRO: ${erro}`);
+                btnSalvarReatribuicao.disabled = false;
+                alert('Erro ao reatribuir analista');
+            });
+    }
+
+    modalReatribuicao.addEventListener('click', function (evento) {
+        if (evento.target === modalReatribuicao) {
+            fecharModalReatribuicao();
+        }
+    });
+
+    async function buscarDadosS3(periodo, idEmpresa) {
+
+        try {
+            const resposta = await fetch(`/s3/buscarDadosS3/${idEmpresa}`);
+            const dadosS3 = await resposta.json();
+            const dados = dadosS3.periodos[periodo];
+
+            console.log(periodo);
+            console.log(dadosS3.periodos);
+
+            console.log("DADOS DO S3: ", dadosS3);
+
+            // Kpis
+            const kpis = dados.kpis
+            console.log("KPIS: ", kpis);
+
+            document.getElementById('kpi_disponibilidade').textContent = kpis.disponibilidade_global;
+            document.getElementById('kpi_risco').textContent = Math.round(kpis.nivel_risco);
+            document.getElementById('kpi_criticos').textContent = kpis.incidentes_criticos;
+            document.getElementById('kpi_estabilidade').textContent = Math.round(kpis.estabilidade_operacional);
+
+            if (kpis.tendencia_operacional == 'Caindo') {
+                document.getElementById('kpi_previsao').textContent = 'Melhorando';
+            } else if (kpis.tendencia_operacional == 'Subindo') {
+                document.getElementById('kpi_previsao').textContent = 'Piorando';
+            } else {
+                document.getElementById('kpi_previsao').textContent = kpis.tendencia_operacional;
+            }
+
+            var disponibilidade = Number(kpis.disponibilidade_global);
+            var risco = Number(kpis.nivel_risco);
+            var criticos = Number(kpis.incidentes_criticos);
+            var estabilidade = Number(kpis.estabilidade_operacional);
+
+            if (disponibilidade >= 99) {
+                document.getElementById('kpi_disponibilidade').style.color = 'green';
+                document.getElementById('card_disponibilidade').style.borderLeft = '4px solid green';
+            } else if (disponibilidade >= 95) {
+                document.getElementById('kpi_disponibilidade').style.color = 'orange';
+                document.getElementById('card_disponibilidade').style.borderLeft = '4px solid orange';
+            } else {
+                document.getElementById('kpi_disponibilidade').style.color = 'red';
+                document.getElementById('card_disponibilidade').style.borderLeft = '4px solid red';
+            }
+
+            if (risco <= 30) {
+                document.getElementById('kpi_risco').style.color = 'green';
+                document.getElementById('card_risco').style.borderLeft = '4px solid green';
+            } else if (risco <= 70) {
+                document.getElementById('kpi_risco').style.color = 'orange';
+                document.getElementById('card_risco').style.borderLeft = '4px solid orange';
+            } else {
+                document.getElementById('kpi_risco').style.color = 'red';
+                document.getElementById('card_risco').style.borderLeft = '4px solid red';
+            }
+
+            if (criticos == 0) {
+                document.getElementById('kpi_criticos').style.color = 'green';
+                document.getElementById('card_criticos').style.borderLeft = '4px solid green';
+            } else if (criticos < 10) {
+                document.getElementById('kpi_criticos').style.color = 'orange';
+                document.getElementById('card_criticos').style.borderLeft = '4px solid orange';
+            } else {
+                document.getElementById('kpi_criticos').style.color = 'red';
+                document.getElementById('card_criticos').style.borderLeft = '4px solid red';
+            }
+
+            if (estabilidade >= 85) {
+                document.getElementById('kpi_estabilidade').style.color = 'rgb(0, 140, 255)';
+                document.getElementById('card_estabilidade').style.borderLeft = '4px solid rgb(0, 140, 255)';
+            } else if (estabilidade >= 60) {
+                document.getElementById('kpi_estabilidade').style.color = 'orange';
+                document.getElementById('card_estabilidade').style.borderLeft = '4px solid orange';
+            } else {
+                document.getElementById('kpi_estabilidade').style.color = 'red';
+                document.getElementById('card_estabilidade').style.borderLeft = '4px solid red';
+            }
+
+            // Gráfico estabilidade
+            const dadosGraficoEstabilidade = dados.grafico_estabilidade;
+            console.log("Gráfico estabilidade: ", dadosGraficoEstabilidade)
+
+            const valores = dadosGraficoEstabilidade.valores.map(Number);
+
+            graficoEstabilidade.data.labels = dadosGraficoEstabilidade.labels;
+            graficoEstabilidade.data.datasets[0].data = valores;
+            graficoEstabilidade.data.datasets[0].pointRadius = valores.map(valor => valor < 85 ? 6 : 0);
+            graficoEstabilidade.data.datasets[0].pointBackgroundColor = valores.map(valor => valor < 85 ? '#ff4d6d' : 'transparent');
+            graficoEstabilidade.data.datasets[1].data = Array(valores.length).fill(85);
+
+            graficoEstabilidade.update();
+
+            // Gráfico impacto por componente
+            const dadosImpacto = dados.impacto_por_componente;
+
+            console.log("Gráfico impacto:", dadosImpacto);
+
+            const valoresImpacto = [
+                Number(dadosImpacto.CPU.valor),
+                Number(dadosImpacto.RAM.valor),
+                Number(dadosImpacto.DISCO.valor)
+            ];
+
+            if (valoresImpacto[0] >= 80 || valoresImpacto[1] >= 80 || valoresImpacto[2] >= 80) {
+                alertaImpactoCritico.style.display = 'flex';
+            } else {
+                alertaImpactoCritico.style.display = 'none';
+            }
+
+            graficoImpacto.data.datasets[0].data = valoresImpacto;
+            graficoImpacto.data.datasets[0].backgroundColor = valoresImpacto.map(getCor);
+            graficoImpacto.update();
+
+            // Box predicão
+            const predicoes = dados.previsao_falhas;
+
+            const container = document.getElementById('previsao_falhas');
+
+            container.innerHTML = `
+                <div class="topo-tendencia">
+                    <img src="assets/imgs/painel/cerebro.png" alt="" width="40px" height="40px">
+                    <span>Previsão de Falhas</span>
+                </div>
+            `;
+
+            if (predicoes.length == 0) {
+                container.innerHTML += `
+                    <div class="item-tendencia">
+                        <span class="metrica">
+                            Nenhum risco previsto
+                        </span>
+
+                        <span class="descricao">
+                            O modelo não identificou tendência crítica.
+                        </span>
+                    </div>
+                `;
+
+            } else {
+                predicoes.forEach(predicao => {
+
+                    container.innerHTML += `
+                        <div class="item-tendencia">
+                            <span class="metrica">
+                                ${predicao.metrica} - ${predicao.nivel_previsao.toUpperCase()}
+                            </span>
+
+                            <span class="descricao">
+                                ${predicao.mensagem}
+                            </span>
+                        </div>
+                    `;
+                });
+            }
+
+            // Tabela necessidade de analistas
+            const tabela = document.getElementById('corpo_tabela_analistas');
+
+            tabela.innerHTML = '';
+
+            var analistasPorServidor = {};
+            var carregouAnalistasServidor = false;
+            totalAnalistasEmpresa = 0;
+
+            try {
+                var respostaAnalistasServidor = await fetch('/servidores/quantidadeAnalistasPorServidor/' + sessionStorage.ID_EMPRESA);
+                var listaAnalistasServidor = await respostaAnalistasServidor.json();
+
+                listaAnalistasServidor.forEach(item => {
+                    analistasPorServidor[item.hostname] = item.analistas;
+                    totalAnalistasEmpresa = item.total_analistas;
+                });
+
+                carregouAnalistasServidor = true;
+            } catch (erro) {
+                console.error('Erro ao buscar quantidade de analistas:', erro);
+            }
+
+            const servidores = dados.info_servidores.sort((a, b) => b.incidentes - a.incidentes);
+
+            servidores.forEach(servidor => {
+                var qtdAnalistas = analistasPorServidor[servidor.servidor] || 0;
+                var semAnalistasDisponiveis = carregouAnalistasServidor && (totalAnalistasEmpresa == 0 || qtdAnalistas >= totalAnalistasEmpresa);
+                var idColunaAnalistas = 'qtd_analistas_' + servidor.servidor;
+                var idBotaoReatribuir = 'btn_reatribuir_' + servidor.servidor;
+                var botaoReatribuir = '';
+
+                if (semAnalistasDisponiveis) {
+                    botaoReatribuir = `
+                        <button id="${idBotaoReatribuir}" class="btn-reatribuir" disabled>
+                            <img src="assets/imgs/painel/adicionar.png" alt="">
+                            Sem analistas
+                        </button>
+                    `;
+                } else {
+                    botaoReatribuir = `
+                        <button id="${idBotaoReatribuir}" onclick="reatribuirAnalista('${servidor.servidor}')" class="btn-reatribuir">
+                            <img src="assets/imgs/painel/adicionar.png" alt="">
+                            Reatribuir
+                        </button>
+                    `;
+                }
+
+                var situacao = 'NORMAL';
+                var classe = 'normal';
+
+                if (servidor.incidentes >= 10) {
+                    situacao = 'CRÍTICO';
+                    classe = 'critico';
+
+                } else if (servidor.incidentes >= 5) {
+                    situacao = 'ATENÇÃO';
+                    classe = 'atencao';
+                }
+
+                tabela.innerHTML += `
+                    <tr class="item-tabela">
+
+                        <td>${servidor.servidor}</td>
+                        <td>${servidor.incidentes}</td>
+                        <td id="${idColunaAnalistas}">${qtdAnalistas}</td>
+
+                        <td>
+                            <span class="status ${classe}">
+                                ${situacao}
+                            </span>
+                        </td>
+
+                        <td>
+                            ${botaoReatribuir}
+                        </td>
+
+                    </tr>
+                `;
+            });
+
+        } catch (erro) {
+            console.error("ERRO: ", erro);
+        }
+
+    }
+    buscarDadosS3(periodo, sessionStorage.ID_EMPRESA);
+
+    async function baixarAgente() {
+
+        try {
+
+            const resposta =
+                await fetch("/agente/download");
+
+            const dados =
+                await resposta.json();
+
+            window.open(
+                dados.url,
+                "_blank"
+            );
+
+        } catch (erro) {
+
+            console.error(
+                "Erro ao baixar agente:",
+                erro
+            );
+        }
+    }
+
+</script>
+
+</html>

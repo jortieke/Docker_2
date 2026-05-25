@@ -1,0 +1,868 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerenciamento de Servidores | Horus </title>
+    <link rael="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Jura:wght@300..700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="icon" href="./assets/icon/logo.png" />
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap"
+        rel="stylesheet">
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cabin:ital,wght@0,400..700;1,400..700&family=League+Spartan:wght@100..900&display=swap"
+        rel="stylesheet">
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="./js/script.js"></script>
+    <link rel="stylesheet" href="./style.css">
+    <link rel="stylesheet" href="style/servidor-componente.css">
+    
+</head>
+
+<body>
+    <div id="alertaServidor" class="alerta-servidor">
+        <img src="assets/imgs/login/erro.png" alt="">
+        <span id="alerta_mensagem"></span>
+    </div>
+
+    <div class="modal" id="modal"></div>
+
+    <div class="container">
+
+        <aside class="lateral" id="lateral">
+            <div class="logo">
+                <img src="./assets/imgs/painel/logo.png" alt="" style="font-family: Jura, sans-serif;">
+                Horus
+            </div>
+
+            <nav class="menu">
+                <div class="categoria">Monitoramento</div>
+                <div onclick="window.location.href='painel.html'" class="item-menu">
+                    <img src="./assets/imgs/painel/dash.png" alt="">Dashboard
+                </div>
+
+                <div class="categoria">Administração</div>
+                <div onclick="window.location.href='dash_usuarios.html'" class="item-menu">
+                    <img src="./assets/imgs/painel/cadastrar-usuario.png" alt="">Usuários
+                </div>
+                <div onclick="window.location.href='servidor-componente.html'" class="item-menu selecionado">
+                    <img src="./assets/imgs/painel/cadastrar-servidor-sel.png" alt="">Cadastrar servidor
+                </div>
+
+                <div class="categoria">Agentes</div>
+
+            <div onclick="baixarAgente()" class="item-menu">
+                <img src="./assets/imgs/painel/agente.png" style="height: 19px; width: 19px;" alt="">
+                Instalar agente
+            </div>
+
+            <div class="categoria" style="padding-bottom: 10px !important;">Gestão de Incidentes</div>
+            <div>
+                <a href="https://horusmonitoring.atlassian.net/jira/software/projects/KAN/list?jql=project%20%3D%20KAN%20ORDER%20BY%20created%20DESC">
+                    <img src="assets/imgs/painel/jira.png" alt="" style="width: 25% !important;">
+                </a>
+                
+            </div>
+            <div>
+                <a href="https://app.slack.com/client/T0AQZ02KUJE/C0AQWUMQJBG?teamClassificationType=work">
+                    <img src="assets/imgs/painel/slack.png" alt="" style="width: 35% !important;">
+                </a>
+                
+            </div>
+
+            </nav>
+
+            <div onclick="limparSessionStorage()" class="sair">
+                <img src="./assets/imgs/painel/sair.png" alt="">
+                <p onclick="window.location.href='index.html'">Sair</p>
+            </div>
+        </aside>
+
+        <main class="main">
+
+            <header class="header">
+
+                <div class="header-topo">
+                    <div class="header-esquerda">
+                        <div class="hamburguer" id="hamburguer">
+                            <img src="./assets/imgs/painel/hamburguer.png" alt="Menu">
+                        </div>
+
+                         <div class="header-servidor">
+                            <span class="breadcrumb">
+                                Gestão de Servidores
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                        <div class="usuario">
+                        <div>
+                            <p id="nome_usuario"></p>
+                            <p id="funcao_usuario" class="cargo"></p>
+                        </div>
+                        <span id="inicial_usuario"></span>
+                    </div>
+                </div>
+            </header>
+
+            <section class="conteudo">
+
+                <div class="linha">
+                    <div class="titulo">
+                        <h3>Gestão de Servidores</h3>
+                        <p>Gerencie servidores e seus componentes de hardware</p>
+                    </div>
+
+                    <div class="botoes">
+                        <div class="botao botao-servidor" onclick="abrirCadastroServidor()">
+                            <img src="./assets/imgs/painel/mais.png" alt="">
+                            <p>Cadastrar Servidor</p>
+                        </div>
+
+                        <div class="botao botao-componente" onclick="abrirCadastroComponente()">
+                            <img src="./assets/imgs/painel/mais.png" alt="">
+                            <p>Cadastrar Componente</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="buscar-servidor">
+                    <input class="ipt-buscar" id="filtrar_servidor" type="text" placeholder="Buscar servidor pelo nome..." oninput="filtrarServidores()">
+                </div>
+
+                <div id="servidores" class="servidores"></div>
+
+            </section>
+
+        </main>
+
+        <div class="popup" id="popup">
+
+            <div class="popup-servidor" id="popupServidor">
+                <div class="linha">
+                    <h3>Cadastrar novo servidor</h3>
+
+                    <img onclick="fecharCadastroServidor()" class="fechar" src="./assets/imgs/painel/fechar-azul.png"
+                        alt="" width="30px">
+                </div>
+
+                <div class="linha">
+                    <div class="coluna">
+                        <span class="subtexto">Nome do servidor</span>
+                        <input id="nome" class="ipt-servidor" type="text" placeholder="Ex: SRV-ACC-SP-01">
+                    </div>
+
+                    <div class="coluna">
+                        <span class="subtexto">Endereço IP</span>
+                        <input id="ip" class="ipt-servidor" type="text" placeholder="Ex: 192.53.1.10">
+                    </div>
+                </div>
+
+                <div class="linha">
+                    <div class="coluna">
+                        <span class="subtexto">Localização</span>
+                        <input id="localizacao" class="ipt-servidor" type="text" placeholder="Ex: São Paulo - ACC-SP">
+                    </div>
+
+                    <div class="coluna">
+                        <span class="subtexto">Sistema Operacional</span>
+                        <input id="sistemaOperacional" class="ipt-servidor" type="text"
+                            placeholder="Ex: Ubuntu Server 20.4">
+                    </div>
+                </div>
+
+                <div class="linha">
+                    <span class="subtexto">Componentes</span>
+                    <span id="obrigatorioCompleto" class="obrigatorio-completo">Obrigatórios completos</span>
+                </div>
+
+                <span id="obrigatorio" class="obrigatorio">
+                    <img src="assets/imgs/painel/alertas.png" alt="">
+                    É obrigatório informar CPU, RAM e Disco para cadastrar o servidor.
+                </span>
+
+                <div class="linha">
+                    <div class="box-componente">
+                        <div class="linha">
+                            <div class="coluna">
+                                <span class="subtexto">Tipo</span>
+                                <select disabled class="ipt-box" name="" id="">
+                                    <option value="">CPU</option>
+                                </select>
+                            </div>
+
+                            <div class="coluna">
+                                <span class="subtexto">Unidade de medida</span>
+                                <select oninput="verificarObrigatorios()" class="ipt-box" name="" id="select_cpu">
+                                    <option selected disabled value="#">Selecione...</option>
+                                    <option value="%">%</option>
+                                    <option value="GHz">GHz</option>
+                                    <option value="Cores">Cores</option>
+                                    <option value="Threads">Threads</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="linha-limite">
+                            <div class="coluna-limite">
+                                <div class="mostrar-limite">
+                                    <span class="subtexto">Limite crítico</span>
+                                    <span id="limiteAtualCpu" class="subtexto-info"></span>
+                                </div>
+
+                                <input oninput="calcularLimiteCpu()" id="limite_cpu" class="limite" type="range" min="0"
+                                    max="100">
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="linha">
+                    <div class="box-componente">
+                        <div class="linha">
+                            <div class="coluna">
+                                <span class="subtexto">Tipo</span>
+                                <select disabled class="ipt-box" name="" id="">
+                                    <option value="">RAM</option>
+                                </select>
+                            </div>
+
+                            <div class="coluna">
+                                <span class="subtexto">Unidade de medida</span>
+                                <select oninput="verificarObrigatorios()" class="ipt-box" name="" id="select_ram">
+                                    <option selected disabled value="#">Selecione...</option>
+                                    <option value="%">%</option>
+                                    <option value="MB">MB</option>
+                                    <option value="GB">GB</option>
+                                    <option value="TB">TB</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="linha-limite">
+                            <div class="coluna-limite">
+                                <div class="mostrar-limite">
+                                    <span class="subtexto">Limite crítico</span>
+                                    <span id="limiteAtualRam" class="subtexto-info"></span>
+                                </div>
+
+                                <input oninput="calcularLimiteRam()" id="limite_ram" class="limite" type="range" min="0"
+                                    max="100">
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="linha">
+                    <div class="box-componente">
+                        <div class="linha">
+                            <div class="coluna">
+                                <span class="subtexto">Tipo</span>
+                                <select disabled class="ipt-box" name="" id="">
+                                    <option value="">Disco</option>
+                                </select>
+                            </div>
+
+                            <div class="coluna">
+                                <span class="subtexto">Unidade de medida</span>
+                                <select oninput="verificarObrigatorios()" class="ipt-box" name="" id="select_disco">
+                                    <option selected disabled value="#">Selecione...</option>
+                                    <option value="%">%</option>
+                                    <option value="GB">GB</option>
+                                    <option value="TB">TB</option>
+                                    <option value="IOPS">IOPS</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="linha-limite">
+                            <div class="coluna-limite">
+                                <div class="mostrar-limite">
+                                    <span class="subtexto">Limite crítico</span>
+                                    <span id="limiteAtualDisco" class="subtexto-info"></span>
+                                </div>
+
+                                <input oninput="calcularLimiteDisco()" id="limite_disco" class="limite" type="range"
+                                    min="0" max="100">
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="linha">
+                    <div class="cancelar" onclick="fecharCadastroServidor()">
+                        <span>Cancelar</span>
+                    </div>
+
+                    <div class="cadastrar" onclick="cadastrarServidor()">
+                        <span>Cadastrar</span>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="popup-componente" id="popupComponente">
+                <div class="linha">
+                    <h3>Cadastrar novo componente</h3>
+
+                    <img onclick="fecharCadastroComponente()" class="fechar" src="./assets/imgs/painel/fechar-azul.png"
+                        alt="" width="30px">
+                </div>
+
+                <div class="linha">
+                    <div class="coluna">
+                        <span class="subtexto">Servidor de Destino</span>
+                        <select class="ipt-servidor" name="" id="select_servidor"></select>
+                    </div>
+                </div>
+
+                <div class="linha">
+                    <div class="coluna">
+                        <span class="subtexto">Tipo de Componente</span>
+                        <select class="ipt-servidor" name="" id="tipo_componente">
+                            <option value="6">Processos</option>
+                            <option value="7">Rede</option>
+                        </select>
+                    </div>
+
+                    <div class="coluna">
+                        <span class="subtexto">Unidade de medida</span>
+                        <select class="ipt-servidor" name="" id="unidadeMedida">
+                            <option value="CPU %">Consumo CPU (%)</option>
+                            <option value="RAM %">Consumo RAM (%)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="linha-limite">
+                    <div class="coluna-limite">
+                        <div class="mostrar-limite">
+                            <span class="subtexto">Limite crítico</span>
+                            <span id="limiteAtual" class="subtexto-info"></span>
+                        </div>
+
+                        <input oninput="calcularLimite()" id="limite_componente" class="limite" type="range" min="0"
+                            max="100">
+
+                    </div>
+                </div>
+
+                <div class="linha">
+                    <div class="cancelar" onclick="fecharCadastroComponente()">
+                        <span>Cancelar</span>
+                    </div>
+
+                    <div onclick="cadastrarComponente()" class="cadastrar">
+                        <span>Cadastrar</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="popup-detalhes" id="popupDetalhes"></div>
+
+        </div>
+    </div>
+
+    </div>
+
+    <script>
+
+         //Verificar tipo de usuário
+         window.onload = () => {const funcao = sessionStorage.getItem("FUNCAO_USUARIO");
+
+            if (funcao != "Gestor") {
+                alert("Você não tem autorização de acessar essa página!");
+                window.location = "painel.html";
+            }
+        }
+
+        function abrirCadastroServidor() {
+            popup.style = 'display: flex'
+            popupServidor.style = 'display: flex'
+        }
+
+        function fecharCadastroServidor() {
+            popup.style = 'display: none'
+            popupServidor.style = 'display: none'
+        }
+
+        function abrirCadastroComponente() {
+            popup.style = 'display: flex'
+            popupComponente.style = 'display: flex'
+            listarServidores()
+        }
+
+        function fecharCadastroComponente() {
+            popup.style = 'display: none'
+            popupComponente.style = 'display: none'
+        }
+
+        function fecharDetalhes() {
+            popup.style = 'display: none'
+            popupDetalhes.style = 'display: none'
+        }
+
+        //deletar servidor 
+
+        function deletarUsuario(id) {
+            fetch(`/usuario/deletarUsuario/${id}`, {
+                method: 'DELETE'
+            })
+                .then(resposta => {
+                    if (resposta.ok) {
+                        alert('Servidor deletado com sucesso!');
+                        exibirServidores();
+                    } else {
+                        alert('Erro ao deletar servidor')
+                    }
+                })
+                .catch((erro) => {
+                    console.log(`ERRO: ${erro}`);
+                })
+        }
+
+        // Cadastro de servidor
+        function cadastrarServidor() {
+            const fkEmpresaVar = sessionStorage.ID_EMPRESA
+
+            var nomeVar = nome.value;
+            var ipVar = ip.value;
+            var localizacaoVar = localizacao.value;
+            var sistemaOperacionalVar = sistemaOperacional.value;
+            var limiteCpuVar = limite_cpu.value;
+            var unidadeMedidaCpuVar = select_cpu.value;
+            var limiteRamVar = limite_ram.value;
+            var unidadeMedidaRamVar = select_ram.value;
+            var limiteDiscoVar = limite_disco.value;
+            var unidadeMedidaDiscoVar = select_disco.value;
+
+            if (
+                nomeVar == '' ||
+                ipVar == '' ||
+                localizacaoVar == '' ||
+                sistemaOperacionalVar == '' ||
+                limiteCpuVar == '' ||
+                unidadeMedidaCpuVar == '#' ||
+                limiteRamVar == '' ||
+                unidadeMedidaRamVar == '#' ||
+                limiteDiscoVar == '' ||
+                unidadeMedidaDiscoVar == '#'
+            ) {
+                alerta_mensagem.innerHTML = "Houve um erro ao tentar cadastrar o servidor!";
+                mostrarAlerta()
+            } else {
+
+                fetch("/servidores/cadastrarServidor", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        fkEmpresaServer: fkEmpresaVar,
+                        nomeServer: nomeVar,
+                        ipServer: ipVar,
+                        localizacaoServer: localizacaoVar,
+                        sistemaOperacionalServer: sistemaOperacionalVar,
+                        limiteCpuServer: limiteCpuVar,
+                        unidadeMedidaCpuServer: unidadeMedidaCpuVar,
+                        limiteRamServer: limiteRamVar,
+                        unidadeMedidaRamServer: unidadeMedidaRamVar,
+                        limiteDiscoServer: limiteDiscoVar,
+                        unidadeMedidaDiscoServer: unidadeMedidaDiscoVar
+                    }),
+                })
+                    .then(resposta => {
+                        console.log("resposta: ", resposta);
+
+                        if (resposta.ok) {
+                            exibirServidores()
+                            alert("Servidor cadastrado com sucesso!");
+                        } else {
+                            throw "Houve um erro ao tentar realizar o cadastro!";
+                        }
+
+                    })
+                    .catch(erro => {
+                        console.log(`#ERRO: ${erro}`);
+                    });
+            }
+
+        }
+
+        function calcularLimiteCpu() {
+            limiteAtualCpu.innerHTML = `${limite_cpu.value}%`
+
+            if (limite_cpu.value <= 69) {
+                limiteAtualCpu.style = 'color:green'
+            } else if (limite_cpu.value <= 89) {
+                limiteAtualCpu.style = 'color:orange'
+            } else {
+                limiteAtualCpu.style = 'color:red'
+            }
+        }
+
+        function calcularLimiteRam() {
+            limiteAtualRam.innerHTML = `${limite_ram.value}%`
+
+            if (limite_ram.value <= 69) {
+                limiteAtualRam.style = 'color:green'
+            } else if (limite_ram.value <= 89) {
+                limiteAtualRam.style = 'color:orange'
+            } else {
+                limiteAtualRam.style = 'color:red'
+            }
+        }
+
+        function calcularLimiteDisco() {
+            limiteAtualDisco.innerHTML = `${limite_disco.value}%`
+
+            if (limite_disco.value <= 69) {
+                limiteAtualDisco.style = 'color:green'
+            } else if (limite_disco.value <= 89) {
+                limiteAtualDisco.style = 'color:orange'
+            } else {
+                limiteAtualDisco.style = 'color:red'
+            }
+        }
+
+        function calcularLimite() {
+            limiteAtual.innerHTML = `${limite_componente.value}%`
+
+            if (limite_componente.value <= 69) {
+                limiteAtual.style = 'color:green'
+            } else if (limite_componente.value <= 89) {
+                limiteAtual.style = 'color:orange'
+            } else {
+                limiteAtual.style = 'color:red'
+            }
+        }
+
+        function verificarObrigatorios() {
+            if (
+                select_cpu.value == '#' ||
+                select_ram.value == '#' ||
+                select_disco.value == '#'
+            ) {
+                obrigatorio.style = 'display: flex';
+                obrigatorioCompleto.style = 'display: none';
+            } else {
+                obrigatorio.style = 'display: none';
+                obrigatorioCompleto.style = 'display: block';
+            }
+        }
+
+        function mostrarAlerta() {
+            const alerta = document.getElementById("alertaServidor");
+
+            alerta.classList.add("ativo");
+            setTimeout(() => {
+                alerta.classList.remove("ativo")
+            }, 2000);
+
+        }
+
+        function listarServidores() {
+            const fkEmpresa = sessionStorage.ID_EMPRESA;
+
+            fetch(`/servidores/listarServidores/${fkEmpresa}`)
+                .then(resposta => resposta.json())
+                .then((lista) => {
+                    select_servidor.innerHTML = lista.map(servidor =>
+                        `<option value = "${servidor.id_servidor}">${servidor.hostname}</option>`
+                    ).join('')
+                })
+        }
+        listarServidores()
+
+        function cadastrarComponente() {
+            var fkServidorVar = select_servidor.value;
+            var fkComponenteVar = tipo_componente.value;
+            var unidadeMedidaVar = unidadeMedida.value;
+            var componenteLimiteVar = limite_componente.value;
+
+            if (fkServidorVar == '' || unidadeMedidaVar == '' || componenteLimiteVar == '') {
+                alert('Preencha todas as informações corretamente')
+                return;
+            }
+
+            fetch(`/servidores/cadastrarComponente`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    fkServidorServer: fkServidorVar,
+                    fkComponenteServer: fkComponenteVar,
+                    unidadeMedidaServer: unidadeMedidaVar,
+                    componenteLimiteServer: componenteLimiteVar
+                })
+            })
+                .then(resposta => {
+                    console.log("resposta: ", resposta);
+
+                    if (resposta.ok) {
+                        exibirServidores()
+                        alert("Componente cadastrado com sucesso!");
+                    } else {
+                        throw "Houve um erro ao tentar realizar o cadastro!";
+                    }
+
+                })
+                .catch(erro => {
+                    console.log(`#ERRO: ${erro}`);
+                });
+        }
+
+        function abrirDetalhes(id) {
+            popup.style = 'display: flex'
+            popupDetalhes.style = 'display: flex'
+
+            fetch(`/servidores/abrirDetalhes/${id}`)
+                .then(resposta => resposta.json())
+                .then((lista) => {
+                    var topo =
+                        `
+                    <div class="linha">
+                        <span class="nome-servidor">${lista[0].hostname}</span>
+                        <img class="fechar" onclick="fecharDetalhes()" src="./assets/imgs/painel/fechar-azul.png" alt="" width="30px">
+                    </div>
+                    `
+                    var detalhes = lista.map(componente =>
+                        `
+                        <div id="componente${componente.id_servidor_componente}" class="box-detalhe">
+                            <div class="linha-detalhe">
+                                <div class="coluna">
+                                    <span class="subtexto">Tipo</span>
+                                    <span class="subtexto-info">${componente.tipo}</span>
+                                </div>
+
+                                <div class="coluna sumir">
+                                    <span class="subtexto">Unidade de medida</span>
+                                    <span class="subtexto-info">${componente.unidade_medida}</span>
+                                </div>
+
+                                <div class="coluna">
+                                    <span class="subtexto">Limite crítico</span>
+                                    <span class="status status-online">${Math.round(componente.limite)}%</span>
+                                </div>
+
+                                <div class="coluna sumir-celular">
+                                    <img onclick="deletarComponente(${componente.id_servidor_componente})" class="lixo" src="./assets/imgs/painel/lixo.png" alt="">
+                                </div>
+                            </div>
+                        </div>
+                        `
+                    ).join('')
+
+                    popupDetalhes.innerHTML = topo + detalhes
+                })
+                .catch((error) => {
+                    console.error(`Erro na obtenção dos detalhes: ${error.message}`)
+                })
+        }
+
+        function exibirServidores() {
+            var fkEmpresa = sessionStorage.ID_EMPRESA;
+
+            fetch(`/servidores/exibirServidores/${fkEmpresa}`)
+                .then(resposta => resposta.json())
+                .then((lista) => {
+                    if (lista.length === 0) {
+                        servidores.innerHTML = `
+                            <div class="sem-servidores">
+                                <p>Nenhum servidor cadastrado.</p>
+                                <span>Cadastre um novo servidor clicando em "Cadastrar Servidor" para que ele apareça aqui.</span>
+                            </div>
+                        `;
+                        return;
+                    }
+
+                    servidores.innerHTML = lista.map(servidor =>
+                        `
+                        <div class="servidor">
+                            <div class="coluna servidor-info">
+                                <div class="linha-servidor">
+                                    <span class="detalhes" onclick="abrirDetalhes(${servidor.id_servidor})">Detalhes</span>
+
+                                    <div class="coluna">
+                                        <span class="nome-servidor">${servidor.hostname}</span>
+                                        <span class="subtexto">${servidor.localizacao}</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="coluna sumir-celular">
+                                <span class="subtexto">IP</span>
+                                <span class="subtexto-info">${servidor.endereco_ip}</span>
+                            </div>
+
+                            <div class="coluna sumir">
+                                <span class="subtexto">Sistema Operacional</span>
+                                <span class="subtexto-info">${servidor.sistema_operacional}</span>
+                            </div>
+
+                            <div class="coluna sumir-celular">
+                                <span class="status status-online">${servidor.status_servidor}</span>
+                            </div>
+
+                            <div class="coluna sumir">
+                                <span class="subtexto">Componentes</span>
+                                <span class="subtexto-info">${servidor.quantidade}</span>
+                            </div>
+
+                            <img onclick="deletarServidor(${servidor.id_servidor})" class="lixo sumir-celular" src="./assets/imgs/painel/lixo.png" alt="">
+                        </div>
+              `).join('')
+                })
+                .catch(function (error) {
+                    console.error(`Erro na obtenção dos servidores: ${error.message}`);
+                });
+        }
+        exibirServidores()
+
+        function deletarServidor(id) {
+            fetch(`/servidores/deletarServidor/${id}`, {
+                method: 'DELETE'
+            })
+                .then(resposta => {
+                    console.log(resposta)
+                    if (resposta.ok) {
+                        alert('Servidor deletado com sucesso!');
+                        exibirServidores();
+                    } else {
+                        alert('Erro ao deletar servidor')
+                    }
+                })
+                .catch((erro) => {
+                    console.log(`ERRO: ${erro}`);
+                })
+        }
+
+        function deletarComponente(id) {
+            fetch(`/servidores/deletarComponente/${id}`, {
+                method: 'DELETE'
+            })
+                .then(resposta => {
+                    if (resposta.ok) {
+                        var componente = document.getElementById(`componente${id}`);
+                        componente.remove();
+                        alert('Componente deletado com sucesso!')
+                        exibirServidores();
+                    } else {
+                        alert('Erro ao deletar componente')
+                    }
+                })
+                .catch((erro) => {
+                    console.log(`ERRO: ${erro}`);
+                })
+        }
+
+        exibirUsuarioAtivo();
+
+        const btnHamburguer = document.getElementById('hamburguer');
+        const lateral = document.getElementById('lateral');
+        const modal = document.getElementById('modal');
+
+        function abrirMenu() {
+            lateral.classList.add('aberto');
+            modal.classList.add('ativo');
+        }
+
+        function fecharMenu() {
+            lateral.classList.remove('aberto');
+            modal.classList.remove('ativo');
+        }
+
+        function limparSessionStorage() {
+            sessionStorage.clear();
+        }
+
+        btnHamburguer.addEventListener('click', () => {
+            lateral.classList.contains('aberto') ? fecharMenu() : abrirMenu();
+        });
+
+        modal.addEventListener('click', fecharMenu);
+
+        //Filtrar servidores por nome
+        function filtrarServidores() {
+            const fkEmpresa = sessionStorage.ID_EMPRESA;
+            var nomeServidor = filtrar_servidor.value.toLowerCase();
+
+            fetch(`/servidores/exibirServidores/${fkEmpresa}`)
+                .then(resposta => resposta.json())
+                .then((lista) => {
+                    var listaFiltrada = lista.filter(servidor => 
+                        servidor.hostname.toLowerCase().includes(nomeServidor)
+                        )
+                    console.log(listaFiltrada)
+                    if (listaFiltrada.length === 0) {
+                        servidores.innerHTML = `
+                            <div class="sem-servidores">
+                                <p>Nenhum servidor cadastrado.</p>
+                                <span>Cadastre um novo servidor clicando em "Cadastrar Servidor" para que ele apareça aqui.</span>
+                            </div>
+                        `;
+                        return;
+                    }
+                    else {servidores.innerHTML = listaFiltrada.map(servidor =>
+                        `
+                        <div class="servidor">
+                            <div class="coluna servidor-info">
+                                <div class="linha-servidor">
+                                    <span class="detalhes" onclick="abrirDetalhes(${servidor.id_servidor})">Detalhes</span>
+
+                                    <div class="coluna">
+                                        <span class="nome-servidor">${servidor.hostname}</span>
+                                        <span class="subtexto">${servidor.localizacao}</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="coluna sumir-celular">
+                                <span class="subtexto">IP</span>
+                                <span class="subtexto-info">${servidor.endereco_ip}</span>
+                            </div>
+
+                            <div class="coluna sumir">
+                                <span class="subtexto">Sistema Operacional</span>
+                                <span class="subtexto-info">${servidor.sistema_operacional}</span>
+                            </div>
+
+                            <div class="coluna sumir-celular">
+                                <span class="status status-online">${servidor.status_servidor}</span>
+                            </div>
+
+                            <div class="coluna sumir">
+                                <span class="subtexto">Componentes</span>
+                                <span class="subtexto-info">${servidor.quantidade}</span>
+                            </div>
+
+                            <img onclick="deletarServidor(${servidor.id_servidor})" class="lixo sumir-celular" src="./assets/imgs/painel/lixo.png" alt="">
+                        </div>
+              `).join('')
+                }})
+
+                .catch(function (error) {
+                    console.error(`Erro na obtenção dos servidores: ${error.message}`);
+                });
+        }
+                        
+
+    </script>
+</body>
+
+</html>

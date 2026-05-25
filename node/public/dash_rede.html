@@ -1,0 +1,1225 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Redes| Horus </title>
+    <link rel="icon" href="./assets/icon/logo.png" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Jura:wght@300..700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap"
+        rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="./js/script.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/echarts/dist/echarts.min.js"></script> <!--Vai melhorar a vusualização?-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./style.css">
+    <link rel="stylesheet" href="style/dash_rede.css">
+
+</head>
+
+<body>
+
+    <div class="modal-lateral" id="overlay"></div>
+
+    <div class="container">
+
+        <aside class="lateral" id="lateral">
+            <div class="logo">
+                <img src="./assets/imgs/painel/logo.png" alt="">
+                Horus
+            </div>
+
+            <nav class="menu">
+                <div class="categoria">Monitoramento</div>
+                <a class="item-menu selecionado">
+                    <img src="./assets/imgs/painel/dash-selecionado.png" alt="">Dashboard
+                </a>
+
+                <div class="categoria adm" id="administracao">Administração </div>
+                <a href="dash_usuarios.html" class="item-menu adm" id="cadastrarUsuario">
+                    <img src="./assets/imgs/painel/cadastrar-usuario.png" alt="">Usuários
+                </a>
+                <a href="servidor-componente.html" class="item-menu adm" id="cadastrarServidor">
+                    <img src="./assets/imgs/painel/cadastrar-servidor.png" alt="">Cadastrar servidor
+                </a>
+
+            </nav>
+
+            <div onclick="limparSessionStorage()" class="sair">
+                <img src="./assets/imgs/painel/sair.png" alt="">
+                <p onclick="window.location.href='index.html'">Sair</p>
+            </div>
+        </aside>
+
+        <main class="main">
+
+            <header class="header">
+
+                <div class="header-topo">
+                    <div class="header-esquerda">
+                        <div class="hamburguer" id="hamburguer">
+                            <img src="./assets/imgs/painel/hamburguer.png" alt="Menu">
+                        </div>
+
+                        <div class="header-servidor">
+                            <span class="breadcrumb">
+                                Servidores /
+                                <strong id="nomeServidor"></strong> /
+                                <span class="renomear">Comunicação e Rede</span>
+                            </span>
+
+                            <div class="status-servidor">
+                                <div class="select-status">
+                                    <span class="status-dot verde"></span>
+
+                                    <select id="select_servidor">
+                                    </select>
+                                </div>
+                                <a href="dash_incidentes.html">
+                                    <div class="alertas" id="alertasBox">
+                                        <img id="alertaIcone" src="assets/imgs/rede/alerta-lar.png" alt=""
+                                            style="width: 12px !important; height: 12 px !important;">
+
+                                        <span id="alertaTexto">
+                                            0 alertas
+                                        </span>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="acoes-header">
+                        <button class="btn-turno" onclick="gerarRelatorio()">
+                            Relatório de troca de turno
+                        </button>
+                    </div>
+
+                    <div class="usuario">
+                        <div>
+                            <p id="nome_usuario"></p>
+                            <p id="funcao_usuario" class="cargo"></p>
+                        </div>
+                        <span id="inicial_usuario"></span>
+                    </div>
+                </div>
+
+                <div class="header-nav-scroll">
+                    <nav class="header-nav">
+                        <a href="dash_incidentes.html">Incidentes</a>
+                        <a href="dash_analista.html">Resumo</a>
+                        <a href="processos.html">Processos</a>
+                        <a href="dash_rede.html" class="ativo">Comunicação e rede</a>
+                        <a href="Temperatura.html">Temperatura</a> 
+                    </nav>
+                </div>
+
+            </header>
+
+            <section class="conteudo" id="conteudo">
+                <div class="kpis">
+                    <div class="kpi-card" id="perdaPacotes">
+                        <div class="nome">
+                            <div class="tooltip-info">
+                                <img src="assets/imgs/rede/info.png" alt="Informação">
+
+                                <div class="tooltip-box">
+                                    Pacotes de dados perdidos durante a tentativa de comunicação entre os diferentes
+                                    sistemas do SAGITARIO.
+                                    Altas taxas de perda ocasionam perda de informação.
+                                </div>
+                            </div>
+                            Perda de Pacotes
+                            <img src="assets/imgs/rede/rede.png" alt="">
+                        </div>
+                        <div class="nome">
+                            <span id="perdaPacotesValor" class="valor"></span>
+                            <img id="perdaPacotesIcone">
+                            <span id="perdaPacotesSituacao" class="situacao"></span>
+                            <select data-filtro="perdaPacotes">
+                                <option value="24">24 horas</option>
+                                <option value="3">3 dias</option>
+                                <option value="7">7 dias</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="kpi-card" id="latencia">
+                        <div class="nome">
+                            <div class="tooltip-info">
+                                <img src="assets/imgs/rede/info.png" alt="Informação">
+
+                                <div class="tooltip-box">
+                                    Indica o ping médio do servidor.
+                                    Influencia o recebimento de pacotes e indica falha de comunicação.
+                                    Alta latência gera lentidão.
+                                </div>
+                            </div>
+                            Latência
+                            <img src="assets/imgs/rede/velocimetro.png" alt="">
+                        </div>
+                        <div class="nome">
+                            <span id="latenciaValor" class="valor"></span>
+                            <img id="latenciaIcone" alt="">
+                            <span id="latenciaSituacao" class="situacao"></span>
+                            <select data-filtro="latencia">
+                                <option value="24">24 horas</option>
+                                <option value="3">3 dias</option>
+                                <option value="7">7 dias</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="kpi-card" id="adsb">
+                        <div class="nome">
+                            <div class="tooltip-info">
+                                <img src="assets/imgs/rede/info.png" alt="Informação">
+                                <div class="tooltip-box">
+                                    Indica a taxa média de atualização do Sensor ADS-B.
+                                    Níveis baixos de atualização impactam na operação, gerando perda de aeronaves e
+                                    rotas.
+                                </div>
+                            </div>
+                            Atualização ADS-B
+                            <img src="assets/imgs/rede/sinal.png" alt="">
+                        </div>
+                        <div class="nome">
+                            <span id="adsbValor" class="valor"></span>
+                            <img id="adsbIcone" alt="">
+                            <span id="adsbSituacao" class="situacao">melhorando</span>
+                            <select data-filtro="adsb">
+                                <option value="24">24 horas</option>
+                                <option value="3">3 dias</option>
+                                <option value="7">7 dias</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="kpi-card" id="rotas">
+                        <div class="nome">
+                            <div class="tooltip-info">
+                                <img src="assets/imgs/rede/info.png" alt="Informação">
+
+                                <div class="tooltip-box">
+                                    Indica o número de rotas que seguem sem atualização há mais de 8 horas.
+                                    Falta de atualização pode ser causada por lentidão no sistema, problemas de hardware
+                                    no ADS-B
+                                    e até mesmo questões climáticas.
+                                </div>
+                            </div>
+                            Rotas Sem Atualização
+                            <img src="assets/imgs/rede/nuvem.png" alt="">
+                        </div>
+                        <div class="nome">
+                            <span id="rotasValor" class="valor"></span>
+                            <img id="rotasIcone" alt="">
+                            <span id="rotasSituacao" class="situacao">melhorando</span>
+                            <select data-filtro="rotas">
+                                <option value="24">24 horas</option>
+                                <option value="3">3 dias</option>
+                                <option value="7">7 dias</option>
+                            </select>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="linha-graficos">
+                    <div class="grafico-linha-box" style="flex: 3;">
+                        <div style="display: flex; justify-content: space-between;">
+                            <h3>Taxa de Transferência de Rede por Servidor</h3>
+                            <select data-filtro="transferencia">
+                                <option value="24">24 horas</option>
+                                <option value="3">3 dias</option>
+                                <option value="7">7 dias</option>
+                            </select>
+                        </div>
+                        <div id="graficoTransferencia" style="width:100%; height:400px;"></div>
+                    </div>
+                    <div class="box-grafico" style="flex: 1;">
+                        <div style="display: flex; justify-content: space-between;">
+                            <h3>Taxa de perda de pacotes</h3>
+                            <select data-filtro="perdaServicos">
+                                <option value="24">24 horas</option>
+                                <option value="3">3 dias</option>
+                                <option value="7">7 dias</option>
+                            </select>
+                        </div>
+                        <div id="listaPacotes"></div>
+                        <div style="border: #ebe6e7 1px solid; height: 1px; width: 95%; margin: 5px"></div>
+                        <div style="display: flex; flex-direction:row; justify-content: space-evenly;">
+                            <div style="display: flex; flex-direction:row">
+                                <div
+                                    style="border: green 2px solid; background-color: rgb(149,246, 149); width: 10px; height: 10px; align-self: center; margin-right: 3px">
+
+                                </div>
+                                <span>
+                                    < 1% </span>
+                            </div>
+                            <div style="display: flex; flex-direction:row">
+                                <div
+                                    style="border: orange 2px solid; background-color: rgb(233, 197, 130); width: 10px; height: 10px; align-self: center; margin-right: 3px">
+
+                                </div>
+                                <span> 1-2% </span>
+                            </div>
+                            <div style="display: flex; flex-direction:row">
+                                <div
+                                    style="border: red 2px solid; background-color: rgb(236, 103, 103); width: 10px; height: 10px; align-self: center; margin-right: 3px ;">
+
+                                </div>
+                                <span> > 2% </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="linha-graficos">
+                    <div class="box-grafico">
+                        <div style="display: flex; justify-content: space-between;">
+                            <h3>Latência entre Componentes</h3>
+                            <select data-filtro="latenciaComponentes">
+                                <option value="24">24 horas</option>
+                                <option value="3">3 dias</option>
+                                <option value="7">7 dias</option>
+                            </select>
+                        </div>
+                        <canvas id="graficoLatencia"></canvas>
+                    </div>
+                    <div class="box-grafico">
+                        <div style="display: flex; justify-content: space-between;">
+                            <h3>Processos com maior consumo de banda</h3>
+                            <select data-filtro="banda">
+                                <option value="24">24 horas</option>
+                                <option value="3">3 dias</option>
+                                <option value="7">7 dias</option>
+                            </select>
+                        </div>
+                        <canvas id="graficoBanda"></canvas>
+                    </div>
+                </div>
+            </section>
+
+
+        </main>
+
+    </div>
+
+</body>
+
+</html>
+
+<script>
+
+    window.onload = () => {
+
+        const funcao = sessionStorage.getItem("FUNCAO_USUARIO");
+
+        if (funcao == "Gestor") {
+            document.getElementById("administracao").style.display = "block";
+            document.getElementById("cadastrarServidor").style.display = "flex";
+            document.getElementById("cadastrarUsuario").style.display = "flex";
+        }
+
+        exibirUsuarioAtivo();
+        listarServidores();
+        configurarFiltros();
+    }
+
+    let dashboards = {
+        "24": null,
+        "3": null,
+        "7": null
+    };
+
+    let filtros = {
+        perdaPacotes: "24",
+        latencia: "24",
+        adsb: "24",
+        rotas: "24",
+        transferencia: "24",
+        perdaServicos: "24",
+        latenciaComponentes: "24",
+        banda: "24"
+    };
+
+    let graficoTransferencia = null;
+    let graficoLatencia = null;
+    let graficoBanda = null;
+    let alertasAtivos = [];
+
+    async function carregarDashboards() {
+
+        const opcaoSelecionada =
+            select_servidor.options[
+            select_servidor.selectedIndex
+            ];
+
+        const mac_address =
+            opcaoSelecionada.id;
+
+        const id_empresa =
+            sessionStorage.ID_EMPRESA;
+
+        try {
+
+            const [
+                d24,
+                d3,
+                d7
+            ] = await Promise.all([
+
+                fetch(`/rede/buscarDadosRede/${id_empresa}/${mac_address}/24h`)
+                    .then(r => r.json()),
+
+                fetch(`/rede/buscarDadosRede/${id_empresa}/${mac_address}/3d`)
+                    .then(r => r.json()),
+
+                fetch(`/rede/buscarDadosRede/${id_empresa}/${mac_address}/7d`)
+                    .then(r => r.json())
+            ]);
+
+            dashboards["24"] = d24;
+            dashboards["3"] = d3;
+            dashboards["7"] = d7;
+
+            await carregarAlertas();
+
+            renderizarTudo();
+
+        } catch (erro) {
+
+            console.error(
+                "Erro ao carregar dashboards:",
+                erro
+            );
+        }
+    }
+    function agruparDados(labels, valores, tamanhoGrupo = 7) {
+
+        const novasLabels = [];
+        const novosValores = [];
+
+        for (let i = 0; i < valores.length; i += tamanhoGrupo) {
+
+            const blocoValores =
+                valores.slice(i, i + tamanhoGrupo);
+
+            const blocoLabels =
+                labels.slice(i, i + tamanhoGrupo);
+
+            const media =
+                blocoValores.reduce((a, b) => a + b, 0)
+                / blocoValores.length;
+
+            novosValores.push(
+                Number(media.toFixed(2))
+            );
+
+            novasLabels.push(
+                blocoLabels[blocoLabels.length - 1]
+            );
+        }
+
+        return {
+            labels: novasLabels,
+            valores: novosValores
+        };
+    }
+
+    function configurarFiltros() {
+
+        const selects = document.querySelectorAll("select[data-filtro]");
+
+        selects.forEach(select => {
+
+            select.addEventListener("change", function () {
+
+                const chave = this.dataset.filtro;
+
+                filtros[chave] = this.value;
+
+                renderizarTudo();
+            });
+        });
+    }
+
+    function renderizarTudo() {
+
+        renderizarKPIPerdaPacotes();
+        renderizarKPILatencia();
+        renderizarKPIAdsb();
+        renderizarKPIRotas();
+
+        renderizarGraficoTransferencia();
+        renderizarGraficoLatencia();
+        renderizarGraficoBanda();
+
+        renderizarPerdaPacotesServico();
+    }
+
+    // KPIs
+
+
+
+    // Estado da KPI
+
+    function obterPeriodoAnterior(periodo) {
+
+        if (periodo === "24") return "3";
+        if (periodo === "3") return "7";
+
+        return null;
+    }
+
+    function atualizarSituacao(
+        atual,
+        anterior,
+        elementoTexto,
+        elementoIcone,
+        elementoDiv,
+        menorEhMelhor = true
+    ) {
+
+        if (anterior == null) {
+            elementoTexto.innerHTML = "—";
+            return;
+        }
+
+        if (atual === anterior) {
+            elementoTexto.innerHTML = "estável";
+            elementoIcone.src = "assets/imgs/rede/neutro.png";
+            elementoTexto.style.color = "black";
+            elementoTexto.style.backgroundColor = "white"
+            elementoDiv.style.border = "2px #ebe6e7 solid"
+            return;
+        }
+
+        const melhorou = menorEhMelhor
+            ? atual < anterior
+            : atual > anterior;
+
+        const subiu = atual > anterior;
+
+        let cor = "";
+        let texto = "";
+        let color = "";
+        let backgroundColor = "";
+
+        if (melhorou) {
+            texto = "melhorando";
+            cor = "verde";
+            color = "#20A200"
+            backgroundColor = "#EAFEDC"
+        } else {
+            texto = "piorando";
+            cor = "verm";
+            color = "#F54444"
+            backgroundColor = "#FFE4E4"
+        }
+
+        elementoTexto.innerHTML = texto;
+        elementoTexto.style.color = color;
+        elementoDiv.style.backgroundColor = backgroundColor;
+        elementoDiv.style.border = `2px ${color} solid`;
+
+        // direção da seta depende da mudança real
+        const seta = subiu ? "subindo" : "caindo";
+
+        elementoIcone.src =
+            `assets/imgs/rede/${seta}-${cor}.png`;
+    }
+
+    function renderizarKPIPerdaPacotes() {
+
+        const periodoAtual = filtros.perdaPacotes;
+        const periodoAnterior = obterPeriodoAnterior(periodoAtual);
+
+        const atual = dashboards[periodoAtual].kpis.perda_pacotes;
+
+        document.getElementById("perdaPacotesValor").innerHTML =
+            atual + "%";
+
+        if (!periodoAnterior) return;
+
+        const anterior = dashboards[periodoAnterior].kpis.perda_pacotes;
+
+        atualizarSituacao(
+            atual,
+            anterior,
+            document.getElementById("perdaPacotesSituacao"),
+            document.getElementById("perdaPacotesIcone"),
+            document.getElementById("perdaPacotes"),
+            true // menor é melhor
+        );
+    }
+
+    function renderizarKPILatencia() {
+
+        const periodoAtual = filtros.latencia;
+        const periodoAnterior = obterPeriodoAnterior(periodoAtual);
+
+        const atual = Number(dashboards[periodoAtual].kpis.latencia_media);
+
+        document.getElementById("latenciaValor").innerHTML =
+            atual.toFixed(1) + " ms";
+
+        if (!periodoAnterior) return;
+
+        const anterior = dashboards[periodoAnterior].kpis.latencia_media;
+
+        atualizarSituacao(
+            atual,
+            anterior,
+            document.getElementById("latenciaSituacao"),
+            document.getElementById("latenciaIcone"),
+            document.getElementById("latencia"),
+            true //menor é melhor
+        );
+    }
+
+    function renderizarKPIAdsb() {
+
+        const periodoAtual = filtros.adsb;
+        const periodoAnterior = obterPeriodoAnterior(periodoAtual);
+
+        const atual = dashboards[periodoAtual].kpis.adsb_update;
+
+        document.getElementById("adsbValor").innerHTML =
+            atual + "%";
+
+        if (!periodoAnterior) return;
+
+        const anterior = dashboards[periodoAnterior].kpis.adsb_update;
+
+        atualizarSituacao(
+            atual,
+            anterior,
+            document.getElementById("adsbSituacao"),
+            document.getElementById("adsbIcone"),
+            document.getElementById("adsb"),
+            false // maior é melhor
+        );
+    }
+
+    function renderizarKPIRotas() {
+
+        const periodoAtual = filtros.rotas;
+        const periodoAnterior = obterPeriodoAnterior(periodoAtual);
+
+        const atual = dashboards[periodoAtual].kpis.rotas_sem_atualizacao;
+
+        document.getElementById("rotasValor").innerHTML =
+            atual;
+
+        if (!periodoAnterior) return;
+
+        const anterior = dashboards[periodoAnterior].kpis.rotas_sem_atualizacao;
+
+        atualizarSituacao(
+            atual,
+            anterior,
+            document.getElementById("rotasSituacao"),
+            document.getElementById("rotasIcone"),
+            document.getElementById("rotas"),
+            true
+        );
+    }
+
+    function agruparDados(labels, valores, tamanhoGrupo = 7) {
+
+        const novasLabels = [];
+        const novosValores = [];
+
+        for (let i = 0; i < valores.length; i += tamanhoGrupo) {
+
+            const blocoValores =
+                valores.slice(i, i + tamanhoGrupo);
+
+            const blocoLabels =
+                labels.slice(i, i + tamanhoGrupo);
+
+            const media =
+                blocoValores.reduce((a, b) => a + b, 0)
+                / blocoValores.length;
+
+            novosValores.push(
+                Number(media.toFixed(2))
+            );
+
+            novasLabels.push(
+                blocoLabels[blocoLabels.length - 1]
+            );
+        }
+
+        return {
+            labels: novasLabels,
+            valores: novosValores
+        };
+    }
+
+    function renderizarGraficoTransferencia() {
+
+        const dados =
+            dashboards[filtros.transferencia];
+
+        const agrupar =
+            filtros.transferencia === "24";
+
+        const dadosOriginais =
+            dados.grafico_transferencia;
+
+        const rastreamento =
+            agrupar
+                ? agruparDados(
+                    dadosOriginais.labels,
+                    dadosOriginais.rastreamento
+                )
+                : {
+                    labels: dadosOriginais.labels,
+                    valores: dadosOriginais.rastreamento
+                };
+
+        const rotas =
+            agrupar
+                ? agruparDados(
+                    dadosOriginais.labels,
+                    dadosOriginais.rotas
+                )
+                : {
+                    labels: dadosOriginais.labels,
+                    valores: dadosOriginais.rotas
+                };
+
+        const correlacao =
+            agrupar
+                ? agruparDados(
+                    dadosOriginais.labels,
+                    dadosOriginais.correlacao
+                )
+                : {
+                    labels: dadosOriginais.labels,
+                    valores: dadosOriginais.correlacao
+                };
+
+        const chartDom =
+            document.getElementById("graficoTransferencia");
+
+        if (!graficoTransferencia) {
+
+            graficoTransferencia =
+                echarts.init(chartDom);
+        }
+
+        graficoTransferencia.setOption({
+
+            tooltip: {
+                trigger: "axis"
+            },
+
+            legend: {
+                data: [
+                    "Rastreamento",
+                    "Rotas",
+                    "Correlação"
+                ]
+            },
+
+            grid: {
+                left: "5%",
+                right: "5%",
+                bottom: "15%",
+                containLabel: true
+            },
+
+            xAxis: {
+                type: "category",
+
+                data:
+                    rastreamento.labels,
+
+                axisLabel: {
+                    rotate: 45
+                }
+            },
+
+            yAxis: {
+                type: "value",
+                name: "Mbps"
+            },
+
+            dataZoom: [
+                {
+                    type: "inside"
+                },
+                {
+                    type: "slider"
+                }
+            ],
+
+            series: [
+                {
+                    name: "Rastreamento",
+                    type: "line",
+                    smooth: true,
+                    data:
+                        rastreamento.valores
+                },
+
+                {
+                    name: "Rotas",
+                    type: "line",
+                    smooth: true,
+                    data:
+                        rotas.valores
+                },
+
+                {
+                    name: "Correlação",
+                    type: "line",
+                    smooth: true,
+                    data:
+                        correlacao.valores
+                }
+            ]
+        });
+    }
+
+    function renderizarGraficoLatencia() {
+
+        const dados =
+            dashboards[filtros.latenciaComponentes];
+
+        const ctx =
+            document.getElementById("graficoLatencia");
+
+        if (graficoLatencia) {
+            graficoLatencia.destroy();
+        }
+
+        graficoLatencia = new Chart(ctx, {
+
+            type: "bar",
+
+            data: {
+
+                labels: Object.keys(
+                    dados.grafico_latencia_componentes
+                ),
+
+                datasets: [{
+
+                    label: "Latência (ms)",
+
+                    data: Object.values(
+                        dados.grafico_latencia_componentes
+                    ),
+
+                    backgroundColor: [
+                        "#05056B",
+                        "#0A4A96",
+                        "#12B7E5",
+                        "#2F80ED",
+                        "#56CCF2"
+                    ],
+
+                    borderRadius: 8
+                }]
+            },
+
+            options: {
+
+                indexAxis: "y",
+
+                responsive: true,
+
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
+
+                scales: {
+                    x: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    }
+
+    function renderizarGraficoBanda() {
+
+        const dados =
+            dashboards[filtros.banda];
+
+        const ctx =
+            document.getElementById("graficoBanda");
+
+        if (graficoBanda) {
+            graficoBanda.destroy();
+        }
+
+        graficoBanda = new Chart(ctx, {
+
+            type: "bar",
+
+            data: {
+
+                labels: Object.keys(
+                    dados.consumo_banda
+                ),
+
+                datasets: [{
+
+                    label: "Mbps",
+
+                    data: Object.values(
+                        dados.consumo_banda
+                    ),
+
+                    backgroundColor: "#0E7AB5",
+
+                    borderRadius: 12
+                }]
+            },
+
+            options: {
+
+                indexAxis: "y",
+
+                responsive: true,
+
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                }
+            }
+        });
+    }
+
+    function renderizarPerdaPacotesServico() {
+
+        const dados =
+            dashboards[filtros.perdaServicos];
+
+        const container =
+            document.getElementById("listaPacotes");
+
+        container.innerHTML = "";
+
+        const perdas =
+            dados.perda_pacotes_servico;
+
+        for (let servico in perdas) {
+
+            const valor = perdas[servico];
+
+            let corClasse = "";
+
+            if (valor < 1) {
+
+                corClasse = "verde";
+
+            } else if (valor <= 2) {
+
+                corClasse = "laranja";
+
+            } else {
+
+                corClasse = "vermelho";
+            }
+
+            container.innerHTML += `
+            <div class="tabela-pacotes">
+
+                <div>${servico}</div>
+
+                <div class="indicador-pacotes ${corClasse}">
+                    ${valor}%
+                </div>
+
+            </div>
+        `;
+        }
+    }
+
+    // Gerar Relatório
+
+    async function gerarRelatorio() {
+    const usuario = sessionStorage.NOME_USUARIO;
+    const email = sessionStorage.EMAIL_USUARIO;
+    const id_empresa = sessionStorage.ID_EMPRESA;
+
+    const opcaoSelecionada = select_servidor.options[select_servidor.selectedIndex];
+    const mac_address = opcaoSelecionada.id;
+    const servidor = opcaoSelecionada.text;
+
+    try {
+        const response = await fetch("/relatorio", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ usuario, email, mac_address, servidor, id_empresa })
+        });
+
+        const data = await response.json();
+
+        if (data.url) {
+            window.open(data.url); // abre o PDF do S3
+        } else {
+            alert("Erro ao gerar relatório.");
+        }
+
+    } catch (err) {
+        console.error("Erro:", err);
+        alert("Falha ao gerar relatório.");
+    }
+}
+
+    // Lista de Servidores
+
+    function listarServidores() {
+
+        const fkEmpresa = sessionStorage.ID_EMPRESA;
+
+        // transforma string em array
+        const servidores = JSON.parse(sessionStorage.ACESSO_SERVIDORES);
+
+        fetch(`/servidores/listarServidores`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                fkEmpresaServer: fkEmpresa,
+                servidoresServer: servidores
+            })
+        })
+
+            .then(resposta => resposta.json())
+
+            .then((lista) => {
+
+                select_servidor.innerHTML =
+                    lista.map(servidor =>
+
+                        `<option value="${servidor.id_servidor}" id="${servidor.mac_address}">
+                        ${servidor.hostname}
+                    </option>`
+
+                    ).join('');
+
+                nomeServidor.textContent =
+                    select_servidor.options[
+                        select_servidor.selectedIndex
+                    ].text;
+
+                carregarDashboards()
+            });
+
+        select_servidor.addEventListener("change", () => {
+
+            nomeServidor.textContent =
+                select_servidor.options[
+                    select_servidor.selectedIndex
+                ].text;
+
+            carregarDashboards()
+        });
+    }
+
+    //Menu Sanduiche
+    const btnHamburguer =
+        document.getElementById("hamburguer");
+
+    const lateral =
+        document.getElementById("lateral");
+
+    const overlay =
+        document.getElementById("overlay");
+
+    function abrirMenu() {
+
+        lateral.classList.add("ativo");
+
+        overlay.classList.add("ativo");
+    }
+
+    function fecharMenu() {
+
+        lateral.classList.remove("ativo");
+
+        overlay.classList.remove("ativo");
+    }
+
+    if (btnHamburguer) {
+
+        btnHamburguer.addEventListener("click", function (e) {
+
+            e.stopPropagation();
+
+            if (lateral.classList.contains("ativo")) {
+                fecharMenu();
+            }
+
+            else {
+                abrirMenu();
+            }
+        });
+    }
+
+    overlay.addEventListener("click", fecharMenu);
+
+    document.addEventListener("click", function (e) {
+
+        if (
+            lateral.classList.contains("ativo") &&
+            !lateral.contains(e.target) &&
+            !btnHamburguer.contains(e.target)
+        ) {
+            fecharMenu();
+        }
+    });
+
+    window.addEventListener('resize', function () {
+
+        if (graficoTransferencia) {
+            graficoTransferencia.resize();
+        }
+    });
+
+
+
+    async function carregarAlertas() {
+
+        const opcaoSelecionada =
+            select_servidor.options[
+            select_servidor.selectedIndex
+            ];
+
+        const mac_address = opcaoSelecionada.id;
+
+        const id_empresa =
+            sessionStorage.ID_EMPRESA;
+
+        try {
+
+            const resposta = await fetch(
+                `/rede/buscarAlertas/${id_empresa}/${encodeURIComponent(mac_address)}`
+            )
+
+            if (!resposta.ok) {
+                throw new Error(
+                    `Erro HTTP: ${resposta.status}`
+                );
+            }
+
+            const dados = await resposta.json();
+
+            alertasAtivos = dados;
+
+            renderizarAlertas();
+            atualizarStatus();
+
+        } catch (erro) {
+
+            console.error(
+                "Erro ao buscar alertas:",
+                erro
+            );
+        }
+    }
+
+    function renderizarAlertas() {
+
+        const box =
+            document.getElementById("alertasBox");
+
+        const texto =
+            document.getElementById("alertaTexto");
+
+        const icone =
+            document.getElementById("alertaIcone");
+
+        const quantidade =
+            alertasAtivos.length;
+
+        texto.innerHTML =
+            `${quantidade} alerta${quantidade != 1 ? "s" : ""}`;
+
+        box.classList.remove(
+            "critico",
+            "alto"
+        );
+
+        if (quantidade === 0) {
+
+            box.style.display = "none";
+
+            return;
+        }
+
+        box.style.display = "flex";
+
+        const possuiCritico =
+            alertasAtivos.some(
+                alerta =>
+                    alerta.criticidade === "critico"
+            );
+
+        if (possuiCritico) {
+
+            box.classList.add("critico");
+
+            icone.src =
+                "assets/imgs/rede/alerta-verm.png";
+
+        } else {
+
+            box.classList.add("alto");
+
+            icone.src =
+                "assets/imgs/rede/alerta-lar.png";
+        }
+    }
+
+    function atualizarStatus() {
+
+        const dot = document.querySelector(".status-dot");
+
+        if (!dot) return;
+
+        dot.classList.remove("verde", "amarelo", "vermelho");
+
+        // sem alertas = verde
+        if (alertasAtivos.length === 0) {
+
+            dot.classList.add("verde");
+            return;
+        }
+
+        // verifica se existe alerta crítico
+        const possuiCritico = alertasAtivos.some(
+            alerta => alerta.criticidade === "critico"
+        );
+
+        if (possuiCritico) {
+
+            dot.classList.add("vermelho");
+
+        } else {
+
+            dot.classList.add("amarelo");
+        }
+    }
+
+</script>

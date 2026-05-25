@@ -1,0 +1,24 @@
+ [
+  {
+    "data_hora": "2026-05-22 14:50:27",
+    "empresa_id": 1,
+    "servidor_id": 7,
+    "hostname": "Gustavo",
+    "ip": "192.168.56.1",
+    "metricas": {
+      "cpu": 10.8,
+      "ram": 89.3,
+      "disco": 89.8,
+      "health_score": 27.0,
+      "status_health": "critico",
+      "linha_real": 89.3,
+      "linha_tendencia": 89.3,
+      "tendencia_aumento_hora": 0
+    },
+    "status_componentes": {
+      "cpu": "estavel",
+      "ram": "critico",
+      "disco": "critico"
+    }
+  }
+]

@@ -1,0 +1,974 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Servidores | Horus</title>
+    <link rel="icon" href="./assets/icon/logo.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Jura:wght@300..700&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap"
+        rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="./js/script.js"></script>
+    <link rel="stylesheet" href="./style.css">
+    <link rel="stylesheet" href="style/dash_analista.css">
+
+    <style>
+        .graficoQtdChamados {
+            position: relative;
+            width: 100%;
+            height: 260px;
+            padding: 12px 16px 8px;
+            box-sizing: border-box;
+        }
+
+        #graficoQtdChamados {
+            display: block;
+            width: 100% !important;
+            height: 100% !important;
+        }
+
+
+        .chart-box {
+            position: relative;
+            width: 100%;
+            height: 220px;
+        }
+
+        .grafico-recursos {
+            position: relative;
+            width: 100%;
+            height: 220px;
+            padding: 8px 12px;
+            box-sizing: border-box;
+        }
+
+
+        #healthChart {
+            display: block;
+            width: 100% !important;
+            height: 100% !important;
+        }
+
+
+        .chart-tooltip {
+            background: rgba(15, 23, 42, 0.92);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 8px;
+            padding: 8px 12px;
+            color: #fff;
+            font-size: 13px;
+            pointer-events: none;
+            position: absolute;
+            z-index: 50;
+            white-space: nowrap;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="modal-lateral" id="overlay"></div>
+    <div class="modalFiltro" id="modalFiltro"></div>
+
+    <div class="container">
+        <aside class="lateral" id="lateral">
+            <div class="logo">
+                <img src="./assets/imgs/painel/logo.png" alt="">
+                Horus
+            </div>
+
+            <nav class="menu">
+                <div class="categoria">Monitoramento</div>
+                <a class="item-menu selecionado">
+                    <img src="./assets/imgs/painel/dash-selecionado.png" alt="">Dashboard
+                </a>
+
+                <div class="categoria adm" id="administracao">Administração</div>
+                <a href="dash_usuarios.html" class="item-menu adm" id="cadastrarUsuario">
+                    <img src="./assets/imgs/painel/cadastrar-usuario.png" alt="">Usuários
+                </a>
+                <a href="servidor-componente.html" class="item-menu adm" id="cadastrarServidor">
+                    <img src="./assets/imgs/painel/cadastrar-servidor.png" alt="">Cadastrar servidor
+                </a>
+
+                <button id="gerarRelatorio" class="adm" style="justify-content: center;">Gerar Relatório em PDF</button>
+            </nav>
+
+            <div onclick="limparSessionStorage()" class="sair">
+                <img src="./assets/imgs/painel/sair.png" alt="">
+                <p onclick="window.location.href='index.html'">Sair</p>
+            </div>
+        </aside>
+
+        <main class="main">
+
+            <header class="header">
+                <div class="header-topo">
+                    <div class="header-esquerda">
+                        <div class="hamburguer" id="hamburguer">
+                            <img src="./assets/imgs/painel/hamburguer.png" alt="Menu">
+                        </div>
+
+                        <div class="header-servidor">
+                            <span class="breadcrumb">
+                                Servidores /
+                                <strong id="nomeServidor"></strong> /
+                                <span class="renomear">Dashboard</span>
+                            </span>
+
+                            <div class="status-servidor">
+                                <div class="select-status">
+                                    <span class="status-dot verde" id="statusDot"></span>
+                                    <select id="select_servidor"></select>
+                                </div>
+
+                                <div class="alertas">
+                                    <img src="assets/imgs/rede/alerta-lar.png" alt=""
+                                        style="height: 12px !important; width: 12px !important;"> 3 alertas
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="usuario">
+                        <div>
+                            <p id="nome_usuario"></p>
+                            <p id="funcao_usuario" class="cargo"></p>
+                        </div>
+                        <span id="inicial_usuario"></span>
+                    </div>
+                </div>
+
+                <div class="header-nav-scroll">
+                    <nav class="header-nav">
+                        <a href="dash_incidentes.html">Incidentes</a>
+                        <a href="processos.html">Processos</a>
+                        <a href="dash_rede.html">Comunicação e rede</a>
+                        <a href="Temperatura.html">Temperatura</a>
+                        <a href="dash_analista.html" class="ativo">Resumo</a>
+                    </nav>
+                </div>
+            </header>
+
+            <section class="conteudo" id="conteudo">
+
+                <div class="popup ativo" id="modal" style="position: static; background: none; padding: 0;">
+                    <div class="modal">
+
+                        <div class="topo">
+                            <div class="linha-topo">
+                                <div class="local">
+                                    <h3 id="nomeServidorModal"></h3>
+                                    <div class="linha">
+                                        <img src="assets/imgs/painel/local.png" alt="" width="16px">
+                                        <span class="nome-local" id="nomeLocal"></span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="status">
+                                <div class="status-rotulo">
+                                    <img src="assets/imgs/painel/i.png" alt="" width="20px">
+                                    <span>Status</span>
+                                </div>
+                                <div class="status-info" id="statusInfo">Online</div>
+                            </div>
+                        </div>
+
+                        <div class="cards-detalhes">
+                            <div class="card-cpu">
+                                <div class="topo-card">
+                                    <img src="assets/imgs/painel/cpu-card.png" width="55px">
+                                    <div>
+                                        <span class="negrito">CPU</span>
+                                        <h1 class="registro" id="cpuModal">—</h1>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-ram">
+                                <div class="topo-card">
+                                    <img src="assets/imgs/painel/ram-card.png" width="55px">
+                                    <div>
+                                        <span class="negrito">RAM</span>
+                                        <h1 class="registro" id="ramModal">—</h1>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-disk">
+                                <div class="topo-card">
+                                    <img src="assets/imgs/painel/disco-card.png" width="55px">
+                                    <div>
+                                        <span class="negrito">Disco</span>
+                                        <h1 class="registro" id="discoModal">—</h1>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-info">
+                                <span class="subtexto">Última atualização</span>
+                                <span id="ultimaAtualizacao">—</span>
+                                <span class="subtexto">Endereço IP</span>
+                                <span id="ipServidorModal">—</span>
+                            </div>
+                        </div>
+
+                        <div class="linha">
+                            <div class="card-processos">
+                                <div class="card-processos-topo">
+                                    <span class="titulo-tabela">Monitor de Saúde do Servidor</span>
+                                    <div id="badgeSaude" class="badge-saude">Calculando...</div>
+                                </div>
+                                <div class="container2">
+                                    <div class="dashboard">
+                                        <div class="card">
+                                            <div class="chart-box">
+                                                <canvas id="healthChart" role="img"
+                                                    aria-label="Gráfico de saúde do servidor nas últimas 24 horas">
+                                                    Saúde do servidor ao longo do tempo.
+                                                </canvas>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div style="display: flex; justify-content: flex-end; padding: 10px 20px 14px;">
+                                    <button class="btn-detalhes-saude"
+                                        onclick="document.getElementById('modalSaude').classList.add('ativo')">
+                                        Detalhes
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="card-grafico-processos">
+                                <div class="container">
+                                    <div class="topbar">
+                                        <h1>Predição de Uso de RAM</h1>
+                                    </div>
+                                    <div class="chart-box">
+                                        <canvas id="graficoRam" role="img"
+                                            aria-label="Gráfico de predição de uso de RAM nas últimas 24 horas">
+                                            Uso de RAM e linha de tendência ao longo do tempo.
+                                        </canvas>
+                                    </div>
+                                    <div class="info">
+                                        <div class="card">
+                                            <h3 id="labelProbabilidade">Prob. Crescimento/h</h3>
+                                            <p id="probabilidadeCrescimento">—</p>
+                                            <span id="fraseInterpretativa"
+                                                class="interpretacao interpretacao-normal">Uso normal</span>
+                                        </div>
+                                        <div class="card">
+                                            <h3>Tendência</h3>
+                                            <p id="tendenciaRam">-</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="linha">
+                            <div class="card-grafico-processos">
+                                <div class="card-detalhes-topo">
+                                    <span>Quantidade de chamados de cada componente</span>
+                                </div>
+                                <div class="graficoQtdChamados">
+                                    <canvas id="graficoQtdChamados" role="img"
+                                        aria-label="Gráfico de barras com quantidade de chamados por componente">
+                                        Chamados por componente.
+                                    </canvas>
+                                </div>
+                            </div>
+                            <div class="cards-detalhes-grafico">
+                                <div class="card-detalhes-topo">
+                                    <span>Uso dos principais componentes (%)</span>
+                                </div>
+                                <div class="grafico-recursos">
+                                    <canvas id="graficoRecursos24h" role="img"
+                                        aria-label="Gráfico de uso de CPU, RAM e Disco nas últimas 24 horas">
+                                        Uso de CPU, RAM e Disco ao longo do tempo.
+                                    </canvas>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="modal-saude-overlay" id="modalSaude">
+                            <div class="modal-saude">
+                                <div class="modal-saude-header">
+                                    <span>Indicadores de Saúde</span>
+                                    <button
+                                        onclick="document.getElementById('modalSaude').classList.remove('ativo')">&times;</button>
+                                </div>
+                                <div class="modal-saude-body">
+                                    <div class="metric">
+                                        <h3>CPU</h3>
+                                        <p id="cpuValue">0%</p>
+                                    </div>
+                                    <div class="metric">
+                                        <h3>RAM</h3>
+                                        <p id="ramValue">0%</p>
+                                    </div>
+                                    <div class="metric">
+                                        <h3>SWAP</h3>
+                                        <p id="swapValue">0%</p>
+                                    </div>
+                                    <div class="metric">
+                                        <h3>DISCO</h3>
+                                        <p id="diskValue">0%</p>
+                                    </div>
+                                </div>
+                                <div id="serverStatus" class="status status-saude" style="margin: 0 20px 20px;">
+                                    Calculando...
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <script>
+
+        var chartRam, chartRecursos, chartChamados, chartHealth;
+        var servidoresCache = [];
+        var servidorAtual = null;
+        var intervaloCaptura = null;
+
+        const fkEmpresa = sessionStorage.ID_EMPRESA;
+        const fkFuncionario = sessionStorage.ID_USUARIO;
+
+        const JANELA = 24;
+
+
+        function formatarHora(dataHora) {
+            const data = new Date(dataHora.replace(" ", "T"));
+
+            return data.toLocaleTimeString("pt-BR", {
+                hour: "2-digit",
+                minute: "2-digit"
+            });
+        }
+
+        var historicoRam = Array(JANELA).fill(null);
+        var historicoTendencia = Array(JANELA).fill(null);
+        var historicoHealth = Array(JANELA).fill(null);
+        var historicoCpu = Array(JANELA).fill(null);
+        var historicoRamR = Array(JANELA).fill(null);
+        var historicoDisco = Array(JANELA).fill(null);
+        var historicoLabels = [];
+
+
+        var contadorHora = 0;
+        var contadorHealth = 0;
+        var contadorRecursos = 0;
+
+
+        var ultimoDataHoraPlotado = null;
+
+
+        const coresHealth = {
+            estavel: { borda: '#22c55e', fundo: 'rgba(34,197,94,0.15)', badge: '#16a34a', texto: 'Estável' },
+            atencao: { borda: '#f59e0b', fundo: 'rgba(245,158,11,0.15)', badge: '#d97706', texto: 'Atenção' },
+            critico: { borda: '#ef4444', fundo: 'rgba(239,68,68,0.15)', badge: '#dc2626', texto: 'Crítico' }
+        };
+
+
+
+        function parseDataHora(dataHora) {
+            return new Date(dataHora.replace(" ", "T"));
+        }
+
+        function corDoStatus(status) {
+            return coresHealth[status] ?? coresHealth['estavel'];
+        }
+
+
+        function pushJanela(arr, valor) {
+            arr.push(valor);
+
+            if (arr.length > JANELA) {
+                arr.shift();
+            }
+        }
+
+        function atualizarGraficoSaude(healthScore, statusHealth) {
+            const cor = corDoStatus(statusHealth);
+
+
+            const badge = document.getElementById('badgeSaude');
+            badge.textContent = cor.texto;
+            badge.style.backgroundColor = cor.fundo;
+            badge.style.color = cor.badge;
+            badge.style.border = `1px solid ${cor.borda}`;
+            badge.style.borderRadius = '999px';
+            badge.style.padding = '2px 12px';
+            badge.style.fontWeight = '600';
+            badge.style.fontSize = '13px';
+
+
+            const serverStatus = document.getElementById('serverStatus');
+            if (serverStatus) {
+                serverStatus.textContent = cor.texto;
+                serverStatus.style.background = cor.fundo;
+                serverStatus.style.color = cor.badge;
+                serverStatus.style.border = `1px solid ${cor.borda}`;
+            }
+
+
+            if (chartHealth) {
+                chartHealth.data.datasets[0].borderColor = cor.borda;
+                chartHealth.data.datasets[0].backgroundColor = cor.fundo;
+                chartHealth.data.datasets[0].data = [...historicoHealth];
+                chartHealth.update(); /* 'none' = sem animação a cada tick */
+            } else {
+                chartHealth = new Chart(document.getElementById('healthChart'), {
+                    type: 'line',
+                    data: {
+                        labels: historicoLabels,
+                        datasets: [{
+                            label: 'Health Score (%)',
+                            data: [...historicoHealth],
+                            borderColor: cor.borda,
+                            backgroundColor: cor.fundo,
+                            borderWidth: 2.5,
+                            tension: 0.4,
+                            cubicInterpolationMode: 'monotone',
+                            spanGaps: true,
+                            pointRadius: 0,
+                            pointHoverRadius: 5,
+                            fill: true
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        animation: { duration: 400 },
+                        scales: {
+                            x: {
+                                title: { display: true, text: 'Leituras (últimas 24h)' },
+                                ticks: {
+                                    maxTicksLimit: 12,
+                                    autoSkip: true
+                                }
+                            },
+                            y: {
+                                min: 0,
+                                max: 100,
+                                title: { display: true, text: 'Saúde (%)' },
+                                ticks: {
+                                    stepSize: 20,
+                                    callback: val => val + '%'
+                                }
+                            }
+                        },
+                        plugins: {
+                            legend: { display: false },
+                            tooltip: {
+                                callbacks: {
+                                    label: ctx => `Saúde: ${ctx.parsed.y.toFixed(1)}%`
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+        }
+
+        function atualizarGraficoRecursos(cpu, ram, disco) {
+
+            if (chartRecursos) {
+                chartRecursos.data.datasets[0].data = [...historicoCpu];
+                chartRecursos.data.datasets[1].data = [...historicoRamR];
+                chartRecursos.data.datasets[2].data = [...historicoDisco];
+                chartRecursos.update();
+            } else {
+                chartRecursos = new Chart(document.getElementById('graficoRecursos24h'), {
+                    type: 'line',
+                    data: {
+                        labels: historicoLabels,
+                        datasets: [
+                            {
+                                label: 'CPU',
+                                data: [...historicoCpu],
+                                borderColor: '#576ca8',
+                                backgroundColor: 'rgba(87,108,168,0.08)',
+                                borderWidth: 2.5,
+                                tension: 0.4,
+                                cubicInterpolationMode: 'monotone',
+                                spanGaps: true,
+                                pointRadius: 0,
+                                pointHoverRadius: 5,
+                                fill: false,
+                                borderDash: []
+                            },
+                            {
+                                label: 'RAM',
+                                data: [...historicoRamR],
+                                borderColor: '#a855f7',
+                                backgroundColor: 'rgba(168,85,247,0.08)',
+                                borderWidth: 2.5,
+                                tension: 0.4,
+                                cubicInterpolationMode: 'monotone',
+                                spanGaps: true,
+                                pointRadius: 0,
+                                pointHoverRadius: 5,
+                                fill: false,
+                                borderDash: [6, 3]
+                            },
+                            {
+                                label: 'Disco',
+                                data: [...historicoDisco],
+                                borderColor: '#22c55e',
+                                backgroundColor: 'rgba(34,197,94,0.08)',
+                                borderWidth: 2.5,
+                                tension: 0.4,
+                                cubicInterpolationMode: 'monotone',
+                                spanGaps: true,
+                                pointRadius: 0,
+                                pointHoverRadius: 5,
+                                fill: false,
+                                borderDash: [2, 2]
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        animation: { duration: 400 },
+                        interaction: { mode: 'index', intersect: false },
+                        scales: {
+                            x: {
+                                title: { display: true, text: 'Leituras (últimas 24h)' },
+                                ticks: { maxTicksLimit: 12, autoSkip: true }
+                            },
+                            y: {
+                                min: 0,
+                                max: 100,
+                                title: { display: true, text: 'Uso (%)' },
+                                ticks: {
+                                    stepSize: 20,
+                                    callback: val => val + '%'
+                                }
+                            }
+                        },
+                        plugins: {
+                            legend: { display: true, position: 'top' },
+                            tooltip: {
+                                callbacks: {
+                                    label: ctx => `${ctx.dataset.label}: ${ctx.parsed.y != null ? ctx.parsed.y.toFixed(1) + '%' : '—'}`
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+        }
+
+        function atualizarGraficoRam(linhaReal, linhaTendencia) {
+
+            if (chartRam) {
+                chartRam.data.datasets[0].data = [...historicoRam];
+                chartRam.data.datasets[1].data = [...historicoTendencia];
+                chartRam.update();
+            } else {
+                chartRam = new Chart(document.getElementById('graficoRam'), {
+                    type: 'line',
+                    data: {
+                        labels: historicoLabels,
+                        datasets: [
+                            {
+                                label: 'Uso de RAM (%)',
+                                data: [...historicoRam],
+                                borderColor: '#576ca8',
+                                backgroundColor: 'rgba(87,108,168,0.15)',
+                                borderWidth: 3,
+                                tension: 0.4,
+                                cubicInterpolationMode: 'monotone',
+                                pointRadius: 0,
+                                spanGaps: true,
+                                pointHoverRadius: 5,
+                                fill: true,
+                                borderDash: []
+                            },
+                            {
+                                label: 'Linha de Tendência',
+                                data: [...historicoTendencia],
+                                borderColor: '#f59e0b',
+                                borderDash: [8, 5],
+                                borderWidth: 2,
+                                pointRadius: 0,
+                                tension: 0.4,
+                                cubicInterpolationMode: 'monotone',
+                                spanGaps: true,
+                                pointHoverRadius: 5,
+                                fill: false
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        animation: { duration: 400 },
+                        scales: {
+                            x: {
+                                title: { display: true, text: 'Leituras (últimas 24h)' },
+                                ticks: { maxTicksLimit: 12, autoSkip: true }
+                            },
+                            y: {
+                                min: 0,
+                                max: 100,
+                                title: { display: true, text: 'Uso (%)' },
+                                ticks: {
+                                    stepSize: 20,
+                                    callback: val => val + '%'
+                                }
+                            }
+                        },
+                        plugins: {
+                            legend: { display: true, position: 'top' },
+                            tooltip: {
+                                callbacks: {
+                                    label: ctx => `${ctx.dataset.label}: ${ctx.parsed.y != null ? ctx.parsed.y.toFixed(1) + '%' : '—'}`
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+        }
+
+
+        async function capturarDados(empresa, macAddress) {
+            try {
+                const resposta = await fetch(`/servidores/capturarDados/${empresa}/${macAddress}`, {
+                    cache: "no-store"
+                });
+
+                if (!resposta.ok) throw new Error(`HTTP ${resposta.status}`);
+                const dados = await resposta.json();
+
+                const metricas = dados.metricas;
+                if (!metricas || metricas.length === 0) {
+                    console.warn("Nenhuma métrica recebida.");
+                    return;
+                }
+
+
+                const ordenados = metricas
+                    .slice()
+
+                    .sort((a, b) =>
+                        parseDataHora(a.data_hora) -
+                        parseDataHora(b.data_hora)
+                    );
+
+                const novos = ultimoDataHoraPlotado
+                    ? ordenados.filter(i =>
+                        parseDataHora(i.data_hora) >
+                        parseDataHora(ultimoDataHoraPlotado)
+                    )
+                    : ordenados;
+
+
+
+                if (novos.length === 0) return;
+
+
+                novos.forEach(item => {
+                    const m = item.metricas ?? {};
+
+                    const linhaReal = Number(m.linha_real ?? m.ram ?? 0);
+                    const linhaTendencia = Number(m.linha_tendencia ?? m.ram ?? 0);
+
+
+                    const labelHora = formatarHora(item.data_hora);
+
+                    pushJanela(historicoLabels, labelHora);
+
+                    pushJanela(historicoHealth, m.health_score ?? null);
+
+                    pushJanela(historicoCpu, m.cpu ?? null);
+                    pushJanela(historicoRamR, m.ram ?? null);
+                    pushJanela(historicoDisco, m.disco ?? null);
+
+                    pushJanela(historicoRam, linhaReal);
+                    pushJanela(historicoTendencia, linhaTendencia);
+                });
+
+
+                ultimoDataHoraPlotado = novos.at(-1).data_hora;
+
+
+                const itemRecente = ordenados.at(-1);
+                const m = itemRecente.metricas ?? {};
+
+                const valorReal = Number(m.linha_real ?? m.ram ?? 0);
+                const valorTendencia = Number(m.linha_tendencia ?? m.ram ?? 0);
+                const margem = 0.5;
+
+                let tendenciaTexto = "Estável";
+                document.getElementById("fraseInterpretativa").innerHTML = "uso normal"
+                if (valorTendencia > valorReal + margem) {
+                    tendenciaTexto = "Subindo";
+                    document.getElementById("fraseInterpretativa").innerHTML = "crescimento anormal"
+                }
+                else if (valorTendencia < valorReal - margem) tendenciaTexto = "Caindo";
+
+                document.getElementById("tendenciaRam").textContent = tendenciaTexto;
+                document.getElementById("cpuModal").textContent = (m.cpu ?? "--") + "%";
+                document.getElementById("ramModal").textContent = (m.ram ?? "--") + "%";
+                document.getElementById("discoModal").textContent = (m.disco ?? "--") + "%";
+                document.getElementById("ultimaAtualizacao").textContent = itemRecente.data_hora || "--";
+                document.getElementById("probabilidadeCrescimento").textContent = m.tendencia_aumento_hora ?? "--";
+                document.getElementById("ipServidorModal").textContent = itemRecente.ip || "--";
+                document.getElementById("cpuValue").textContent = (m.cpu ?? 0) + "%";
+                document.getElementById("ramValue").textContent = (m.ram ?? 0) + "%";
+                document.getElementById("diskValue").textContent = (m.disco ?? 0) + "%";
+
+
+
+
+                atualizarGraficoSaude(m.health_score ?? 0, m.status_health ?? 'estavel');
+                atualizarGraficoRecursos(m.cpu ?? null, m.ram ?? null, m.disco ?? null);
+                atualizarGraficoRam(valorReal, valorTendencia);
+
+            } catch (erro) {
+                console.error("Erro ao capturar dados:", erro);
+            }
+        }
+
+
+
+        async function carregarGraficoChamados(hostname) {
+
+            const resposta = await fetch(
+                `/jira/chamadosComponente/${fkFuncionario}/${fkEmpresa}/${hostname}`
+            );
+
+            const dados = await resposta.json();
+
+            const labels = Object.keys(dados);
+            const valores = Object.values(dados);
+
+            if (chartChamados) {
+                chartChamados.destroy();
+            }
+
+            chartChamados = new Chart(
+                document.getElementById("graficoQtdChamados"),
+                {
+                    type: "bar",
+
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: "Chamados",
+                            data: valores
+                        }]
+                    },
+
+                    options: {
+                        scales: {
+                            y: {
+                                min: 1,
+                                max: 100,
+                                ticks: {
+                                    stepSize: 25
+                                }
+                            }
+                        },
+
+                        plugins: {
+                            tooltip: {
+                                callbacks: {
+                                    label: function (context) {
+                                        return `Chamados: ${context.parsed.y}`;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            );
+        }
+
+        function resetarHistoricos() {
+            historicoRam = Array(JANELA).fill(null);
+            historicoTendencia = Array(JANELA).fill(null);
+            historicoHealth = Array(JANELA).fill(null);
+            historicoCpu = Array(JANELA).fill(null);
+            historicoRamR = Array(JANELA).fill(null);
+            historicoDisco = Array(JANELA).fill(null);
+            contadorHora = 0;
+            contadorHealth = 0;
+            contadorRecursos = 0;
+        }
+
+        function destruirGraficos() {
+            [chartRam, chartHealth, chartRecursos].forEach(c => { if (c) c.destroy(); });
+            chartRam = chartHealth = chartRecursos = null;
+
+        }
+
+        function iniciarCaptura(empresa, macAddress) {
+            if (intervaloCaptura) clearInterval(intervaloCaptura);
+
+            ultimoDataHoraPlotado = null;
+            resetarHistoricos();
+            destruirGraficos();
+
+
+            capturarDados(empresa, macAddress);
+            intervaloCaptura = setInterval(() => capturarDados(empresa, macAddress), 10000);
+        }
+
+
+
+        async function carregarServidores() {
+            try {
+                const resposta = await fetch(
+                    `/servidores/listarServidoresComAcesso/${fkEmpresa}/${fkFuncionario}`
+                );
+                const servidores = await resposta.json();
+                servidoresCache = servidores;
+
+                const servidoresComAcesso = servidores.filter(s => s.tem_acesso === 1);
+                const select = document.getElementById("select_servidor");
+                select.innerHTML = "";
+
+                if (servidoresComAcesso.length === 0) {
+                    select.innerHTML = `<option>Nenhum servidor disponível</option>`;
+                    return;
+                }
+
+                servidoresComAcesso.forEach((servidor, index) => {
+                    const option = document.createElement("option");
+                    option.value = servidor.mac_address;
+                    option.textContent = servidor.hostname;
+                    select.appendChild(option);
+                    if (index === 0) servidorAtual = servidor.mac_address;
+                });
+
+                select.value = servidorAtual;
+                await carregarDashboardServidor(servidorAtual);
+
+            } catch (erro) {
+                console.error("Erro ao carregar servidores:", erro);
+            }
+        }
+
+
+        function atualizarStatusServidor(status) {
+
+            const statusInfo = document.getElementById("statusInfo");
+            const statusDot = document.getElementById("statusDot");
+
+            statusDot.className = "status-dot";
+            statusInfo.className = "status-info";
+
+            switch ((status || "").toLowerCase()) {
+
+                case "online":
+
+                    statusInfo.innerText = "Online";
+
+                    statusDot.style.backgroundColor = "#22c55e";
+                    statusInfo.style.backgroundColor = "rgba(34,197,94,0.15)";
+                    statusInfo.style.color = "#22c55e";
+
+                    break;
+
+                case "offline":
+
+                    statusInfo.innerText = "Offline";
+
+                    statusDot.style.backgroundColor = "#ef4444";
+                    statusInfo.style.backgroundColor = "rgba(239,68,68,0.15)";
+                    statusInfo.style.color = "#ef4444";
+
+                    break;
+
+                case "crítico":
+                case "critico":
+
+                    statusInfo.innerText = "Crítico";
+
+                    statusDot.style.backgroundColor = "#f59e0b";
+                    statusInfo.style.backgroundColor = "rgba(245,158,11,0.15)";
+                    statusInfo.style.color = "#f59e0b";
+
+                    break;
+
+                default:
+
+                    statusInfo.innerText = "Desconhecido";
+
+                    statusDot.style.backgroundColor = "#9ca3af";
+                    statusInfo.style.backgroundColor = "rgba(156,163,175,0.15)";
+                    statusInfo.style.color = "#9ca3af";
+
+                    break;
+            }
+        }
+
+
+
+
+        async function carregarDashboardServidor(macAddress) {
+            try {
+                servidorAtual = macAddress;
+
+                const resposta = await fetch(`/servidores/abrirDetalhes/${macAddress}`);
+                const dadosServidor = await resposta.json();
+
+                document.getElementById("nomeServidor").innerText = dadosServidor.hostname;
+                document.getElementById("nomeServidorModal").innerText = dadosServidor.hostname;
+                document.getElementById("ipServidorModal").innerText = dadosServidor.endereco_ip;
+
+                console.log("STATUS:", dadosServidor.status_servidor);
+                atualizarStatusServidor(dadosServidor.status_servidor);
+
+                const localEl = document.getElementById("nomeLocal");
+                if (localEl) localEl.innerText = dadosServidor.localizacao;
+
+                iniciarCaptura(
+                    dadosServidor.fk_empresa,
+                    dadosServidor.mac_address
+                );;
+                await carregarGraficoChamados(
+                    dadosServidor.hostname
+                );
+
+
+                if (typeof renderChart === 'function') {
+                    await renderChart(
+                        "24h",
+                        dadosServidor.mac_address,
+                        dadosServidor.fk_empresa
+                    );
+                }
+
+            } catch (erro) {
+                console.error("Erro ao carregar dashboard:", erro);
+            }
+        }
+
+        document.getElementById("select_servidor").addEventListener("change", async function () {
+            await carregarDashboardServidor(this.value);
+        });
+
+        window.onload = () => {
+            if (typeof exibirUsuarioAtivo === 'function') exibirUsuarioAtivo();
+            carregarServidores();
+
+        };
+    </script>
+</body>
+
+</html>

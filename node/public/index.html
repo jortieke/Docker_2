@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title> Horus | Início </title>
+
+    <link rel="stylesheet" href="style/header.css">
+    <link rel="stylesheet" href="style/home.css">
+    <link rel="icon" href="./assets/icon/logo.png" />
+
+    <link rael="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Mono:ital,wght@0,200..800;1,200..800&family=Jura:wght@300..700&family=Pixelify+Sans:wght@400..700&display=swap"
+        rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cabin:ital,wght@0,400..700;1,400..700&family=League+Spartan:wght@100..900&display=swap"
+        rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css">
+    
+
+</head>
+
+<body>
+    <header>
+        <div class="section_logo">
+            <img src="assets/imgs/home/logo.png" alt="Logo de avião">
+            <div class="logo d-none d-lg-block">
+                <p>Horus Monitoring</p>
+            </div>
+        </div>
+        <div class="menu_responsivo">
+            <div class="line1"></div>
+            <div class="line2"></div>
+            <div class="line3"></div>
+        </div>
+        <ul class="section_href">
+            <li><a href="#">Início</a></li>
+            <li><a href="#sobre_nos">Sobre Nós</a></li>
+            <li><a href="#contato">Fale Conosco</a></li>
+            <li><a href="login.html">Login</a></li>
+        </ul>
+    </header>
+    <main>
+        <div class="section_inicial">
+            <div class="conteudo_inicial">
+                <div class="titulo">
+                    <p style="color: black;">Cuidar Do <span style="color: #274690;">Sistema</span> <br> Garante <span
+                            style="color: #274690;">Vidas!</span></p>
+                </div>
+
+                <div class="button" style="justify-content: flex-start;">
+                    <a href="#sobre_nos">Descubra Mais!</a>
+                </div>
+            </div>
+            <div class="img d-none d-md-block">
+                <img src="assets/imgs/home/home_montanha.png" alt="" class="montanha_home">
+                <img src="assets/imgs/home/home_aviao.png" alt="" class="aviao_home">
+            </div>
+            <img src="assets/imgs/home/home_nuvem.png" alt="" class="nuvem_home">
+        </div>
+        <div class="section_carrosel">
+            <div class="carrosel">
+                <div class="slide ativo">
+                    <div class="titulo">Monitoramento contínuo de servidores críticos</div>
+                    <p class="texto">Acompanhe em tempo real o desempenho e a integridade dos servidores que sustentam
+                        operações essenciais, garantindo visibilidade constante e resposta rápida a qualquer anomalia.
+                    </p>
+                </div>
+                <div class="slide">
+                    <div class="titulo">Antecipe falhas antes que impactem operações</div>
+                    <p class="texto">Identifique padrões de degradação e receba alertas preventivos antes que problemas
+                        comprometam a disponibilidade dos sistemas monitorados.</p>
+                </div>
+                <div class="slide">
+                    <div class="titulo">Infraestrutura preparada para missões críticas</div>
+                    <p class="texto">Monitore componentes essenciais da infraestrutura e assegure que recursos críticos
+                        operem dentro de parâmetros seguros e confiáveis.</p>
+                </div>
+                <div class="slide">
+                    <div class="titulo">Dados em tempo real para decisões seguras</div>
+                    <p class="texto">Transforme métricas técnicas em informações claras que apoiam decisões rápidas e
+                        fundamentadas na operação.</p>
+                </div>
+
+                <div class="bolinhas">
+                    <span class="bolinha ativa" onclick="irPara(0)"></span>
+                    <span class="bolinha" onclick="irPara(1)"></span>
+                    <span class="bolinha" onclick="irPara(2)"></span>
+                    <span class="bolinha" onclick="irPara(3)"></span>
+                </div>
+            </div>
+        </div>
+        <div class="section_informacoes deslocamento_navbar" id="sobre_nos">
+            <img src="assets/imgs/home/nuvem-sobre-nos.png" alt="" class="banner">
+            <div class="informacoes">
+                <div class="textos">
+                    <div class="titulo text-center text-xl-start">Sistema de monitoramento de hardware de servidores
+                        sagitário</div>
+                    <div class="texto"> O Horus Monitoring foi desenvolvido para garantir alta disponibilidade e
+                        desempenho
+                        dos servidores
+                        que sustentam o Sistema Sagitário de Controle de Tráfego Aéreo. Monitoramos recursos críticos
+                        como
+                        CPU, memória, armazenamento e sensores físicos em tempo real, prevenindo falhas e assegurando
+                        operações seguras e contínuas.</div>
+                    <div class="button col-3 d-flex justify-content-center justify-content-xl-start">
+                        <a href="#contato"><button>Fale Conosco!</button></a>
+                    </div>
+                </div>
+                <div class="img-info d-none d-xl-block">
+                    <img src="assets/imgs/home/dash_image.png" alt="">
+                </div>
+            </div>
+        </div>
+        <div class="section_cards">
+            <!-- fs-6 fs-md-4 fs-lg-2 / texto responsivo -->
+            <div class="card">
+                <div class="titulo">| Operação Confiável</div>
+                <div class="texto">Arquitetura preparada para sustentar ambientes críticos com estabilidade contínua e
+                    mínima interrupção.</div>
+            </div>
+            <div class="card">
+                <div class="titulo">| Ação Imediata</div>
+                <div class="texto">Alertas inteligentes que reduzem o tempo de resposta diante de degradações ou falhas.
+                </div>
+            </div>
+            <div class="card">
+                <div class="titulo">| Controle Unificado</div>
+                <div class="texto">Informações consolidadas para análise rápida da saúde da infraestrutura.</div>
+            </div>
+        </div>
+        <div class="section_contato deslocamento_navbar_contato" id="contato">
+            <div class="titulo">Fale Conosco</div>
+            <div class="mensagem d-flex">
+                <img src="assets/imgs/home/imagem-fale-conosco.png" alt="" class="img-mensagem d-none d-lg-block">
+                <div class="section_forms">
+                    <div class="input">
+                        <p>Nome</p>
+                        <input type="text" id="nomeInput">
+                    </div>
+                    <div class="input">
+                        <p>Titulo da mensagem</p>
+                        <input type="text" id="tituloInput">
+                    </div>
+                    <div class="section_msg">
+                        <p>Mensagem</p>
+                        <textarea name="" id="mensagemInput"></textarea>
+                    </div>
+                    <div class="button">
+                        <button onclick="enviar()">Enviar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    <footer>
+        <div class="footer d-flex flex-column flex-sm-row">
+            <div class="section_esquerda">
+                <div class="titulo">Contato</div>
+                <div>contato@horus.monitoring.br</div>
+                <div>(11) 2931-3112</div>
+                <div>São Paulo, Rua Haddock Lobo, 595</div>
+            </div>
+            <div class="logo d-none d-lg-block">
+                <img src="assets/imgs/home/logo.png" alt="">
+                <div class="texto">Direitos Reservados | Horus Monitoring</div>
+            </div>
+            <div class="section_direita">
+                <div class="titulo">Redes Sociais</div>
+                <div>
+                    <img src="./assets/imgs/home/linkedin.png" alt="">
+                    <img src="./assets/imgs/home/facebook.png" alt="">
+                    <img src="./assets/imgs/home/instagram.png" alt="">
+                </div>
+            </div>
+        </div>
+    </footer>
+</body>
+
+</html>
+<script src="js/index.js"></script>
+<script src="js/usuario.js"></script>
+<script src="js/header.js"></script>

@@ -1,0 +1,544 @@
+@import url('https://googleapis.com');
+* {
+  border: 0;
+  padding: 0;
+  box-sizing: border-box;
+  margin: 0;
+  font-family: 'Cabin', sans-serif;
+}
+
+html, body {
+    overflow-x: hidden;
+}
+
+#body {
+    display: flex;
+}
+
+.navbar {
+    align-items: center;
+    background-color: #302b27;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: 100vh;
+    width: 21%;
+    font-family: "Jura", sans-serif;
+}
+
+.logo {
+    color: white;
+    display: flex;
+    font-size: 1.24vw;
+}
+
+.logo h2 {
+    cursor: pointer;
+}
+
+.logo img{
+    width: 2.28vw;
+}
+
+#imagemLogo {
+    width: 8.01vw;
+    height: 8.01vw;
+}
+
+#imagemLogo img{
+    width: 0.72vw;
+    height: 0.72vw;
+    object-fit: cover;
+}
+
+.caracteristicasNav {
+    align-items: center;    
+    color: white;
+    display: flex;
+    flex-direction: column;
+}
+
+.caracteristicasNav h4 {
+    font-size: 1.03vw;
+    padding-top: 55px;
+    padding-bottom: 5px;
+}
+
+.caracteristicasNav h5 {
+    color: #817973;
+    font-size: 0.73vw;
+    padding-top: 10px;
+    padding-bottom: 15px;
+}
+
+.caracteristicasNav h6 {
+    font-size: 0.73vw;
+    padding-bottom: 20px;
+}
+
+.caracteristicasNav img {
+    width: 60%;
+    height: auto;
+}
+
+#imgPerfilNav {
+    border-radius: 220px;
+    width: 95%;
+    height: 14vh;
+    opacity: 100%;
+}
+
+#imgPerfilNav img {
+    padding: 10%;
+    width: 500px;
+    height: 500px;
+    border-radius: 50%; 
+    object-fit: cover;  
+}
+
+.linha {
+    background-color: white;
+    border-radius: 10px;
+    margin: 25px;
+    margin-bottom: 35px;
+    width: 150px;
+    height: 2px; 
+}
+
+.botoesNav {
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    font-size: 0.93vw;
+    gap: 15px;
+}
+
+.botoesNav a {
+    color: white;
+    text-decoration: none;
+}
+
+.sair {
+    align-self: flex-start;
+    display: flex;
+    margin-top: 40px;
+    margin-left: 20px;
+}
+
+.saindo {
+    display: flex;
+    align-items: center;
+}
+
+.saindo img {
+    width: 1.56vw;
+    height: 1.56vw;
+    margin-right: 10px;
+}
+
+.saindo a {
+    color: white;
+    text-decoration: none;
+}
+
+.container {
+    display: flex;
+    width: 100%;
+    gap: 7%;
+    min-height: 100vh;
+    background-color: #f5f3f5;
+}
+
+.centro {
+    align-items: center;
+    display: flex;
+    font-family: "Inter", sans-serif;
+    width: 100%;
+}
+
+.boxLogin {
+    background-color: white;
+    width: 80%;
+    min-height: 90vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    border-radius: 50px;
+}
+
+.boxLogin h2 {
+    margin: 1vw;
+    font-size: 1.4vw;
+    font-weight: bold;
+}
+
+.inputLogin {
+    padding-top: 10px;
+}
+
+.boxLogin .inputLogin {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
+
+.inputFilho {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 80%;
+}
+
+.inputFilho p {
+    align-self: flex-start;
+    font-size: 1vw;
+}
+
+.inputFilho input {
+    padding-left: 10px;
+    width: 100%;
+    height: 7vh;
+    border: 2px, solid, #e2e1e1;
+    border-radius: 10px;
+    font-size: 1vw;
+}
+
+.boxManu {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.login,
+.loginS {
+    font-weight: bold;
+}
+
+.loginC {
+    width: 100%;
+    height: 7vh;
+    border: 2px, solid, #e2e1e1;
+    border-radius: 10px;
+    font-size: 1vw;
+}
+
+.inputIcone {
+    display: flex;
+    align-self: flex-end;
+    margin-top: 15px;
+    margin-right: 7px;
+    position: absolute;
+    height: auto;
+    width: 2.2vw;
+}
+
+.boxLogin span {
+    font-size: 1vw;
+    color: black;
+    font-weight: bold;
+}
+
+.boxLogin button{
+    margin-top: 20px;
+}
+
+.cadastrar {
+    border-radius: 15px;
+}
+
+.ou {
+    display: flex;
+    padding: 17px;
+}
+
+.ou h5 {
+    margin-top: -1.5%;
+}
+
+.barraE,
+.barraD {
+    background-color: #e2e1e1;
+    height: 2px;
+    width: 25%;
+    margin: 0% 2%;
+}
+
+.boxLogin a {
+    font-size: 16px;
+    font-family: "inter", sans-serif;
+    color: #1B264F;
+    font-weight: bold;
+}
+
+.boxLogin button {
+    color: white;
+    font-size: 1.2vw;
+    text-align: center;
+    width: 50%;
+    height: 7vh;
+    border-radius: 10px;
+    border: none;
+    background-color: #1B264F;
+    cursor: pointer;
+    margin-bottom: 20px;
+}
+
+.navbarBotao,
+.navbarCelular,
+.navbarCelularDps,
+.botoesCelular {
+    display: none;
+}
+
+.celular {
+    display: none;
+}
+
+@media (max-width: 767px) {
+
+    .navbar {
+        display: none;
+    }
+
+    .navbarBotao,
+    .navbarCelular,
+    .botoesCelular {
+        display: flex;
+    }
+
+    .section_logo {
+        font-family: "inter", sans-serif;
+        height: 30px;
+        opacity: 1;
+        display: flex;
+        align-self: flex-start;
+        width: 100%;
+    }
+
+    .section_logo p {
+        margin-top: -3%;
+        margin-left: -3%;
+    }
+
+    .section_logo img {
+        margin-top: -10%;
+        height: 85px;
+        width: 150px;
+    }
+
+    .celular {
+        display: flex;
+    }
+
+    .navbarCelular, .navbarBotao {
+        display: flex;
+        flex-direction: row-reverse;
+    }
+    
+    .navbarCelular button{
+        background: none;
+        border-radius: 10px;
+        margin-top: 20px;
+        padding: 5px;
+        padding-right: 10px;
+        padding-left: 10px;
+        width: 150%;
+        height: auto;
+    }
+
+    .navbarCelular img{
+        width: 30px;
+        height: auto;
+    }
+    
+    .navbarCelularDps button{
+        background: #576ca8;
+        border-radius: 10px;
+        margin-top: 20px;
+        padding: 5px;
+        padding-right: 10px;
+        padding-left: 10px;
+        width: 150%;
+        height: auto;
+    }
+
+    .navbarCelularDps img{
+        width: 30px;
+        height: auto;
+    }
+
+    .container {
+        display: block;
+    }
+
+    .boxLogin {
+        width: 100%;
+    }
+
+    .boxLogin h2 {
+        font-size: 2.8vw;
+    }
+
+    .boxLogin button {
+        font-size: 2.4vw;
+    }
+
+    .inputFilho p {
+        font-size: 2vw;
+    }
+
+    .inputFilho input {
+        font-size: 1.8vw;
+    }
+
+    .inputFilho select {
+        font-size: 1.8vw;
+    }
+
+    .boxCelular {
+        display: flex;
+        justify-content: flex-end;
+    }
+
+    .botoesCelular {
+        align-items: center;
+        background-color: #302b27;
+        border-radius: 10px;
+        color: white;
+        display: flex;
+        height: 35vh;
+        flex-direction: column;
+        position: fixed;
+        justify-content: center;
+        width: 40%;
+        z-index: 9999;
+        gap: 10px;
+    }
+    
+    .botoesCelular a {
+        color: white;
+        font-size: 20px;
+        font-family: "Jura", sans-serif;
+        text-decoration: none;
+        text-align: center;
+        height: 5vh;
+        width: 60%;
+    }
+
+    .centro {
+        flex-direction: column;
+    }
+
+    .boxBemVindo {
+        display: none;
+    }
+
+    .boxLogin {
+        width: 100%;
+        height: 100vh;
+    }
+
+}
+
+/* @media (min-width: 768px) and (max-width: 991px) {
+
+    header {
+        height: 80px;
+        padding: 0 6%;
+        opacity: 1;
+    }
+
+    .navbarCelular {
+        display: flex;
+    }
+    
+    .navbarCelular button{
+        background: none;
+        border-radius: 10px;
+        padding-top: 20%;
+        padding-bottom: 20%;
+        padding-right: 20%;
+        padding-left: 20%;
+        height: auto;
+        width: 150%;
+    }
+
+    .navbarCelular img{
+        width: 30px;
+        height: auto;
+    }
+
+    .navbarCelularDps {
+        display: flex;
+    }
+    
+    .navbarCelularDps button{
+        background: #576ca8;
+        border-radius: 10px;
+        padding-top: 20%;
+        padding-bottom: 20%;
+        padding-right: 20%;
+        padding-left: 20%;
+        height: auto;
+        width: 150%;
+    }
+
+    .navbarCelularDps img{
+        width: 30px;
+        height: auto;
+    }
+
+    .botoesCelular {
+        background-color: #302b27;
+        border-radius: 10px;
+        color: white;
+        flex-direction: column;
+        height: 20vh;
+        margin-top: 14%;
+        margin-left: 37%;
+        position: fixed;
+        width: 60%;
+        z-index: 9999;
+    }
+    
+    .botoesCelular a {
+        color: white;
+        font-size: 20px;
+        font-family: "Jura", sans-serif;
+        text-decoration: none;
+        text-align: center;
+        height: 5vh;
+        padding-top: 2%;
+        margin-top: 5%;
+        margin-left: 20%;
+        width: 60%;
+    }
+
+    .boxBemVindo {
+        width: 45%;
+    }
+
+    .boxLogin {
+        width: 55%;
+    }
+
+    .boxLogin h2 {
+        margin-left: 25%;
+        margin-top: 25%;
+    }
+
+    .user,
+    .lock {
+        width: 5%;
+        margin-left: -8%;
+    }
+
+    .esqueceu {
+        margin-left: 55%;
+    }
+
+    
+} */

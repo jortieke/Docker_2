@@ -1,0 +1,193 @@
+
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analista | Horus </title>
+    <link rael="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Jura:wght@300..700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap"
+        rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style/historico.css">
+    <link rel="stylesheet" href="./style.css">
+</head>
+
+<body>
+
+    <div class="container">
+
+        <aside class="lateral">
+            <div class="logo">
+                <img src="./assets/imgs/painel/logo.png" alt="" style="font-family: Jura, sans-serif;">
+                Horus
+            </div>
+
+            <nav class="menu">
+                <div class="categoria">Monitoramento</div>
+
+                <div class="item-menu selecionado"><img src="./assets/imgs/painel/dash-selecionado.png" alt="">Visão
+                    geral</div>
+                <div class="item-menu"><img src="./assets/imgs/painel/servidores.png" alt="">Servidores</div>
+                <div class="item-menu"><img src="./assets/imgs/painel/alerta.png" alt="">Incidentes</div>
+                <div class="item-menu"><img src="./assets/imgs/painel/alerta.png" alt="">Histórico</div>
+            </nav>
+
+            <div class="sair"><img src="./assets/imgs/painel/sair.png" alt="">Sair</div>
+        </aside>
+
+        <main class="main">
+
+            <header class="header">
+                <span><b>Dashboard - Visão Geral</b></span>
+
+                <div class="usuario">
+                    <img src="./assets/imgs/painel/usuario.png" alt="">
+                    <div>
+                        <p>Julia Araripe</p>
+                        <span class="cargo">Analista</span>
+                    </div>
+                </div>
+            </header>
+
+            <section class="conteudo">
+                <div class="cards">
+
+                    <div class="card pequeno-filtro">
+                       <div class="sessao-severidade">
+                            <div class="sessao-filtro">
+                                <img src="assets/imgs/dash_analista/filtro.png" alt="">
+                                <span><h6>Filtrar por severidade:</h6></span>
+                            </div>
+                            <button>Todos (8)</button>
+                            <button>Crítica (5)</button>
+                            <button>Alta (1)</button>
+                            <button>Média (1)</button>
+                            <button>Baixa (1)</button>
+                       </div>
+                       <div class="sessao-status">
+                            <span><h6>Filtrar por status:</h6></span>
+                            <button>Todos</button>
+                            <button>Ativos</button>
+                            <button>Resolvidos</button>
+                       </div>
+                        <div class="sessao-buscar">
+                            <input type="text" name="" id="input_buscar" placeholder="Buscar servidor">
+                        </div>
+                        <select name="" id="">
+                            <option value="tempoReal" selected>Tempo Real</option>
+                            <option value="tempoReal" selected>A cada 30 segundos</option>
+                            <option value="tempoReal" selected>A cada 1 minutos</option>
+                            <option value="tempoReal" selected>A cada 5 minutos</option>  
+                        </select>
+                    </div>
+            </section>
+
+            <div class="popup" id="modal">
+                <div class="modal">
+                    <div style="border: 10px red solid; display: flex; flex-direction: row; justify-content: space-between;">
+                                    <div>
+                                        <img src="assets/imgs/painel/servidores-selecionado.png" alt="" width="20px">
+                                    </div> 
+                                    <div> 
+                                        ATC-SVR-REC-01 <br>
+                                        <span>Recife - PE</span>
+                                    </div> 
+                                    <div>
+                                        <img id="fechar" src="assets/imgs/painel/sair.png" alt="" width="20px">
+                                    </div>
+                    </div>
+                    <div style="border: 10px red solid; display: flex; flex-direction: row; justify-content: space-between;">
+                        <div style="border: 10px blue solid;">
+                            RAM 45%
+                        </div>
+                        <div style="border: 10px purple solid;">
+                            RAM 62%
+                        </div>
+                        <div style="border: 10px green solid;">
+                            DISCO 55%
+                        </div>
+                    </div>
+                    <div style="border: 10px red solid; display: flex; flex-direction: column; justify-content: space-between;">
+                        <h1>Histórico de Uso (Últimas 24h)</h1>
+                        <canvas id="graficoRecursos24h"></canvas>
+                    </div>
+                    <div style="border: 10px red solid; display: flex; flex-direction: row; justify-content: flex-start">
+                        <img src="assets/imgs/dash_analista/relogio.png" alt="" height="20px">
+                        <span>Última atualização: 22/03/2026 às 14:39:04.</span>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+
+    </div>
+
+</body>
+
+</html>
+
+<script>
+    
+        const modal = document.getElementById('modal');
+
+        document.querySelectorAll('.detalhes').forEach(btn => {
+        btn.addEventListener('click', () => {
+            modal.classList.add('ativo');
+        });
+        });
+
+        document.getElementById('fechar').addEventListener('click', () => {
+        modal.classList.remove('ativo');
+        });
+
+        modal.addEventListener('click', e => {
+        if (e.target === modal) modal.classList.remove('ativo');
+        });
+
+
+        const recursos24h = document.getElementById('graficoRecursos24h').getContext('2d');
+        const graficoRecursos24h = new Chart(recursos24h, {
+            type: 'line', 
+            data: {
+                labels: ['00:00', '04:00', '08:00', '12:00', '16:00'], // Rótulos do eixo X
+                datasets: [
+                    {
+                        label: 'CPU%',
+                        data: [12, 19, 3, 5, 2], // Dados (eixo Y)
+                        borderColor: 'rgb(75, 192, 192)', // Cor da linha
+                        tension: 0.1 // Suavização da linha
+                    },
+                    {
+                        label: 'RAM%',
+                        data: [45, 27, 32, 52, 40], // Dados (eixo Y)
+                        borderColor: 'rgb(255, 99, 132)', // Cor diferente para diferenciar
+                        tension: 0.1
+                    },
+                    {
+                        label: 'DISCO%',
+                        data: [90, 86, 82, 92, 93], // Dados (eixo Y)
+                        borderColor: 'rgb(255, 205, 86)', // Cor diferente para diferenciar
+                        tension: 0.1
+                    }
+                ]
+            },
+            options: {
+                scales:{
+                    y: {
+                    beginAtZero: true, 
+                    max: 100 
+                }
+                },
+                responsive: true
+            }
+        });
+
+</script>

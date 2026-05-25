@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard | Horus </title>
+    <link rel="icon" href="./assets/icon/logo.png" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Jura:wght@300..700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap"
+        rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="./js/script.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./style.css">
+    <link rel="stylesheet" href="style/padrao_dash.css">
+
+</head>
+
+<body>
+
+    <div class="modal-lateral" id="overlay"></div>
+
+    <div class="container">
+
+        <aside class="lateral" id="lateral">
+            <div class="logo">
+                <img src="./assets/imgs/painel/logo.png" alt="">
+                Horus
+            </div>
+
+            <nav class="menu">
+                <div class="categoria">Monitoramento</div>
+                <a href="painel.html" class="item-menu">
+                    <img src="./assets/imgs/painel/dash.png" alt="">Dashboard
+                </a>
+
+                <div class="categoria adm" id="administracao">Administração </div>
+                    <a href="dash_usuarios.html" class="item-menu adm" id="cadastrarUsuario">
+                        <img src="./assets/imgs/painel/cadastrar-usuario.png" alt="">Usuários
+                    </a>
+                    <a href="servidor-componente.html" class="item-menu adm" id="cadastrarServidor">
+                        <img src="./assets/imgs/painel/cadastrar-servidor.png" alt="">Cadastrar servidor
+                    </a>
+                
+            </nav>
+
+            <div onclick="limparSessionStorage()" class="sair">
+                <img src="./assets/imgs/painel/sair.png" alt="">
+                <p onclick="window.location.href='index.html'">Sair</p>
+            </div>
+        </aside>
+
+        <main class="main">
+
+           <header class="header">
+
+                <div class="header-topo">
+                    <div class="header-esquerda">
+                        <div class="hamburguer" id="hamburguer">
+                            <img src="./assets/imgs/painel/hamburguer.png" alt="Menu">
+                        </div>
+
+                        <div class="header-servidor">
+                            <span class="breadcrumb">
+                                Servidores /
+                                <strong>SRV-WEB-01</strong> /
+                                <span class="renomear">RENOMEAR</span>
+                            </span>
+
+                            <div class="status-servidor">
+                                <div class="select-status">
+                                    <span class="status-dot verde"></span>
+
+                                    <select>
+                                        <option>SRV-WEB-01</option>
+                                        <option>SRV-DB-02</option>
+                                        <option>SRV-API-03</option>
+                                    </select>
+                                </div>
+
+                                <div class="alertas">
+                                    <img src="assets/imgs/rede/alerta-lar.png" alt="" style="height: 12px !important; width: 12px !important;"> 3 alertas
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="usuario">
+                        <div>
+                            <p id="nome_usuario"></p>
+                            <p id="funcao_usuario" class="cargo"></p>
+                        </div>
+                        <span id="inicial_usuario"></span>
+                    </div>
+                </div>
+
+                <div class="header-nav-scroll">
+                    <nav class="header-nav">
+                        <a href="#" class="ativo">Resumo</a>
+                        <a href="#">Processos</a>
+                        <a href="#">Comunicação e rede</a>
+                        <a href="#">Temperatura</a>
+                        <a href="#">Logs</a>
+                    </nav>
+                </div>
+
+            </header>
+
+            <section class="conteudo" id="conteudo">
+                
+            </section>
+
+
+        </main>
+
+    </div>
+
+</body>
+
+</html>
+
+<script>
+
+   window.onload = () => {const funcao = sessionStorage.getItem("FUNCAO_USUARIO");
+
+             if (funcao == "Gestor") {
+                document.getElementById("administracao").style.display = "block";
+                document.getElementById("gerarRelatorio").style.display = "block";
+                document.getElementById("cadastrarServidor").style.display = "flex";
+                document.getElementById("cadastrarUsuario").style.display = "flex";
+            }
+   }
+
+   exibirUsuarioAtivo();
+
+    //Modal para o menu sanduíche
+
+    const btnHamburguer = document.getElementById("hamburguer");
+    const lateral = document.getElementById("lateral");
+    const overlay = document.getElementById("overlay");
+
+    function abrirMenu() {
+        lateral.classList.add("ativo");
+        overlay.classList.add("ativo");
+    }
+
+    function fecharMenu() {
+        lateral.classList.remove("ativo");
+        overlay.classList.remove("ativo");
+    }
+
+    if (btnHamburguer) {
+        btnHamburguer.addEventListener("click", function (e) {
+            e.stopPropagation();
+            
+            if (lateral.classList.contains("ativo")) {
+                fecharMenu();
+            } else {
+                abrirMenu();
+            }
+        });
+    }
+
+    overlay.addEventListener("click", fecharMenu);
+
+    document.addEventListener("click", function (e) {
+        if (
+            lateral.classList.contains("ativo") &&
+            !lateral.contains(e.target) &&
+            !btnHamburguer.contains(e.target)
+        ) {
+            fecharMenu();
+        }
+    });
+
+    
+
+</script>

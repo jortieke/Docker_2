@@ -1,0 +1,71 @@
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: horus_mysql
+    command:
+      - --default-authentication-plugin=mysql_native_password
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+      - --skip-character-set-client-handshake
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: horus_db
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./mysql/init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - horus_net
+
+  java:
+    build: ./backend-java
+    container_name: horus-java
+    ports:
+      - "8080:8080"
+    env_file:
+      - .env
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8080/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+    environment:
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_DATABASE: horus_db
+      DB_USER: root
+      DB_PASSWORD: root
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks:
+      - horus_net
+
+  horus_node:
+    build: ./node
+    container_name: horus-node
+    ports:
+      - "3000:3000"
+    depends_on:
+       mysql:
+        condition: service_healthy
+       java:
+        condition: service_healthy
+    env_file:
+      - ./node/.env
+    networks:
+      - horus_net
+
+volumes:
+  mysql_data:
+
+networks:
+  horus_net:
+    driver: bridge

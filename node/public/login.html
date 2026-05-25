@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="pt-br" id="html">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title> Horus | Login </title>
+
+    <link rel="stylesheet" type="text/css" href="style/login.css">
+    <link rel="icon" href="./assets/icon/logo.png" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Mono:ital,wght@0,200..800;1,200..800&family=Jura:wght@300..700&family=Pixelify+Sans:wght@400..700&display=swap"
+        rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cabin:ital,wght@0,400..700;1,400..700&family=League+Spartan:wght@100..900&display=swap"
+        rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css">
+
+</head>
+
+<body id="body">
+    <div id="alerta_login" class="alerta-login">
+        <img src="assets/imgs/login/erro.png" alt="">
+        <span id="alerta_mensagem"></span>
+    </div>
+
+    <div class="login">
+        <div class="logo">
+            <img src="assets/icon/logo.png" alt="">
+            <h1>Login</h1>
+        </div>
+
+        <div class="formulario">
+            <div class="campo">
+                <span>Email</span>
+                <input type="text" id="input_email">
+                <img src="assets/imgs/login/usuario.png" alt="">
+            </div>
+
+            <div class="campo">
+                <span>Senha</span>
+                <input type="password" id="input_senha">
+                <img id="img" src="assets/imgs/login/olho-fechado.png" alt="">
+            </div>
+
+            <button onclick="entrar()">Entrar</button>
+
+            <div class="opcoes">
+                <span>Esqueceu sua senha? <a href="index.html#contato">Clique aqui.</a></span>
+                <span>Ainda não possui um login? <a href="index.html#contato">Clique aqui.</a></span>
+            </div>
+        </div>
+
+        <a href="index.html" class="botao-sair">
+            <img src="assets/imgs/login/seta.png" alt="">
+            <p>Voltar para tela de início</p>
+        </a>
+    </div>
+    <div class="imagem"></div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/usuario.js"></script>
+</body>
+
+
+</html>
+
+<script>
+
+    // pega os elementos de acordo com o id (input e a img) e guarda em uma variável
+    var senha = document.getElementById("input_senha");
+    var trocarImg = document.getElementById("img");
+
+    // adiciona um evento de clique (quando o usuário clicar no icone de "olho" vai executar o código abaixo)
+    // === (serve para fazer uma comparação entre o valor e o tipo)
+    trocarImg.addEventListener("click", () => {
+        if (senha.type === "password") { // valida se o tipo do input é password 
+            senha.type = "text";
+            trocarImg.src = "assets/imgs/login/olho-aberto.png";
+        } else {
+            senha.type = "password";
+            trocarImg.src = "assets/imgs/login/olho-fechado.png";
+        }
+    });
+
+    function mostrarAlerta() {
+        const alerta = document.getElementById("alerta_login");
+
+        alerta.classList.add("ativo");
+        setTimeout(() => {
+            alerta.classList.remove("ativo")
+        }, 2000);
+
+    }
+
+    function entrar() {
+
+        var email = input_email.value;
+        var senha = input_senha.value;
+
+        if (email.trim() == "" || senha.trim() == "") {
+            alerta_mensagem.innerHTML = "Houve um erro ao tentar realizar o login!";
+            mostrarAlerta();
+        } else {
+            fetch("/usuario/autenticar", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                }, body: JSON.stringify({
+                    emailServer: email,
+                    senhaServer: senha
+                })
+            })
+                .then(function (resposta) {
+                    console.log("resposta: " + resposta);
+
+                    if (resposta.ok) {
+                        return resposta.json();
+                    } else {
+                        alerta_mensagem.innerHTML = "Houve um erro ao tentar realizar o login!";
+                        mostrarAlerta();
+                        throw "Houve um erro ao tentar realizar o Login!";
+                    }
+                })
+                .then(function (dados) {
+
+                    if (!dados || dados.length == 0) {
+                        alerta_mensagem.innerHTML = "Email ou senha inválidos!";
+                        mostrarAlerta();
+                        return;
+                    }
+
+                    const listaMacs = dados.map(item => item.mac_address);
+
+                    sessionStorage.ID_USUARIO = dados[0].id_funcionario;
+                    sessionStorage.NOME_USUARIO = dados[0].nome;
+                    sessionStorage.EMAIL_USUARIO = dados[0].email;
+                    sessionStorage.ID_EMPRESA = dados[0].fk_empresa;
+                    sessionStorage.FUNCAO_USUARIO = dados[0].funcao;
+                    sessionStorage.ACESSO_SERVIDORES = JSON.stringify(listaMacs);
+
+                    console.log(listaMacs);
+
+                    if (sessionStorage.FUNCAO_USUARIO == "Gestor") window.location = "painel.html";
+                    else window.location = "dash_incidentes.html";
+
+                })
+                .catch(function (resposta) {
+                    console.log("Erro: " + resposta)
+                })
+
+            return false
+        }
+
+    }
+
+</script>

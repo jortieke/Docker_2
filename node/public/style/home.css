@@ -1,0 +1,770 @@
+/* Essa é a estilização para restauração dos padrões do site */
+@import url('https://googleapis.com');
+* {
+  border: 0;
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+  font-family: 'Cabin', sans-serif;
+}
+
+.titulo {
+    font-size: 30px;
+    font-family: "Cabin", sans-serif;
+    font-weight: 600;
+}
+
+.texto {
+    font-size: 20px;
+    font-family: "Cabin", sans-serif;
+    /* text-align: justify; */
+}
+
+/* Inicio da estilização da MAIN */
+
+/* SECTION INICIO - INICIO */
+main {
+    background-color: rgb(255, 255, 255);
+    min-height: 100vh;
+    width: 100%;
+}
+
+main .section_inicial {
+    height: 100vh;
+    width: 100%;
+    background-color: #ffffff;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0px 5%;
+    position: relative;
+    z-index: 2;
+    overflow: hidden;
+}
+
+main .section_inicial .conteudo_inicial {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    width: 100%;
+    z-index: 5;
+}
+
+main .section_inicial .conteudo_inicial .titulo p {
+    font-size: 50px;
+    text-align: start;
+}
+
+main .section_inicial .conteudo_inicial .button {
+    width: 100%;
+    display: flex;
+    justify-content: left;
+}
+
+main .section_inicial .conteudo_inicial .button a {
+    border-radius: 25px;
+    padding: 10px 20px;
+    text-decoration: none;
+    background-color: #274690;
+    color: #fff;
+    cursor: pointer;
+    font-family: "Cabin", sans-serif;
+    /* transition: ease-out 0.9s; */
+    font-size: 15px;
+    position: relative;
+    box-shadow: 0px 4px 6px -2px rgba(0, 0, 0, 0.3);
+    font-weight: 600;
+    border: #274690 3px solid;
+    transition: 0.2s;
+}
+
+main .section_inicial .conteudo_inicial .button a:hover {
+    background-color: #fff;
+    color: #274690;
+    transition: 0.2s;
+}
+
+main .section_inicial .conteudo_inicial .titulo,
+.texto {
+    color: white;
+}
+
+main .section_inicial .img {
+    width: 100vw;
+    position: absolute;
+    right: 0;
+    top: 25vh;
+    max-width: 40%;
+    z-index: 1;
+}
+
+main .section_inicial .img .aviao_home {
+    z-index: 99;
+    position: absolute;
+    right: -10%;
+    width: 160%;
+    top: -100px;
+}
+
+main .section_inicial .img .montanha_home {
+    z-index: 99;
+    position: absolute;
+    right: -10%;
+    width: 110%;
+    border-radius: 40px;
+}
+
+main .section_inicial .nuvem_home {
+    z-index: 2;
+    position: absolute;
+    height: 100vh;
+    width: 100%;
+    top: 0;
+    left: 0;
+    /* background-color: #3498db; */
+    object-fit: cover;
+    object-position: left
+}
+
+main .section_inicial .img img {
+    width: 100%;
+}
+
+/* @media (min-width: 768px) and (max-width: 1999px) {
+  main .section_inicial .img {
+    width: 100vw;
+    position: absolute;
+    right: -20%;
+    top: 25vh;
+    max-width: 40%;
+    z-index: 1;
+  }
+} */
+
+/* SECTION INICIO - FIM */
+
+/* SECTION CARROSEL - INICIO */
+
+main .section_carrosel {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* padding: 10% 0px 5% 0px; */
+}
+
+main .section_carrosel .carrosel {
+    width: 100%;
+    height: 100vh;
+    z-index: 97;
+}
+
+/* main .section_carrosel .nuvens_section2 {
+    position: absolute;
+    width: 100%;
+    z-index: 0;
+} */
+
+.carrosel {
+    width: 100%;
+    /* height: 100vh; */
+    position: relative;
+}
+
+.slide {
+    display: none;
+    width: 100%;
+    height: 100%;
+    color: white;
+    align-items: center;
+    justify-content: center;
+    font-family: "Jura", sans-serif;
+}
+
+.slide .titulo {
+    padding: 2px 50px;
+    text-align: center;
+    /* background-color: red; */
+}
+
+.slide .texto {
+    padding: 0px 15px;
+    text-align: center;
+    /* background-color: red; */
+}
+
+.ativo {
+    display: flex;
+}
+
+.slide:nth-child(1),
+.slide:nth-child(2),
+.slide:nth-child(3),
+.slide:nth-child(4) {
+    position: relative;
+    overflow: hidden;
+    flex-direction: column;
+    gap: 10px;
+    /* border: 3px solid rgb(230, 18, 18); */
+    padding: 20%;
+    text-align: justify;
+}
+
+.slide:nth-child(1)::before,
+.slide:nth-child(2)::before,
+.slide:nth-child(3)::before,
+.slide:nth-child(4)::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: url(../assets/imgs/home/banner1_home.png);
+    background-position: top;
+    background-size: cover;
+    filter: blur(2px);
+    transform: scale(1.1);
+    z-index: -1;
+}
+
+.slide:nth-child(2) {
+    background-image: url(../assets/imgs/home/banner2_home.png);
+    background-position: top;
+    background-size: cover;
+}
+
+.slide:nth-child(3) {
+    background-image: url(../assets/imgs/home/banner3_home.png);
+    background-position: top;
+    background-size: cover;
+}
+
+.slide:nth-child(4) {
+    background-image: url(../assets/imgs/home/banner4_home.png);
+    background-size: cover;
+}
+
+.bolinhas {
+    position: absolute;
+    width: 100%;
+    text-align: center;
+    z-index: 50;
+    bottom: 0;
+}
+
+.bolinha {
+    height: 15px;
+    width: 15px;
+    margin: 3px;
+    display: inline-block;
+    border-radius: 50%;
+    background: transparent;
+    cursor: pointer;
+    border: 2px solid white;
+}
+
+@media (max-width: 575px) {
+    .bolinha {
+    height: 10px;
+    width: 10px;
+    margin: 3px;
+    display: inline-block;
+    border-radius: 50%;
+    background: transparent;
+    cursor: pointer;
+    border: 2px solid white;
+}
+}
+
+.bolinha.ativa {
+    background: rgb(255, 255, 255);
+}
+
+/* SECTION CARROSEL  - TÉRMINO */
+/* SECTION INFORMACOES - ÍNICIO */
+
+main .section_informacoes {
+    background-color: white;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    padding: 5% 5%;
+    color: black;
+    gap: 5%;
+    z-index: 3;
+    position: relative;
+}
+
+main .section_informacoes .informacoes {
+    /* background-color: #a85790; */
+    display: flex;
+    height: 60vh;
+    /* justify-content: space-between; */
+    /* z-index: 5;
+    position: absolute; */
+    align-items: stretch;
+}
+
+main .section_informacoes .textos {
+    /* background-color: yellow; */
+    width: 100%;
+    /* padding-right: 20px; */
+    flex: 1;
+    padding: 0px 30px;
+    gap: 20px;
+    display: flex;
+    flex-direction: column;
+}
+
+main .section_informacoes .textos .titulo {
+    color: black;
+    /* background-color: #a85790; */
+    /* width: 50%; */
+}
+
+main .section_informacoes .textos .texto {
+    color: black;
+    /* margin-top: 5%; */
+    /* padding: 10px 10px; */
+    /* background-color: aqua; */
+}
+
+main .section_informacoes img {
+    width: 100%;
+    object-fit: cover;
+}
+
+main .section_informacoes .informacoes .button {
+    width: 100%;
+    display: flex;
+    justify-content: left;
+    align-items: center;
+}
+
+main .section_informacoes .informacoes .button button {
+    border-radius: 25px;
+    padding: 10px 30px;
+    background-color: #274690;
+    color: #fff;
+    cursor: pointer;
+    font-family: "Cabin", sans-serif;
+    /* transition: ease-out 0.9s; */
+    transition: 0.2s;
+    font-size: 15px;
+    position: relative;
+    box-shadow: 0px 4px 6px -2px rgba(0, 0, 0, 0.3);
+    font-weight: 600;
+    border: #274690 3px solid;
+}
+
+main .section_informacoes .informacoes .button button:hover {
+    background-color: #fff;
+    color: #274690;
+    transition: 0.2s;
+}
+
+main .section_informacoes .informacoes .img-info {
+    width: 70%;
+    height: 100%;
+    /* background-color: aqua; */
+    background-position: center;
+    background-size: cover;
+    padding: 0px 40px;
+    flex: 1;
+    display: flex;
+    /* overflow: hidden; */
+}
+
+.main .section_informacoes .informacoes img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+main .section_informacoes .banner {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    object-fit: cover;
+    /* background-color: red; */
+    object-position: 50px 68px;
+}
+
+
+/* SECTION INFORMAÇÕES - FIM */
+/* SECTION CARDS - ÍNICIO*/
+main .section_cards {
+    width: 100%;
+    background-color: #274690;
+    display: flex;
+    justify-content: space-between;
+    padding: 5% 5%;
+    /* height: 50vh; */
+    align-items: center;
+}
+
+main .section_cards .card {
+    width: 30%;
+    background-color: #576CA8;
+    height: 50vh;
+    border-radius: 10px;
+    color: white;
+    padding: 10px 20px;
+}
+
+@media (min-height: 1000px) {
+    main .section_cards .card {
+        height: 35vh !important;
+    }
+}
+
+main .section_cards .card .titulo {
+    margin-top: 10%;
+    /* background-color: red; */
+    width: 100%;
+}
+
+main .section_cards .card .texto {
+    margin-top: 10%;
+    /* background-color: aqua; */
+    width: 100%;
+}
+
+/* SECTION CARDS - FIM*/
+/* SECTION CONTATO - INÍCIO*/
+
+.section_contato {
+    /* background-color: pink; */
+    height: 100%; /*ou 100%*/
+    padding: 20px 0px;
+}
+
+.section_contato .titulo {
+    text-align: center;
+    font-size: 50px;
+    margin-top: 2%;
+}
+
+.section_contato .mensagem {
+    margin-top: 5%;
+    /* background-color: aqua; */
+}
+
+.section_contato .img-mensagem {
+    left: 0;
+    height: 480px;
+}
+
+/* .section_contato img {
+    width: 50%;
+} */
+
+.section_contato .section_forms {
+    /* background-color: aqua; */
+    width: 100%;
+    padding: 0 50px;
+    padding-right: 100px;
+}
+
+@media (min-width: 1400px) {
+    .section_contato .section_forms {
+    width: 50%;
+    margin-left: 10%;
+}
+}
+
+.section_contato .input {
+    /* background-color: red; */
+    flex-direction: column;
+    margin-bottom: 5%;
+}
+
+.section_contato p {
+    margin: 0;
+}
+
+.section_contato input {
+    border: 2px solid #D7CBCB;
+    border-radius: 5px;
+    width: 100%;
+    height: 45px;
+    padding: 10px 10px;
+}
+
+.section_contato .section_msg textarea {
+    resize: none;
+    border: 2px solid #D7CBCB;
+    border-radius: 5px;
+    width: 100%;
+    height: 150px;
+    padding: 10px 10px;
+}
+
+.section_contato button {
+    color: #fff;
+    background-color: #274690;
+    font-family: "Cabin", sans-serif;
+    border-radius: 5px;
+    width: 100%;
+    height: 45px;
+    margin-top: 5%;
+    cursor: pointer;
+    font-weight: 600;
+    border: #274690 3px solid;
+    transition: 0.2s;
+}
+
+.deslocamento_navbar_contato{
+    scroll-margin-top: -60px;
+}
+
+.deslocamento_navbar{
+    scroll-margin-top: 100px;
+}
+
+.section_contato .button button:hover {
+    background-color: #fff;
+    color: #274690;
+    transition: 0.2s;
+}
+
+/* SECTION CONTATO - FIM*/
+/* FOOTER ÍNICIO */
+footer {
+    background-color: #274690;
+    width: 100%;
+    height: 50%;
+    display: flex;
+    justify-content: space-between;
+    padding: 3%;
+    align-items: center;
+    margin-top: 5%;
+}
+
+.footer {
+    /* background-color: yellow; */
+    width: 100%;
+    height: 100%;
+    justify-content: space-between;
+}
+
+@media (max-width: 767px) {
+    .footer {
+        height: 60%;
+        gap: 20px;
+    }
+
+    
+}
+
+footer .section_esquerda {
+    display: flex;
+    flex-direction: column;
+    width: 250px;
+    /* background-color: aqua; */
+    color: #fff;
+    align-items: start;
+}
+
+footer .logo {
+    height: 100%;
+    width: 40%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center; 
+    color: #fff;
+    /* background-color: red; */
+    text-align: center;
+}
+
+footer .logo img {
+    width: 80px;
+    /* justify-content: center; */
+    margin-bottom: 2%;
+}
+
+footer .logo .texto {
+    /* background-color: black; */
+    width: 100%;
+    text-align: center;
+}
+
+footer .section_direita {
+    display: flex;
+    justify-content: end;
+    flex-direction: column;
+    /* background-color: pink; */
+    width: 175px;
+    height: 100px;
+}
+
+footer .section_direita div{
+    display: flex;
+    flex-direction: row;
+    gap: 5px;
+     color: #fff;
+}
+
+footer .section_direita img {
+    /* width: 100px; */
+    /* max-height: 50px; */
+    /* margin-left: 3%; */
+    /* background-color: aqua; */
+    height: 50px;
+    /* height: 50%; */
+}
+/* 
+footer .section_direita .img img {
+    width: 100%;
+    height: 100%;
+} */
+
+/* FOOTER FIM*/
+/* ÍNICIO RESPONSIVIDADE */
+
+@media screen and (max-width: 667px) {
+    header .section_href {
+        position: absolute;
+        top: 10vh;
+        right: 0;
+        width: 55vw;
+        height: 90vh;
+        background-color: rgba(255, 255, 255);
+        flex-direction: column;
+        align-items: start;
+        padding-top: 50px;
+        padding-left: 50px !important;
+        transform: translateX(100%);
+    }
+
+    .deslocamento_navbar_contato{
+        scroll-margin-top: 100px;
+    }
+
+    header .section_href.active {
+        transform: translateX(0);
+    }
+
+    header .section_href li {
+        margin-left: 0;
+        opacity: 0;
+    }
+
+    header .menu_responsivo {
+        display: block !important;
+    }
+
+    main {
+        padding-top: 20%;
+    }
+
+    .titulo {
+        font-size: 20px;
+    }
+
+    .texto {
+        font-size: 15px;
+    }
+
+    main .section_inicial .img .aviao_home,
+    .montanha_home {
+        display: none;
+    }
+
+    main .section_inicial .conteudo_inicial {
+        text-align: center;
+    }
+
+    main .section_inicial .conteudo_inicial .button {
+        justify-content: center;
+    }
+
+    main .section_carrosel .carrosel {
+        height: 30vh;
+        background-color: rgb(64, 60, 95);
+        margin-bottom: 10%;
+    }
+
+    .slide:nth-child(1),
+    .slide:nth-child(2),
+    .slide:nth-child(3),
+    .slide:nth-child(4) {
+        padding: 2px;
+        height: 100%;
+    }
+
+
+    main .section_informacoes {
+        align-items: center;
+        flex-direction: column;
+        text-align: center;
+        padding: 10% 5%;
+    }
+
+    main .section_informacoes img {
+        width: 80%;
+        /* padding-bottom: 10%; */
+    }
+
+    main .section_informacoes .textos .button {
+        justify-content: center;
+    }
+
+    main .section_cards {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 5% 5%;
+        gap: 10px;
+    }
+
+    main .section_cards .card {
+        width: 80%;
+        height: 30vh;
+    }
+
+    footer {
+        /* min-height: 60vh; */
+        display: flex;
+        flex-direction: column;
+        text-align: center;
+        align-items: center;
+    }
+
+    footer .logo img {
+        width: 60px;
+    }
+
+    footer .logo .texto {
+       font-size: 12px;
+    }
+
+    footer .section_esquerda a {
+        width: 200px;
+        font-size: 15px;
+    }
+
+    /* footer .section_direita .img img {
+        width: 70%;
+        height: 100%;
+    } */
+}
+
+/* TÉRMINO RESPONSIVIDADE */
+
+@media (max-width: 1199px) {
+    main .section_informacoes .banner{
+        object-position: 10px 260px;
+    }
+}
+
+@media (max-width: 992px){
+    .section_contato .section_forms{
+        padding-right: 50px;
+    }
+}
