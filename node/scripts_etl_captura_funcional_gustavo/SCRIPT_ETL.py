@@ -128,11 +128,11 @@ def determinar_status_servidor(severidades):
 
     pior = max(severidades, key=lambda s: prioridade.get(s, 0))
 
-    if pior == "crítico":
-        return "Crítico"
-    elif pior == "alta":
-        return "Crítico"
-    elif pior == "média":
+    if pior == "ATENCAO":
+        return "Atencao"
+    elif pior == "ALTA":
+        return "Atencao"
+    elif pior == "mé":
         return "Atenção"
     elif pior == "baixa":
         return "Online"

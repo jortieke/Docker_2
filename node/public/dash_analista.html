@@ -874,7 +874,7 @@
 
             switch ((status || "").toLowerCase()) {
 
-                case "online":
+                case "ONLINE":
 
                     statusInfo.innerText = "Online";
 
@@ -884,7 +884,7 @@
 
                     break;
 
-                case "offline":
+                case "OFFLINE":
 
                     statusInfo.innerText = "Offline";
 
@@ -894,8 +894,7 @@
 
                     break;
 
-                case "crítico":
-                case "critico":
+                case "CRITICO":
 
                     statusInfo.innerText = "Crítico";
 

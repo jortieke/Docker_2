@@ -164,7 +164,7 @@ VALUES
     '192.168.56.1',
     'Data Center RJ',
     'Windows 11',
-    'Crítico',
+    'CRITICO',
     localtimestamp(),    
     1),
     ('Vivian',
