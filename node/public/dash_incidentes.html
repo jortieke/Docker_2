@@ -586,19 +586,19 @@
         };
 
         const status_servidor = {
-            Online: {
+            'ONLINE': {
                 fundo: "#BFFBB0",
                 borda: "#20A200"
             },
-            'Atenção': {
+            'ATENCAO': {
                 fundo: "#FAFCA5",
                 borda: "#FFCC00"
             },
-            'Crítico': {
+            'CRITICO': {
                 fundo: "#FFB9B9",
                 borda: "#C70C0C"
             },
-            'Offline': {
+            'OFFLINE': {
                 fundo: "#FFB9B9",
                 borda: "#C70C0C"
             }
@@ -697,7 +697,7 @@
 
         if (checkbox.checked) {
             listarPainelFiltro = servidoresPermitidos.filter(servidor => {
-                return !servidor.includes("Online")
+                return !servidor.includes("ONLINE")
             })
         }
 
@@ -743,10 +743,10 @@
             const estaNoPeriodo = dataCriacao >= limiteTempo;
 
             // traduzindo os niveis de severidade do Jira
-            var severidadeAlerta = "Baixa";
-            if (alerta.prioridade === "Highest") severidadeAlerta = "Crítica";
-            else if (alerta.prioridade === "High") severidadeAlerta = "Alta";
-            else if (alerta.prioridade === "Medium") severidadeAlerta = "Média";
+            var severidadeAlerta = "BAIXO";
+            if (alerta.prioridade === "Highest") severidadeAlerta = "CRITICO";
+            else if (alerta.prioridade === "High") severidadeAlerta = "ALTO";
+            else if (alerta.prioridade === "Medium") severidadeAlerta = "MEDIO";
 
             // ou a severidadeAtiva é TODOS ou a SeveridadeAlerta é especifica
             const filtroSeveridade = severidadeAtiva === "Todos" || severidadeAlerta === severidadeAtiva;
@@ -1187,11 +1187,11 @@
 
         dot.classList.remove("verde", "amarelo", "vermelho");
 
-        if (status === "Crítico") {
+        if (status === "CRITICO") {
 
             dot.classList.add("vermelho");
 
-        } else if (status === "Atenção") {
+        } else if (status === "ATENCAO") {
 
             dot.classList.add("amarelo");
 
