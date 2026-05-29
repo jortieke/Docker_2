@@ -42,14 +42,6 @@
                     <img src="./assets/imgs/painel/dash-selecionado.png" alt="">Dashboard
                 </a>
 
-                <div class="categoria adm" id="administracao">Administração </div>
-                <a href="dash_usuarios.html" class="item-menu adm" id="cadastrarUsuario">
-                    <img src="./assets/imgs/painel/cadastrar-usuario.png" alt="">Usuários
-                </a>
-                <a href="servidor-componente.html" class="item-menu adm" id="cadastrarServidor">
-                    <img src="./assets/imgs/painel/cadastrar-servidor.png" alt="">Cadastrar servidor
-                </a>
-
             </nav>
 
             <div onclick="limparSessionStorage()" class="sair">
@@ -77,7 +69,7 @@
 
                             <div class="status-servidor">
                                 <div class="select-status">
-                                    <span class="status-dot verde"></span>
+                                    <span id="status-dot" class="status-dot verde"></span>
 
                                     <select id="select_servidor">
                                     </select>
@@ -321,13 +313,6 @@
 
     window.onload = () => {
 
-        const funcao = sessionStorage.getItem("FUNCAO_USUARIO");
-
-        if (funcao == "Gestor") {
-            document.getElementById("administracao").style.display = "block";
-            document.getElementById("cadastrarServidor").style.display = "flex";
-            document.getElementById("cadastrarUsuario").style.display = "flex";
-        }
 
         exibirUsuarioAtivo();
         listarServidores();
@@ -364,7 +349,7 @@
             ];
 
         const mac_address =
-            opcaoSelecionada.id;
+            opcaoSelecionada.dataset.mac;
 
         const id_empresa =
             sessionStorage.ID_EMPRESA;
@@ -403,68 +388,74 @@
             );
         }
     }
-    function agruparDados(labels, valores, tamanhoGrupo = 7) {
 
-        const novasLabels = [];
-        const novosValores = [];
-
-        for (let i = 0; i < valores.length; i += tamanhoGrupo) {
-
-            const blocoValores =
-                valores.slice(i, i + tamanhoGrupo);
-
-            const blocoLabels =
-                labels.slice(i, i + tamanhoGrupo);
-
-            const media =
-                blocoValores.reduce((a, b) => a + b, 0)
-                / blocoValores.length;
-
-            novosValores.push(
-                Number(media.toFixed(2))
-            );
-
-            novasLabels.push(
-                blocoLabels[blocoLabels.length - 1]
-            );
-        }
-
-        return {
-            labels: novasLabels,
-            valores: novosValores
-        };
-    }
 
     function configurarFiltros() {
 
-        const selects = document.querySelectorAll("select[data-filtro]");
+    const selects =
+        document.querySelectorAll("select[data-filtro]");
 
-        selects.forEach(select => {
+    selects.forEach(select => {
 
-            select.addEventListener("change", function () {
+        select.addEventListener("change", function () {
 
-                const chave = this.dataset.filtro;
+            const chave =
+                this.dataset.filtro;
 
-                filtros[chave] = this.value;
+            filtros[chave] =
+                this.value;
 
-                renderizarTudo();
-            });
+            switch (chave) {
+
+                case "perdaPacotes":
+                    renderizarKPIPerdaPacotes();
+                    break;
+
+                case "latencia":
+                    renderizarKPILatencia();
+                    break;
+
+                case "adsb":
+                    renderizarKPIAdsb();
+                    break;
+
+                case "rotas":
+                    renderizarKPIRotas();
+                    break;
+
+                case "transferencia":
+                    renderizarGraficoTransferencia();
+                    break;
+
+                case "perdaServicos":
+                    renderizarPerdaPacotesServico();
+                    break;
+
+                case "latenciaComponentes":
+                    renderizarGraficoLatencia();
+                    break;
+
+                case "banda":
+                    renderizarGraficoBanda();
+                    break;
+            }
         });
-    }
+    });
+}
 
     function renderizarTudo() {
 
-        renderizarKPIPerdaPacotes();
-        renderizarKPILatencia();
-        renderizarKPIAdsb();
-        renderizarKPIRotas();
+    renderizarKPIPerdaPacotes();
+    renderizarKPILatencia();
+    renderizarKPIAdsb();
+    renderizarKPIRotas();
 
-        renderizarGraficoTransferencia();
-        renderizarGraficoLatencia();
-        renderizarGraficoBanda();
+    renderizarGraficoTransferencia();
+    renderizarGraficoLatencia();
+    renderizarGraficoBanda();
 
-        renderizarPerdaPacotesServico();
-    }
+    renderizarPerdaPacotesServico();
+}
 
     // KPIs
 
@@ -955,87 +946,90 @@
 
     // Gerar Relatório
 
-    async function gerarRelatorio() {
-    const usuario = sessionStorage.NOME_USUARIO;
-    const email = sessionStorage.EMAIL_USUARIO;
-    const id_empresa = sessionStorage.ID_EMPRESA;
+    function gerarRelatorio() {
 
-    const opcaoSelecionada = select_servidor.options[select_servidor.selectedIndex];
-    const mac_address = opcaoSelecionada.id;
-    const servidor = opcaoSelecionada.text;
+        const usuario = sessionStorage.NOME_USUARIO;
+        const email = sessionStorage.EMAIL_USUARIO;
+        const id_empresa = sessionStorage.ID_EMPRESA;
 
-    try {
-        const response = await fetch("/relatorio", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ usuario, email, mac_address, servidor, id_empresa })
-        });
+        const opcaoSelecionada = select_servidor.options[select_servidor.selectedIndex];
+        const mac_address =
+            opcaoSelecionada.dataset.mac;
+        const servidor = opcaoSelecionada.text;
 
-        const data = await response.json();
+        const url = `/relatorio/${encodeURIComponent(usuario)}/${encodeURIComponent(email)}/${encodeURIComponent(mac_address)}/${encodeURIComponent(servidor)}/${encodeURIComponent(id_empresa)}`;
 
-        if (data.url) {
-            window.open(data.url); // abre o PDF do S3
-        } else {
-            alert("Erro ao gerar relatório.");
-        }
-
-    } catch (err) {
-        console.error("Erro:", err);
-        alert("Falha ao gerar relatório.");
+        window.open(url);
     }
-}
 
-    // Lista de Servidores
+    // Lista e Atualizar Servidores
+
+    function atualizarServidorSelecionado() {
+
+    const servidor =
+        select_servidor.options[
+            select_servidor.selectedIndex
+        ];
+
+    if (!servidor) return;
+
+    nomeServidor.textContent =
+        servidor.text;
+
+    atualizarStatusServidor(
+        servidor.dataset.status
+    );
+}
 
     function listarServidores() {
 
-        const fkEmpresa = sessionStorage.ID_EMPRESA;
+    const fkEmpresa = sessionStorage.ID_EMPRESA;
 
-        // transforma string em array
-        const servidores = JSON.parse(sessionStorage.ACESSO_SERVIDORES);
+    const servidores =
+        JSON.parse(sessionStorage.ACESSO_SERVIDORES);
 
-        fetch(`/servidores/listarServidores`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                fkEmpresaServer: fkEmpresa,
-                servidoresServer: servidores
-            })
+    fetch(`/servidores/listarServidores`, {
+        method: "POST",
+
+        headers: {
+            "Content-Type": "application/json"
+        },
+
+        body: JSON.stringify({
+            fkEmpresaServer: fkEmpresa,
+            servidoresServer: servidores
         })
+    })
 
-            .then(resposta => resposta.json())
+    .then(resposta => resposta.json())
 
-            .then((lista) => {
+    .then(lista => {
 
-                select_servidor.innerHTML =
-                    lista.map(servidor =>
+        select_servidor.innerHTML =
+            lista.map(servidor => `
 
-                        `<option value="${servidor.id_servidor}" id="${servidor.mac_address}">
-                        ${servidor.hostname}
-                    </option>`
+                <option
+                    value="${servidor.id_servidor}"
+                    data-mac="${servidor.mac_address}"
+                    data-status="${servidor.status_servidor}"
+                >
+                    ${servidor.hostname}
+                </option>
 
-                    ).join('');
+            `).join("");
 
-                nomeServidor.textContent =
-                    select_servidor.options[
-                        select_servidor.selectedIndex
-                    ].text;
+        atualizarServidorSelecionado();
 
-                carregarDashboards()
-            });
+        carregarDashboards();
+    });
 
-        select_servidor.addEventListener("change", () => {
+    select_servidor.onchange = async () => {
 
-            nomeServidor.textContent =
-                select_servidor.options[
-                    select_servidor.selectedIndex
-                ].text;
+    atualizarServidorSelecionado();
 
-            carregarDashboards()
-        });
-    }
+    await carregarDashboards();
+};
+}   
 
     //Menu Sanduiche
     const btnHamburguer =
@@ -1106,7 +1100,8 @@
             select_servidor.selectedIndex
             ];
 
-        const mac_address = opcaoSelecionada.id;
+        const mac_address =
+            opcaoSelecionada.dataset.mac;
 
         const id_empresa =
             sessionStorage.ID_EMPRESA;
@@ -1128,7 +1123,6 @@
             alertasAtivos = dados;
 
             renderizarAlertas();
-            atualizarStatus();
 
         } catch (erro) {
 
@@ -1192,34 +1186,37 @@
         }
     }
 
-    function atualizarStatus() {
+    function atualizarStatusServidor(status) {
 
-        const dot = document.querySelector(".status-dot");
+    const dot =
+        document.getElementById("status-dot");
 
-        if (!dot) return;
+    if (!dot) return;
 
-        dot.classList.remove("verde", "amarelo", "vermelho");
+    dot.classList.remove(
+        "verde",
+        "amarelo",
+        "vermelho",
+        "cinza"
+    );
 
-        // sem alertas = verde
-        if (alertasAtivos.length === 0) {
+    switch (status) {
 
-            dot.classList.add("verde");
-            return;
-        }
-
-        // verifica se existe alerta crítico
-        const possuiCritico = alertasAtivos.some(
-            alerta => alerta.criticidade === "CRITICO"
-        );
-
-        if (possuiCritico) {
-
+        case "Critico":
             dot.classList.add("vermelho");
+            break;
 
-        } else {
-
+        case "Atencao":
             dot.classList.add("amarelo");
-        }
+            break;
+
+        case "Offline":
+            dot.classList.add("cinza");
+            break;
+
+        default:
+            dot.classList.add("verde");
     }
+}
 
 </script>

@@ -10,7 +10,7 @@ router.get("/dashboard/:fkEmpresa/:fkFuncionario", function (req, res) {
 });
 
 
-router.get("/chamadosComponente/:fkFuncionario/:fkEmpresa/:hostname", function (req, res){
+router.get("/chamadosPorComponente/:fkFuncionario/:fkEmpresa/:hostname", function (req, res){
     jiraController.chamadosPorComponente(req,res)
 })
 

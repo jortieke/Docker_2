@@ -144,6 +144,29 @@
     font-weight:600;
 }
 
+.status-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.verde {
+  background: #22c55e;
+}
+
+.amarelo {
+  background: #ffee00;
+}
+
+.vermelho {
+  background: #ef4444;
+}
+
+.cinza {
+  background: #6c757d;
+}
+
 /* GRID */
 
 .grid{

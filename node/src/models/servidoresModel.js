@@ -62,11 +62,12 @@ function listarServidores(fkEmpresa, servidores) {
         .join(",");
 
     var instrucaoSql = `
-        SELECT 
-            id_servidor, 
+        SELECT
+            id_servidor,
             hostname,
-            mac_address 
-        FROM servidor 
+            mac_address,
+            status_servidor
+        FROM servidor
         WHERE fk_empresa = ${fkEmpresa}
             AND mac_address IN (${listaMacs});
     `;

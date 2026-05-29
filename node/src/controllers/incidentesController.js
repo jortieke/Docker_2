@@ -29,14 +29,14 @@ async function calcularIndice(req, res) {
         // aguardando resposta da requisição
         const data = await s3.send(command);
 
+        // transforma json em string
+        const jsonString =
+            await data.Body.transformToString();
 
-        const jsonString = await data.Body.transformToString();
+        const json = JSON.parse(jsonString);
 
-        // Remoção de acentos
-        const jsonStringTratado = jsonString.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-
-        // Parse the sanitized string into a JSON object
-        const json = JSON.parse(jsonStringTratado);
+        res.json(json);
+        console.log(json);
 
     } catch (erro) {
 

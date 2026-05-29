@@ -18,6 +18,28 @@
     <link rel="stylesheet" href="style/dash_analista.css">
 
     <style>
+        .status-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+        }
+
+        .verde {
+            background: #22c55e;
+        }
+
+        .amarelo {
+            background: #ffee00;
+        }
+
+        .vermelho {
+            background: #ef4444;
+        }
+
+        .cinza {
+            background: #6c757d;
+        }
+
         .graficoQtdChamados {
             position: relative;
             width: 100%;
@@ -26,11 +48,6 @@
             box-sizing: border-box;
         }
 
-        #graficoQtdChamados {
-            display: block;
-            width: 100% !important;
-            height: 100% !important;
-        }
 
 
         .chart-box {
@@ -42,7 +59,7 @@
         .grafico-recursos {
             position: relative;
             width: 100%;
-            height: 220px;
+            height: 300px;
             padding: 8px 12px;
             box-sizing: border-box;
         }
@@ -128,10 +145,6 @@
                                     <select id="select_servidor"></select>
                                 </div>
 
-                                <div class="alertas">
-                                    <img src="assets/imgs/rede/alerta-lar.png" alt=""
-                                        style="height: 12px !important; width: 12px !important;"> 3 alertas
-                                </div>
                             </div>
                         </div>
                     </div>
@@ -148,10 +161,10 @@
                 <div class="header-nav-scroll">
                     <nav class="header-nav">
                         <a href="dash_incidentes.html">Incidentes</a>
+                        <a href="dash_analista.html" class="ativo">Resumo</a>
                         <a href="processos.html">Processos</a>
                         <a href="dash_rede.html">Comunicação e rede</a>
                         <a href="Temperatura.html">Temperatura</a>
-                        <a href="dash_analista.html" class="ativo">Resumo</a>
                     </nav>
                 </div>
             </header>
@@ -236,10 +249,12 @@
                                     </div>
                                 </div>
                                 <div style="display: flex; justify-content: flex-end; padding: 10px 20px 14px;">
-                                    <button class="btn-detalhes-saude"
-                                        onclick="document.getElementById('modalSaude').classList.add('ativo')">
-                                        Detalhes
-                                    </button>
+                                    <div id="indicadorSaude"
+                                        style="display: flex; align-items: center; gap: 8px;font-size: 13px; font-weight: 600;padding: 4px 14px; border-radius: 999px; border: 1px solid #22c55e;background: rgba(34,197,94,0.15);color: #16a34a;">
+                                        <span id="indicadorSaudePonto"
+                                            style="width: 8px; height: 8px; border-radius: 50%;background: #22c55e; display: inline-block;"></span>
+                                        <span id="indicadorSaudeTexto">Estável</span>
+                                    </div>
                                 </div>
                             </div>
 
@@ -259,7 +274,7 @@
                                             <h3 id="labelProbabilidade">Prob. Crescimento/h</h3>
                                             <p id="probabilidadeCrescimento">—</p>
                                             <span id="fraseInterpretativa"
-                                                class="interpretacao interpretacao-normal">Uso normal</span>
+                                                class="interpretacao interpretacao-normal">--</span>
                                         </div>
                                         <div class="card">
                                             <h3>Tendência</h3>
@@ -275,7 +290,8 @@
                                 <div class="card-detalhes-topo">
                                     <span>Quantidade de chamados de cada componente</span>
                                 </div>
-                                <div class="graficoQtdChamados">
+                                <div
+                                    style="position: relative; width: 100%; height: 260px; padding: 12px 16px 8px; box-sizing: border-box;">
                                     <canvas id="graficoQtdChamados" role="img"
                                         aria-label="Gráfico de barras com quantidade de chamados por componente">
                                         Chamados por componente.
@@ -294,38 +310,6 @@
                                 </div>
                             </div>
                         </div>
-
-                        <div class="modal-saude-overlay" id="modalSaude">
-                            <div class="modal-saude">
-                                <div class="modal-saude-header">
-                                    <span>Indicadores de Saúde</span>
-                                    <button
-                                        onclick="document.getElementById('modalSaude').classList.remove('ativo')">&times;</button>
-                                </div>
-                                <div class="modal-saude-body">
-                                    <div class="metric">
-                                        <h3>CPU</h3>
-                                        <p id="cpuValue">0%</p>
-                                    </div>
-                                    <div class="metric">
-                                        <h3>RAM</h3>
-                                        <p id="ramValue">0%</p>
-                                    </div>
-                                    <div class="metric">
-                                        <h3>SWAP</h3>
-                                        <p id="swapValue">0%</p>
-                                    </div>
-                                    <div class="metric">
-                                        <h3>DISCO</h3>
-                                        <p id="diskValue">0%</p>
-                                    </div>
-                                </div>
-                                <div id="serverStatus" class="status status-saude" style="margin: 0 20px 20px;">
-                                    Calculando...
-                                </div>
-                            </div>
-                        </div>
-
                     </div>
                 </div>
             </section>
@@ -339,9 +323,33 @@
         var servidoresCache = [];
         var servidorAtual = null;
         var intervaloCaptura = null;
+        var historicosServidores = {};
 
         const fkEmpresa = sessionStorage.ID_EMPRESA;
         const fkFuncionario = sessionStorage.ID_USUARIO;
+
+        const els = {
+            cpuModal: document.getElementById("cpuModal"),
+            ramModal: document.getElementById("ramModal"),
+            discoModal: document.getElementById("discoModal"),
+            ultimaAtualizacao: document.getElementById("ultimaAtualizacao"),
+            probabilidadeCrescimento: document.getElementById("probabilidadeCrescimento"),
+            ipServidorModal: document.getElementById("ipServidorModal"),
+            tendenciaRam: document.getElementById("tendenciaRam"),
+            fraseInterpretativa: document.getElementById("fraseInterpretativa"),
+            badgeSaude: document.getElementById("badgeSaude"),
+            indicadorSaude: document.getElementById("indicadorSaude"),
+            indicadorSaudePonto: document.getElementById("indicadorSaudePonto"),
+            indicadorSaudeTexto: document.getElementById("indicadorSaudeTexto"),
+
+           
+
+        };
+
+            console.log(els.cpuValue);
+            console.log(els.ramValue);
+            console.log(els.diskValue);
+
 
         const JANELA = 24;
 
@@ -350,8 +358,13 @@
             const data = new Date(dataHora.replace(" ", "T"));
 
             return data.toLocaleTimeString("pt-BR", {
+
+                day: "2-digit",
+                month: "2-digit",
+                year: "numeric",
                 hour: "2-digit",
                 minute: "2-digit"
+
             });
         }
 
@@ -384,8 +397,10 @@
             return new Date(dataHora.replace(" ", "T"));
         }
 
-        function corDoStatus(status) {
-            return coresHealth[status] ?? coresHealth['estavel'];
+        function corDoScore(score) {
+            if (score >= 80) return { borda: '#22c55e', fundo: 'rgba(34,197,94,0.15)', badge: '#16a34a', ponto: '#22c55e', texto: 'Estável' };
+            if (score >= 50) return { borda: '#f59e0b', fundo: 'rgba(245,158,11,0.15)', badge: '#d97706', ponto: '#f59e0b', texto: 'Atenção' };
+            return { borda: '#ef4444', fundo: 'rgba(239,68,68,0.15)', badge: '#dc2626', ponto: '#ef4444', texto: 'Crítico' };
         }
 
 
@@ -397,35 +412,26 @@
             }
         }
 
+
         function atualizarGraficoSaude(healthScore, statusHealth) {
-            const cor = corDoStatus(statusHealth);
+            const cor = corDoScore(healthScore);
 
+            els.badgeSaude.textContent = cor.texto;
+            els.badgeSaude.style.backgroundColor = cor.fundo;
+            els.badgeSaude.style.color = cor.badge;
+            els.badgeSaude.style.border = `1px solid ${cor.borda}`;
 
-            const badge = document.getElementById('badgeSaude');
-            badge.textContent = cor.texto;
-            badge.style.backgroundColor = cor.fundo;
-            badge.style.color = cor.badge;
-            badge.style.border = `1px solid ${cor.borda}`;
-            badge.style.borderRadius = '999px';
-            badge.style.padding = '2px 12px';
-            badge.style.fontWeight = '600';
-            badge.style.fontSize = '13px';
-
-
-            const serverStatus = document.getElementById('serverStatus');
-            if (serverStatus) {
-                serverStatus.textContent = cor.texto;
-                serverStatus.style.background = cor.fundo;
-                serverStatus.style.color = cor.badge;
-                serverStatus.style.border = `1px solid ${cor.borda}`;
-            }
-
+            els.indicadorSaude.style.background = cor.fundo;
+            els.indicadorSaude.style.borderColor = cor.borda;
+            els.indicadorSaude.style.color = cor.badge;
+            els.indicadorSaudePonto.style.background = cor.ponto;
+            els.indicadorSaudeTexto.textContent = cor.texto;
 
             if (chartHealth) {
                 chartHealth.data.datasets[0].borderColor = cor.borda;
                 chartHealth.data.datasets[0].backgroundColor = cor.fundo;
                 chartHealth.data.datasets[0].data = [...historicoHealth];
-                chartHealth.update(); /* 'none' = sem animação a cada tick */
+                chartHealth.update('none');
             } else {
                 chartHealth = new Chart(document.getElementById('healthChart'), {
                     type: 'line',
@@ -437,7 +443,7 @@
                             borderColor: cor.borda,
                             backgroundColor: cor.fundo,
                             borderWidth: 2.5,
-                            tension: 0.4,
+                            tension: 0.1,
                             cubicInterpolationMode: 'monotone',
                             spanGaps: true,
                             pointRadius: 0,
@@ -448,23 +454,17 @@
                     options: {
                         responsive: true,
                         maintainAspectRatio: false,
-                        animation: { duration: 400 },
+                        animation: { duration: 0 },
                         scales: {
                             x: {
                                 title: { display: true, text: 'Leituras (últimas 24h)' },
-                                ticks: {
-                                    maxTicksLimit: 12,
-                                    autoSkip: true
-                                }
+                                ticks: { maxTicksLimit: 12, autoSkip: true }
                             },
                             y: {
                                 min: 0,
                                 max: 100,
                                 title: { display: true, text: 'Saúde (%)' },
-                                ticks: {
-                                    stepSize: 20,
-                                    callback: val => val + '%'
-                                }
+                                ticks: { stepSize: 20, callback: val => val + '%' }
                             }
                         },
                         plugins: {
@@ -486,7 +486,7 @@
                 chartRecursos.data.datasets[0].data = [...historicoCpu];
                 chartRecursos.data.datasets[1].data = [...historicoRamR];
                 chartRecursos.data.datasets[2].data = [...historicoDisco];
-                chartRecursos.update();
+                chartRecursos.update('none');
             } else {
                 chartRecursos = new Chart(document.getElementById('graficoRecursos24h'), {
                     type: 'line',
@@ -499,7 +499,7 @@
                                 borderColor: '#576ca8',
                                 backgroundColor: 'rgba(87,108,168,0.08)',
                                 borderWidth: 2.5,
-                                tension: 0.4,
+                                tension: 0,
                                 cubicInterpolationMode: 'monotone',
                                 spanGaps: true,
                                 pointRadius: 0,
@@ -513,13 +513,13 @@
                                 borderColor: '#a855f7',
                                 backgroundColor: 'rgba(168,85,247,0.08)',
                                 borderWidth: 2.5,
-                                tension: 0.4,
+                                tension: 0.1,
                                 cubicInterpolationMode: 'monotone',
                                 spanGaps: true,
                                 pointRadius: 0,
                                 pointHoverRadius: 5,
                                 fill: false,
-                                borderDash: [6, 3]
+                                borderDash: []
                             },
                             {
                                 label: 'Disco',
@@ -527,25 +527,26 @@
                                 borderColor: '#22c55e',
                                 backgroundColor: 'rgba(34,197,94,0.08)',
                                 borderWidth: 2.5,
-                                tension: 0.4,
+                                tension: 0.1,
                                 cubicInterpolationMode: 'monotone',
                                 spanGaps: true,
                                 pointRadius: 0,
                                 pointHoverRadius: 5,
                                 fill: false,
-                                borderDash: [2, 2]
+                                borderDash: []
                             }
                         ]
                     },
                     options: {
                         responsive: true,
                         maintainAspectRatio: false,
-                        animation: { duration: 400 },
+                        animation: { duration: 0 },
                         interaction: { mode: 'index', intersect: false },
                         scales: {
                             x: {
                                 title: { display: true, text: 'Leituras (últimas 24h)' },
                                 ticks: { maxTicksLimit: 12, autoSkip: true }
+
                             },
                             y: {
                                 min: 0,
@@ -575,7 +576,7 @@
             if (chartRam) {
                 chartRam.data.datasets[0].data = [...historicoRam];
                 chartRam.data.datasets[1].data = [...historicoTendencia];
-                chartRam.update();
+                chartRam.update('none');
             } else {
                 chartRam = new Chart(document.getElementById('graficoRam'), {
                     type: 'line',
@@ -588,7 +589,7 @@
                                 borderColor: '#576ca8',
                                 backgroundColor: 'rgba(87,108,168,0.15)',
                                 borderWidth: 3,
-                                tension: 0.4,
+                                tension: 0.1,
                                 cubicInterpolationMode: 'monotone',
                                 pointRadius: 0,
                                 spanGaps: true,
@@ -603,7 +604,7 @@
                                 borderDash: [8, 5],
                                 borderWidth: 2,
                                 pointRadius: 0,
-                                tension: 0.4,
+                                tension: 0.1,
                                 cubicInterpolationMode: 'monotone',
                                 spanGaps: true,
                                 pointHoverRadius: 5,
@@ -614,7 +615,7 @@
                     options: {
                         responsive: true,
                         maintainAspectRatio: false,
-                        animation: { duration: 400 },
+                        animation: { duration: 0 },
                         scales: {
                             x: {
                                 title: { display: true, text: 'Leituras (últimas 24h)' },
@@ -653,9 +654,20 @@
                 if (!resposta.ok) throw new Error(`HTTP ${resposta.status}`);
                 const dados = await resposta.json();
 
-                const metricas = dados.metricas;
+                const historico = historicosServidores[macAddress];
+
+                if (!historico) return;
+
+                const metricas = Array.isArray(dados.metricas)
+                    ? dados.metricas : [];
                 if (!metricas || metricas.length === 0) {
-                    console.warn("Nenhuma métrica recebida.");
+
+                    els.cpuModal.textContent = "--";
+                    els.ramModal.textContent = "--";
+                    els.discoModal.textContent = "--";
+                    els.ultimaAtualizacao.textContent = "--";
+                    els.probabilidadeCrescimento.textContent = "--";
+                    els.tendenciaRam.textContent = "--";
                     return;
                 }
 
@@ -668,17 +680,32 @@
                         parseDataHora(b.data_hora)
                     );
 
-                const novos = ultimoDataHoraPlotado
+                const novos = historico.ultimoDataHoraPlotado
                     ? ordenados.filter(i =>
                         parseDataHora(i.data_hora) >
-                        parseDataHora(ultimoDataHoraPlotado)
+                        parseDataHora(historico.ultimoDataHoraPlotado)
                     )
                     : ordenados;
 
 
 
-                if (novos.length === 0) return;
+                if (novos.length === 0) {
 
+                    const itemRecente = ordenados.at(-1);
+
+                    if (!itemRecente) return;
+
+                    const m = itemRecente.metricas ?? {};
+
+                    atualizarGraficoSaude(m.health_score ?? 0, m.status_health ?? 'estavel');
+                    atualizarGraficoRecursos(m.cpu ?? null, m.ram ?? null, m.disco ?? null);
+                    atualizarGraficoRam(
+                        Number(m.linha_real ?? m.ram ?? 0),
+                        Number(m.linha_tendencia ?? m.ram ?? 0)
+                    );
+
+                    return;
+                }
 
                 novos.forEach(item => {
                     const m = item.metricas ?? {};
@@ -689,20 +716,20 @@
 
                     const labelHora = formatarHora(item.data_hora);
 
-                    pushJanela(historicoLabels, labelHora);
+                    pushJanela(historico.historicoLabels, labelHora);
 
-                    pushJanela(historicoHealth, m.health_score ?? null);
+                    pushJanela(historico.historicoHealth, m.health_score ?? null);
 
-                    pushJanela(historicoCpu, m.cpu ?? null);
-                    pushJanela(historicoRamR, m.ram ?? null);
-                    pushJanela(historicoDisco, m.disco ?? null);
+                    pushJanela(historico.historicoCpu, m.cpu ?? null);
+                    pushJanela(historico.historicoRamR, m.ram ?? null);
+                    pushJanela(historico.historicoDisco, m.disco ?? null);
 
-                    pushJanela(historicoRam, linhaReal);
-                    pushJanela(historicoTendencia, linhaTendencia);
+                    pushJanela(historico.historicoRam, linhaReal);
+                    pushJanela(historico.historicoTendencia, linhaTendencia);
                 });
 
 
-                ultimoDataHoraPlotado = novos.at(-1).data_hora;
+                historico.ultimoDataHoraPlotado = novos.at(-1).data_hora;
 
 
                 const itemRecente = ordenados.at(-1);
@@ -712,25 +739,35 @@
                 const valorTendencia = Number(m.linha_tendencia ?? m.ram ?? 0);
                 const margem = 0.5;
 
-                let tendenciaTexto = "Estável";
-                document.getElementById("fraseInterpretativa").innerHTML = "uso normal"
-                if (valorTendencia > valorReal + margem) {
-                    tendenciaTexto = "Subindo";
-                    document.getElementById("fraseInterpretativa").innerHTML = "crescimento anormal"
+                const crescimento = Number(m.tendencia_aumento_hora || 0);
+
+
+                if (crescimento < 5) {
+                    els.fraseInterpretativa.textContent = "Uso normal";
+                    els.fraseInterpretativa.style.color = "#22c55e";
+                } else if (crescimento < 15) {
+                    els.fraseInterpretativa.textContent = "Atenção";
+                    els.fraseInterpretativa.style.color = "#f59e0b";
+                } else {
+                    els.fraseInterpretativa.textContent = "Crescimento anormal";
+                    els.fraseInterpretativa.style.color = "#ef4444";
                 }
-                else if (valorTendencia < valorReal - margem) tendenciaTexto = "Caindo";
 
-                document.getElementById("tendenciaRam").textContent = tendenciaTexto;
-                document.getElementById("cpuModal").textContent = (m.cpu ?? "--") + "%";
-                document.getElementById("ramModal").textContent = (m.ram ?? "--") + "%";
-                document.getElementById("discoModal").textContent = (m.disco ?? "--") + "%";
-                document.getElementById("ultimaAtualizacao").textContent = itemRecente.data_hora || "--";
-                document.getElementById("probabilidadeCrescimento").textContent = m.tendencia_aumento_hora ?? "--";
-                document.getElementById("ipServidorModal").textContent = itemRecente.ip || "--";
-                document.getElementById("cpuValue").textContent = (m.cpu ?? 0) + "%";
-                document.getElementById("ramValue").textContent = (m.ram ?? 0) + "%";
-                document.getElementById("diskValue").textContent = (m.disco ?? 0) + "%";
 
+
+                let tendenciaTexto = "Estável";
+
+
+                els.tendenciaRam.textContent = tendenciaTexto;
+                els.cpuModal.textContent = (m.cpu ?? "--") + "%";
+                els.ramModal.textContent = (m.ram ?? "--") + "%";
+                els.discoModal.textContent = (m.disco ?? "--") + "%";
+                els.ultimaAtualizacao.textContent = formatarHora(itemRecente.data_hora) || "--";
+                els.probabilidadeCrescimento.textContent = m.tendencia_aumento_hora ?? "--";
+                els.ipServidorModal.textContent = itemRecente.ip || "--";
+                els.cpuValue.textContent = (m.cpu ?? 0) + "%";
+                els.ramValue.textContent = (m.ram ?? 0) + "%";
+                els.diskValue.textContent = (m.disco ?? 0) + "%";
 
 
 
@@ -747,13 +784,12 @@
 
         async function carregarGraficoChamados(hostname) {
 
-        try{
-
             const resposta = await fetch(
                 `/jira/chamadosPorComponente/${fkFuncionario}/${fkEmpresa}/${hostname}`
             );
 
             const dados = await resposta.json();
+            console.log("Dados:" + dados);
 
             const labels = Object.keys(dados);
             const valores = Object.values(dados);
@@ -766,61 +802,61 @@
                 document.getElementById("graficoQtdChamados"),
                 {
                     type: "bar",
-
                     data: {
                         labels: labels,
                         datasets: [{
                             label: "Chamados",
                             data: valores,
-                            borderWidth: 1
+                            backgroundColor: ['#1a3a6b', '#1e5fa8', '#5bbcdb', '#2e7fd4', '#7dd4ef'],
+                            borderRadius: 2,
+                            barThickness: 28,
                         }]
                     },
-
                     options: {
+                        indexAxis: 'y',
                         responsive: true,
                         maintainAspectRatio: false,
-                        scales: {
-                            y: {
-                              beginAtZero: true,
-                              ticks:{
-                                precision: 0
-                              }
-                                }
-                            
-                        },
-
                         plugins: {
+                            legend: { display: false },
                             tooltip: {
                                 callbacks: {
-                                    label: function (context) {
-                                        return `Chamados: ${context.parsed.y}`;
-                                    }
+                                    label: (ctx) => `Chamados: ${ctx.parsed.x}`
                                 }
+                            }
+                        },
+                        scales: {
+                            x: {
+                                min: 0,
+                                ticks: { stepSize: 10 },
+                                grid: { color: 'rgba(0,0,0,0.06)' },
+                                border: { display: false }
+                            },
+                            y: {
+                                grid: { display: false },
+                                border: { display: false }
                             }
                         }
                     }
                 }
             );
-        }catch(erro){
-            console.error(
-                "Erro ao carregar gráfico de chamados:",
-                erro
-            );
-        }
         }
 
-        function resetarHistoricos() {
-            historicoRam = Array(JANELA).fill(null);
-            historicoTendencia = Array(JANELA).fill(null);
-            historicoHealth = Array(JANELA).fill(null);
-            historicoCpu = Array(JANELA).fill(null);
-            historicoRamR = Array(JANELA).fill(null);
-            historicoDisco = Array(JANELA).fill(null);
-            contadorHora = 0;
-            contadorHealth = 0;
-            contadorRecursos = 0;
-        }
+        function resetarHistoricos(macAddress) {
 
+            historicosServidores[macAddress] = {
+                historicoRam: Array(JANELA).fill(null),
+                historicoHealth: Array(JANELA).fill(null),
+                historicoTendencia: Array(JANELA).fill(null),
+                historicoCpu: Array(JANELA).fill(null),
+                historicoRamR: Array(JANELA).fill(null),
+                historicoDisco: Array(JANELA).fill(null),
+                historicoLabels: [],
+                ultimoDataHoraPlotado: null,
+                contadorHora: 0,
+                contadorHealth: 0,
+                contadorRecursos: 0
+            };
+        }
         function destruirGraficos() {
             [chartRam, chartHealth, chartRecursos].forEach(c => { if (c) c.destroy(); });
             chartRam = chartHealth = chartRecursos = null;
@@ -828,106 +864,99 @@
         }
 
         function iniciarCaptura(empresa, macAddress) {
-            if (intervaloCaptura) clearInterval(intervaloCaptura);
 
-            ultimoDataHoraPlotado = null;
-            resetarHistoricos();
+            if (intervaloCaptura) {
+                clearInterval(intervaloCaptura);
+            }
+
+            resetarHistoricos(macAddress);
+
             destruirGraficos();
 
+            const historico = historicosServidores[macAddress];
+
+            if (!historico) return;
+
+            historicoLabels = historico.historicoLabels;
+
+            historicoHealth = historico.historicoHealth;
+
+            historicoCpu = historico.historicoCpu;
+
+            historicoRamR = historico.historicoRamR;
+
+            historicoDisco = historico.historicoDisco;
+
+            historicoRam = historico.historicoRam;
+
+            historicoTendencia = historico.historicoTendencia;
+
+            historicoLabels.length = 0;
+            historicoHealth.length = 0;
+            historicoCpu.length = 0;
+            historicoRamR.length = 0;
+            historicoDisco.length = 0;
+            historicoRam.length = 0;
+            historicoTendencia.length = 0;
 
             capturarDados(empresa, macAddress);
-            intervaloCaptura = setInterval(() => capturarDados(empresa, macAddress), 10000);
+
+            intervaloCaptura = setInterval(() => {
+                capturarDados(empresa, macAddress);
+            }, 300);
         }
 
 
 
-        async function carregarServidores() {
-            try {
-                const resposta = await fetch(
-                    `/servidores/listarServidoresComAcesso/${fkEmpresa}/${fkFuncionario}`
-                );
-                const servidores = await resposta.json();
-                servidoresCache = servidores;
+        function carregarServidores() {
+            const servidores = JSON.parse(sessionStorage.ACESSO_SERVIDORES || '[]');
 
-                const servidoresComAcesso = servidores.filter(s => s.tem_acesso === 1);
-                const select = document.getElementById("select_servidor");
-                select.innerHTML = "";
-
-                if (servidoresComAcesso.length === 0) {
-                    select.innerHTML = `<option>Nenhum servidor disponível</option>`;
-                    return;
-                }
-
-                servidoresComAcesso.forEach((servidor, index) => {
-                    const option = document.createElement("option");
-                    option.value = servidor.mac_address;
-                    option.textContent = servidor.hostname;
-                    select.appendChild(option);
-                    if (index === 0) servidorAtual = servidor.mac_address;
-                });
-
-                select.value = servidorAtual;
-                await carregarDashboardServidor(servidorAtual);
-
-            } catch (erro) {
-                console.error("Erro ao carregar servidores:", erro);
+            if (servidores.length === 0) {
+                document.getElementById("select_servidor").innerHTML =
+                    `<option>Nenhum servidor disponível</option>`;
+                return;
             }
+
+            fetch(`/servidores/listarServidores/`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    fkEmpresaServer: fkEmpresa,
+                    servidoresServer: servidores
+                })
+            })
+                .then(r => r.json())
+                .then(lista => {
+                    const select = document.getElementById("select_servidor");
+
+                    select.innerHTML = lista.map(s =>
+                        `<option value="${s.mac_address}" data-status="${s.status_servidor}">
+                ${s.hostname}
+            </option>`
+                    ).join('');
+
+                    const primeira = select.options[select.selectedIndex];
+                    document.getElementById("nomeServidor").textContent = primeira.text;
+                    servidorAtual = primeira.value;
+
+                    atualizarStatusServidor(primeira.dataset.status);
+                    carregarDashboardServidor(primeira.value);
+                })
+                .catch(erro => console.error("Erro ao carregar servidores:", erro));
         }
 
 
         function atualizarStatusServidor(status) {
+            const dot = document.getElementById("statusDot");
+            if (!dot || !status) return;
 
-            const statusInfo = document.getElementById("statusInfo");
-            const statusDot = document.getElementById("statusDot");
+            dot.classList.remove("verde", "amarelo", "vermelho", "cinza");
 
-            statusDot.className = "status-dot";
-            statusInfo.className = "status-info";
-
-            switch ((status || "").toLowerCase()) {
-
-                case "ONLINE":
-
-                    statusInfo.innerText = "Online";
-
-                    statusDot.style.backgroundColor = "#22c55e";
-                    statusInfo.style.backgroundColor = "rgba(34,197,94,0.15)";
-                    statusInfo.style.color = "#22c55e";
-
-                    break;
-
-                case "OFFLINE":
-
-                    statusInfo.innerText = "Offline";
-
-                    statusDot.style.backgroundColor = "#ef4444";
-                    statusInfo.style.backgroundColor = "rgba(239,68,68,0.15)";
-                    statusInfo.style.color = "#ef4444";
-
-                    break;
-
-                case "CRITICO":
-
-                    statusInfo.innerText = "Crítico";
-
-                    statusDot.style.backgroundColor = "#f59e0b";
-                    statusInfo.style.backgroundColor = "rgba(245,158,11,0.15)";
-                    statusInfo.style.color = "#f59e0b";
-
-                    break;
-
-                default:
-
-                    statusInfo.innerText = "Desconhecido";
-
-                    statusDot.style.backgroundColor = "#9ca3af";
-                    statusInfo.style.backgroundColor = "rgba(156,163,175,0.15)";
-                    statusInfo.style.color = "#9ca3af";
-
-                    break;
-            }
+            if (status === "Critico") dot.classList.add("vermelho");
+            else if (status === "Atencao") dot.classList.add("amarelo");
+            else if (status === "Offline") dot.classList.add("cinza");
+            else dot.classList.add("verde");
         }
-
-
 
 
         async function carregarDashboardServidor(macAddress) {
@@ -969,8 +998,12 @@
             }
         }
 
-        document.getElementById("select_servidor").addEventListener("change", async function () {
-            await carregarDashboardServidor(this.value);
+        document.getElementById("select_servidor").addEventListener("change", function () {
+            const opcao = this.options[this.selectedIndex];
+            document.getElementById("nomeServidor").textContent = opcao.text;
+            servidorAtual = this.value;
+            atualizarStatusServidor(opcao.dataset.status);
+            carregarDashboardServidor(this.value);
         });
 
         window.onload = () => {

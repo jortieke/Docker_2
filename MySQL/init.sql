@@ -1,6 +1,9 @@
 SET NAMES utf8mb4;
 SET CHARACTER SET utf8mb4;
 
+CREATE DATABASE IF NOT EXISTS horus_db;
+USE horus_db;
+
 CREATE TABLE empresa (
     id_empresa INT PRIMARY KEY AUTO_INCREMENT,
     razao_social VARCHAR(100) NOT NULL,
@@ -15,7 +18,7 @@ CREATE TABLE servidor (
     endereco_ip VARCHAR(45),
     localizacao VARCHAR(100),
     sistema_operacional VARCHAR(50),
-    status_servidor ENUM('Online', 'Offline', 'Atenção', 'Crítico') DEFAULT 'Online',
+    status_servidor ENUM('Online', 'Offline', 'Atencao', 'Critico') DEFAULT 'Online',
     data_instalacao DATETIME DEFAULT CURRENT_TIMESTAMP,
 	data_status DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     fk_empresa INT,
@@ -63,7 +66,7 @@ CREATE TABLE registro_alerta(
     chave VARCHAR(45) NOT NULL UNIQUE,
     titulo VARCHAR(100) NOT NULL,
     status_alerta ENUM("Ativo", "Resolvido"),
-    criticidade ENUM("Baixo", "Medio", "Alto", "Crítico"),
+    criticidade ENUM("Baixo", "Medio", "Alto", "Critico"),
     data_alerta DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
     data_resolucao DATETIME NULL,    
     fk_servidor INT,
@@ -84,15 +87,16 @@ INSERT INTO empresa (razao_social, cnpj, telefone_empresa)
 VALUES ('Horus Tech', '12345678000199', '11999999999');
 
 INSERT INTO componente (tipo) VALUES
+('PROCESSOS'),
 ('CPU'),
 ('RAM'),
 ('DISCO'),
 ('REDE'),
-('PROCESSOS');
+('TEMPERATURA');
 
 insert into funcionario VALUES 
 	(DEFAULT, 
-    'João Ricardo', 
+    'Joao Ricardo', 
     'ricardo@horus.com', 
     '45290856862', 
     'Abcdef@123456789', 
@@ -100,7 +104,7 @@ insert into funcionario VALUES
     1, 
     localtimestamp()),
     (DEFAULT,
-    'Letícia Costa',
+    'Leticia Costa',
     'leticia@horus.com',
     '11122233344',
     'Abcdef@123456789',
@@ -108,7 +112,7 @@ insert into funcionario VALUES
     1,
     localtimestamp()),
     (DEFAULT,
-    'Vitória Lima',
+    'Vitoria Lima',
     'vitoria@horus.com',
     '44433322211',
     'Abcdef@12345789',
@@ -152,7 +156,7 @@ INSERT INTO servidor (
 )
 VALUES
     ('NeithaNitro',
-    '7C:8AE1:DA:FC:F7',
+    '7C:8A:E1:DA:FC:F7',
     '192.168.0.10',
     'Data Center SP',
     'Linux/Windows',
@@ -160,15 +164,15 @@ VALUES
     localtimestamp(),
     1),
     ('Jortieke',
-	'c0:35:32:c7:0b:59',
+	'C0:35:32:C7:0B:59',
     '192.168.56.1',
     'Data Center RJ',
     'Windows 11',
-    'CRITICO',
+    'Critico',
     localtimestamp(),    
     1),
     ('Vivian',
-    '0A:00:27:00:00:11',
+    'A4:63:A1:51:00:60',
     '192.168.43.1',
     'Data Center SP',
      'Ubuntu',
@@ -192,10 +196,6 @@ VALUES
     localtimestamp(),
     1);
     
-USE horus_db;
-
-SELECT * FROM servidor;
-
 
 INSERT INTO acesso_servidor VALUES
 	(1,2, DEFAULT),
@@ -219,13 +219,14 @@ INSERT INTO acesso_servidor VALUES
     (6,2, DEFAULT),
     (6,3, DEFAULT);
 
-select * from acesso_servidor;
-INSERT INTO servidor_componente VALUES (1, 1, '%', 30), (2, 1, '%', 70), (3, 1, '%', 50), (4, 1, '%', 90);
+INSERT INTO servidor_componente VALUES (1, 1, '%', 30), (2, 1, '%', 70), (3, 1, '%', 50), (4, 1, '%', 90), (5, 1, '%', 70);
 
-INSERT INTO servidor_componente VALUES (1, 2, '%', 25), (2, 2, '%', 45), (3, 2, '%', 65), (4, 2, '%', 95);
+INSERT INTO servidor_componente VALUES (1, 2, '%', 25), (2, 2, '%', 45), (3, 2, '%', 65), (4, 2, '%', 95), (5, 2, '%', 35);
 
-INSERT INTO servidor_componente VALUES (1, 3, '%', 20), (2, 3, '%', 70), (3, 3, '%', 20), (4, 3, '%', 80);
+INSERT INTO servidor_componente VALUES (1, 3, '%', 20), (2, 3, '%', 70), (3, 3, '%', 20), (4, 3, '%', 80), (5, 3, '%', 20);
 
-INSERT INTO servidor_componente VALUES (1, 4, 's', 10), (2, 4, 's', 10), (3, 4, 's', 5), (4, 4, 's', 3);
+INSERT INTO servidor_componente VALUES (1, 4, '%', 10), (2, 4, '%', 10), (3, 4, '%', 15), (4, 4, '%', 30), (5, 4, '%', 35);
 
-INSERT INTO servidor_componente VALUES (1, 5, 'qtd', 0), (4, 5, 'qtd', 0);
+INSERT INTO servidor_componente VALUES (1, 4, 'mbps', 300), (2, 4, 'mbps', 200), (3, 4, 'mbps', 500), (4, 4, 'mbps', 300), (5, 4, 'mbps', 300);
+
+INSERT INTO servidor_componente VALUES (1, 5, 'ºC', 50), (4, 5, 'ºC', 75);

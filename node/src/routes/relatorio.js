@@ -3,8 +3,8 @@ var router = express.Router();
 
 var relatorioController = require("../controllers/relatorioController")
 
-router.post("/", function (req, res) {
-    relatorioController.gerarRelatorio(req, res);
+router.get("/:usuario/:email/:mac_address/:servidor/:id_empresa", function(req, res){
+    relatorioController.gerarRelatorio(req,res)
 });
 
 

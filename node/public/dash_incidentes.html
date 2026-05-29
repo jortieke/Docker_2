@@ -108,7 +108,7 @@
                                 </div>
                                 <div class="informacoes-principais">
                                     <span>Total de Alertas Ativos</span>
-                                    <h1 id="kpi_total_alertas_todos">10</h1>
+                                    <h1 id="kpi_total_alertas_todos"></h1>
                                 </div>
                             </div>
                             <div class="tooltip-info">
@@ -174,7 +174,7 @@
                                 </div>
                                 <div class="informacoes-principais">
                                     <span>Servidor com mais Alertas</span>
-                                    <h1 id="kpi_mais_alertas">10</h1>
+                                    <h1 id="kpi_mais_alertas"></h1>
                                 </div>
                             </div>
                             <div class="tooltip-info">
@@ -205,7 +205,7 @@
                                 </div>
                                 <div class="informacoes-principais">
                                     <span>Tempo Médio para Reparo</span>
-                                    <h1 id="kpi_mttr">5 minutos</h1>
+                                    <h1 id="kpi_mttr"></h1>
                                 </div>
                             </div>
                             <div class="tooltip-info alinhar-esquerda">
@@ -360,7 +360,7 @@
                                     </div>
                                     <div class="informacoes-principais">
                                         <span>Total de Alertas Ativos</span>
-                                        <h1 id="kpi_valor_total_alertas">10</h1>
+                                        <h1 id="kpi_valor_total_alertas"></h1>
                                     </div>
                                 </div>
                                 <div class="tooltip-info">
@@ -369,6 +369,45 @@
                                     <div class="tooltip-box">
                                         Soma de falhas de hardware pendentes. Volumes altos indicam instabilidade e
                                         risco de perda de posição de aeronaves e rotas.
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="niveis-ativos">
+                                <div class="ativos-severidade " style="margin-right: 30px;">
+                                    <div class="especificacoes-metricas" style="color: #C70C0C;">
+                                        <div class="severidade">
+                                            <span style="background-color: #C70C0C;"
+                                                class="indicador-severidade"></span>
+                                            <span>Crítica</span>
+                                        </div>
+                                        <h2 id="ativos_critica_serv"></h2>
+                                    </div>
+                                    <div class="especificacoes-metricas" style="color: #FF8904;">
+                                        <div class="severidade">
+                                            <span style="background-color: #FF8904;"
+                                                class="indicador-severidade"></span>
+                                            <span>Alta</span>
+                                        </div>
+                                        <h2 id="ativos_alta_serv"></h2>
+                                    </div>
+                                </div>
+                                <div class="ativos-severidade ">
+                                    <div class="especificacoes-metricas" style="color: #FFCC00;">
+                                        <div class="severidade">
+                                            <span style="background-color: #FFCC00;"
+                                                class="indicador-severidade"></span>
+                                            <span>Média</span>
+                                        </div>
+                                        <h2 id="ativos_media_serv"></h2>
+                                    </div>
+
+                                    <div class="especificacoes-metricas" style="color: #308CFF;">
+                                        <div class="severidade">
+                                            <span style="background-color: #308CFF;"
+                                                class="indicador-severidade"></span>
+                                            <span>Baixa</span>
+                                        </div>
+                                        <h2 id="ativos_baixa_serv"></h2>
                                     </div>
                                 </div>
                             </div>
@@ -391,7 +430,7 @@
                                     </div>
                                     <div class="informacoes-principais">
                                         <span>Disponibilidade do Servidor</span>
-                                        <h1 id="kpi_disponibilidade">100%</h1>
+                                        <h1 id="kpi_disponibilidade"></h1>
                                     </div>
                                 </div>
                                 <div class="tooltip-info">
@@ -424,7 +463,7 @@
                                     </div>
                                     <div class="informacoes-principais">
                                         <span>índice de Confiabilidade</span>
-                                        <h1 id="indice_confiabilidade">50</h1>
+                                        <h1 id="indice_confiabilidade"></h1>
                                     </div>
                                 </div>
                                 <div class="tooltip-info alinhar-esquerda">
@@ -434,6 +473,48 @@
                                         Score sintetizado de saúde (0-100) baseado na estabilidade e eficiência de
                                         recuperação do nó. Notas baixas alertam para o risco iminente de degradação
                                         sistêmica.
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="penalidades" style="padding-top: 15px;">
+                                <span>PENALIDADES</span>
+                                <div class="niveis-ativos">
+                                    <div class="ativos-severidade" style="margin-right: 30px; margin-top: 0px;">
+                                        <div class="especificacoes-metricas">
+                                            <div class="severidade">
+                                                <i data-lucide="cpu"
+                                                    style="width: 18px; height: 18px; color: #5F5F5F; stroke-width: 2px;"></i>
+                                                <span>CPU</span>
+                                            </div>
+                                            <h2 id="indice_cpu"></h2>
+                                        </div>
+                                        <div class="especificacoes-metricas">
+                                            <div class="severidade">
+                                                <i data-lucide="hard-drive"
+                                                    style="width: 18px; height: 18px; color: #5F5F5F; stroke-width: 2.5px;"></i>
+                                                <span>Disco</span>
+                                            </div>
+                                            <h2 id="indice_disco"></h2>
+                                        </div>
+                                    </div>
+                                    <div class="ativos-severidade" style="margin-top: 0px;">
+                                        <div class="especificacoes-metricas">
+                                            <div class="severidade">
+                                                <i data-lucide="memory-stick"
+                                                    style="width: 18px; height: 18px; color: #5F5F5F; stroke-width: 2.5px;"></i>
+                                                <span>RAM</span>
+                                            </div>
+                                            <h2 id="indice_ram"></h2>
+                                        </div>
+
+                                        <div class="especificacoes-metricas">
+                                            <div class="severidade">
+                                                <i data-lucide="radio"
+                                                    style="width: 18px; height: 18px; color: #5F5F5F; stroke-width: 2.5px;"></i>
+                                                <span>ADS-B</span>
+                                            </div>
+                                            <h2 id="indice_adsb"></h2>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -455,13 +536,13 @@
                                     <span class="box-filtro filt-severidade filt-ativo"
                                         onclick="alterarFiltroSeveridade(this, 'Todos')">Todos</span>
                                     <span class="box-filtro filt-severidade"
-                                        onclick="alterarFiltroSeveridade(this, 'Baixa')">Baixa</span>
+                                        onclick="alterarFiltroSeveridade(this, 'Baixo')">Baixa</span>
                                     <span class="box-filtro filt-severidade"
-                                        onclick="alterarFiltroSeveridade(this, 'Média')">Média</span>
+                                        onclick="alterarFiltroSeveridade(this, 'Medio')">Média</span>
                                     <span class="box-filtro filt-severidade"
-                                        onclick="alterarFiltroSeveridade(this, 'Alta')">Alta</span>
+                                        onclick="alterarFiltroSeveridade(this, 'Alto')">Alta</span>
                                     <span class="box-filtro filt-severidade"
-                                        onclick="alterarFiltroSeveridade(this, 'Crítica')">Crítica</span>
+                                        onclick="alterarFiltroSeveridade(this, 'Critico')">Crítica</span>
                                 </div>
                             </div>
 
@@ -586,19 +667,19 @@
         };
 
         const status_servidor = {
-            'ONLINE': {
+            Online: {
                 fundo: "#BFFBB0",
                 borda: "#20A200"
             },
-            'ATENCAO': {
+            'Atenção': {
                 fundo: "#FAFCA5",
                 borda: "#FFCC00"
             },
-            'CRITICO': {
+            'Crítico': {
                 fundo: "#FFB9B9",
                 borda: "#C70C0C"
             },
-            'OFFLINE': {
+            'Offline': {
                 fundo: "#FFB9B9",
                 borda: "#C70C0C"
             }
@@ -691,28 +772,35 @@
     }
 
     function mostrarPainelSaude() {
-        const checkbox = document.getElementById('checkbox-servidores');
-        var listarPainelFiltro = servidoresPermitidos;
-        console.log(listarPainelFiltro)
+    const checkbox = document.getElementById('checkbox-servidores');
+    var listarPainelFiltro = servidoresPermitidos;
 
-        if (checkbox.checked) {
-            listarPainelFiltro = servidoresPermitidos.filter(servidor => {
-                return !servidor.includes("ONLINE")
-            })
-        }
-
-        lista_servidores.innerHTML = listarPainelFiltro.map(servidor => {
-            const visual = status_servidor[servidor[1]];
-
-            return `
-                <div style="border: 3px solid ${visual.borda}; background-color: ${visual.fundo};"
-                    class="card-servidor">
-                    <img height="24" src="./assets/imgs/incidentes/icon-server.svg" alt="">
-                    <h2>${servidor[0]}</h2>
-                </div>
-            `;
-        }).join('');
+    if (checkbox.checked) {
+        listarPainelFiltro = servidoresPermitidos.filter(servidor => {
+            return !servidor.includes("Online");
+        });
     }
+
+    lista_servidores.innerHTML = listarPainelFiltro.map(servidor => {
+
+        const status = servidor[1];
+
+        const visual = status_servidor[status] || {
+            fundo: "#E5E7EB",
+            borda: "#9CA3AF"
+        };
+
+        console.log("STATUS:", status);
+
+        return `
+            <div style="border: 3px solid ${visual.borda}; background-color: ${visual.fundo};"
+                class="card-servidor">
+                <img height="24" src="./assets/imgs/incidentes/icon-server.svg" alt="">
+                <h2>${servidor[0]}</h2>
+            </div>
+        `;
+    }).join('');
+}
 
     async function carregarAlertas() {
         const fkEmpresa = sessionStorage.ID_EMPRESA;
@@ -743,10 +831,10 @@
             const estaNoPeriodo = dataCriacao >= limiteTempo;
 
             // traduzindo os niveis de severidade do Jira
-            var severidadeAlerta = "BAIXO";
-            if (alerta.prioridade === "Highest") severidadeAlerta = "CRITICO";
-            else if (alerta.prioridade === "High") severidadeAlerta = "ALTO";
-            else if (alerta.prioridade === "Medium") severidadeAlerta = "MEDIO";
+            var severidadeAlerta = "Baixa";
+            if (alerta.prioridade === "Highest") severidadeAlerta = "Crítica";
+            else if (alerta.prioridade === "High") severidadeAlerta = "Alta";
+            else if (alerta.prioridade === "Medium") severidadeAlerta = "Média";
 
             // ou a severidadeAtiva é TODOS ou a SeveridadeAlerta é especifica
             const filtroSeveridade = severidadeAtiva === "Todos" || severidadeAlerta === severidadeAtiva;
@@ -861,6 +949,16 @@
         })
 
         kpi_valor_total_alertas.innerText = incidentesFiltrados.length;
+        function contarAtivosPorSeveridade(listaAlertas, nivelSeveridade) {
+            const filtrados = listaAlertas.filter(alerta => alerta.prioridade === nivelSeveridade);
+            return filtrados.length;
+        }
+
+        ativos_critica_serv.innerText = contarAtivosPorSeveridade(incidentesFiltrados, "Highest");
+        ativos_alta_serv.innerText = contarAtivosPorSeveridade(incidentesFiltrados, "High");
+        ativos_media_serv.innerText = contarAtivosPorSeveridade(incidentesFiltrados, "Medium");
+        ativos_baixa_serv.innerText = contarAtivosPorSeveridade(incidentesFiltrados, "Low");
+
 
         // disponibilidade do servidor
         const filtroTempoUptime = tempo_disponibilidade.value;
@@ -903,6 +1001,7 @@
         console.log(opcaoSelecionada.id)
         const mac_address = opcaoSelecionada.id;
 
+
         const resposta = await fetch(`/incidentes/calcularIndice/${fkEmpresa}/${mac_address}`);
 
         const dados = resposta.json();
@@ -916,8 +1015,10 @@
 
         const dadosFiltrados = dados[filtroTempoSelecionado];
         indice_confiabilidade.innerText = dadosFiltrados.score;
-        console.log(dadosFiltrados)
-
+        indice_cpu.innerText = dadosFiltrados.penalidades.cpu;
+        indice_ram.innerText = dadosFiltrados.penalidades.ram;
+        indice_disco.innerText = dadosFiltrados.penalidades.disco;
+        indice_adsb.innerText = dadosFiltrados.penalidades.adsb;
     }
 
     function mostrarKPITodos() {
@@ -1124,33 +1225,79 @@
         graficoHeatmap.render();
     }
 
+    function atualizarStatusServidor(status) {
 
+    const dot = document.getElementById("status-dot");
+
+    if (!dot) return;
+
+    dot.classList.remove(
+        "verde",
+        "amarelo",
+        "vermelho",
+        "cinza"
+    );
+
+    switch (status) {
+
+        case "Crítico":
+        case "Critico":
+            dot.classList.add("vermelho");
+            break;
+
+        case "Atenção":
+        case "Atencao":
+            dot.classList.add("amarelo");
+            break;
+
+        case "Offline":
+            dot.classList.add("cinza");
+            break;
+
+        default:
+            dot.classList.add("verde");
+            break;
+    }
+}
 
     function selecionar() {
-        select = document.getElementById("select_servidor");
+    const select = document.getElementById("select_servidor");
 
-        if (select.value != "#") {
-            document.getElementById("corpo-dashboard-servidor").style.display = "block";
-            document.getElementById("status-dot").style.display = "block";
+    if (select.value != "#") {
 
-            listarAlertas();
-            mostrarKPIs();
-            mostrarKPIScore();
+        document.getElementById("corpo-dashboard-servidor").style.display = "block";
+        document.getElementById("status-dot").style.display = "block";
 
-        } else {
-            document.getElementById("corpo-dashboard-servidor").style.display = "none";
-            document.getElementById("status-dot").style.display = "none";
+        // pega o servidor selecionado
+        const servidorSelecionado = servidoresPermitidos.find(
+            servidor => servidor[0].toLowerCase() === select.value.toLowerCase()
+        );
 
-            mostrarKPITodos();
-            mostrarPainelSaude();
-            plotarHeatmap();
-        }
+        // pega o status
+        const status = servidorSelecionado ? servidorSelecionado[1] : "Online";
 
+        // atualiza a bolinha
+        atualizarStatusServidor(status);
+
+        listarAlertas();
+        mostrarKPIs();
+        mostrarKPIScore();
+
+    } else {
+
+        document.getElementById("corpo-dashboard-servidor").style.display = "none";
+        document.getElementById("status-dot").style.display = "none";
+
+        mostrarKPITodos();
+        mostrarPainelSaude();
+        plotarHeatmap();
     }
+}
 
     // Quando o tempo mudar, apenas a KPI precisa recalcular
     tempo_total_alertas.addEventListener("change", mostrarKPIs);
     tempo_disponibilidade.addEventListener("change", mostrarKPIs);
+    tempo_indice_confiabilidade.addEventListener("change", mostrarKPIScore);
 
     tempo_lista_alertas.addEventListener("change", listarAlertas);
 
@@ -1169,49 +1316,13 @@
             })
         }
     })
-    async function atualizarStatus() {
-
-        const hostnameSelecionado = select_servidor.value;
-
-        if (!hostnameSelecionado || hostnameSelecionado === "#") return;
-
-        const servidor = servidoresPermitidos.find(
-            s => s[0].toLowerCase() === hostnameSelecionado.toLowerCase()
-        );
-
-        if (!servidor) return;
-
-        const status = servidor[1];
-
-        const dot = document.getElementById("status-dot");
-
-        dot.classList.remove("verde", "amarelo", "vermelho");
-
-        if (status === "CRITICO") {
-
-            dot.classList.add("vermelho");
-
-        } else if (status === "ATENCAO") {
-
-            dot.classList.add("amarelo");
-
-        } else {
-
-            dot.classList.add("verde");
-        }
-    }
 
     select_servidor.addEventListener("change", async function () {
-
         selecionar();
-
-        await atualizarStatus();
     });
 
     async function iniciarPagina() {
-
         listarServidores();
-
         exibirUsuarioAtivo();
     }
 

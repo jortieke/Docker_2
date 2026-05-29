@@ -60,35 +60,14 @@
                 </div>
 
                 <a href="painel.html"
-                    class="item-menu">
+                    class="item-menu selecionado">
 
-                    <img src="./assets/imgs/painel/dash.png"
+                    <img src="./assets/imgs/painel/dash-selecionado.png"
                         alt="">
 
                     Dashboard
                 </a>
 
-                <div class="categoria adm">
-                    Administração
-                </div>
-
-                <a href="dash_usuarios.html"
-                    class="item-menu adm">
-
-                    <img src="./assets/imgs/painel/cadastrar-usuario.png"
-                        alt="">
-
-                    Usuários
-                </a>
-
-                <a href="servidor-componente.html"
-                    class="item-menu adm">
-
-                    <img src="./assets/imgs/painel/cadastrar-servidor.png"
-                        alt="">
-
-                    Cadastrar servidor
-                </a>
 
             </nav>
 
@@ -185,6 +164,9 @@
         <div class="header-nav-scroll">
 
             <nav class="header-nav">
+                <a href="dash_incidentes.html">
+                    Incidentes
+                </a>
 
                 <a href="dash_analista.html">
                     Resumo
@@ -204,9 +186,6 @@
                     Temperatura
                 </a>
 
-                <a href="dash_incidentes.html">
-                    Incidentes
-                </a>
 
             </nav>
 
@@ -931,7 +910,7 @@
             <br>
 
             <strong>
-                Dia CRITICO:
+                Dia crítico:
                 ${json.dia_com_mais_alertas || "Sem alertas"}
             </strong>
 
@@ -1058,91 +1037,97 @@
 
     // CARREGAR SERVIDORES
 
-    function listarServidores() {
+    function atualizarServidorSelecionado() {
 
-        const fkEmpresa = sessionStorage.ID_EMPRESA;
+    const servidor =
+        select_servidor.options[
+            select_servidor.selectedIndex
+        ];
 
-        // transforma string em array
-        const servidores = JSON.parse(sessionStorage.ACESSO_SERVIDORES);
+    if (!servidor) return;
 
-        fetch(`/servidores/listarServidores`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                fkEmpresaServer: fkEmpresa,
-                servidoresServer: servidores
-            })
+    nomeServidor.textContent =
+        servidor.text;
+
+    atualizarStatusServidor(
+        servidor.dataset.status
+    );
+}
+
+function listarServidores() {
+
+    const fkEmpresa = sessionStorage.ID_EMPRESA;
+
+    const servidores =
+        JSON.parse(sessionStorage.ACESSO_SERVIDORES);
+
+    fetch(`/servidores/listarServidores`, {
+        method: "POST",
+
+        headers: {
+            "Content-Type": "application/json"
+        },
+
+        body: JSON.stringify({
+            fkEmpresaServer: fkEmpresa,
+            servidoresServer: servidores
         })
-            
-            .then(resposta => resposta.json())
+    })
 
-            .then((lista) => {
+    .then(resposta => resposta.json())
 
-                select_servidor.innerHTML =
-                    lista.map(servidor =>
+    .then(lista => {
 
-                        `<option value="${servidor.mac_address}">
-                            ${servidor.hostname}
-                        </option>`
+        select_servidor.innerHTML =
+            lista.map(servidor => `
 
-                    ).join('');
+                <option
+                    value="${servidor.id_servidor}"
+                    data-mac="${servidor.mac_address}"
+                    data-status="${servidor.status_servidor}"
+                >
+                    ${servidor.hostname}
+                </option>
 
-                nomeServidor.textContent =
-                    select_servidor.options[
-                        select_servidor.selectedIndex
-                    ].text;
+            `).join("");
 
-                carregarTemperatura()
-            });
+        atualizarServidorSelecionado();
 
-        select_servidor.addEventListener("change", () => {
+        carregarTemperatura();
 
-            nomeServidor.textContent =
-                select_servidor.options[
-                    select_servidor.selectedIndex
-                ].text;
+        iniciarAtualizacao();
+    });
 
-            carregarTemperatura()
-        });
-    }
+    select_servidor.onchange = async () => {
+
+    atualizarServidorSelecionado();
+
+    await carregarTemperatura();
+};
+}   
+  
 
     // CARREGAR TEMPERATURA
 
     async function carregarTemperatura() {
+    try {
+        const select = document.getElementById("select_servidor");
+        const opcaoSelecionada = select.options[select.selectedIndex];
 
-        try {
+        // Pegar o mac do data-attribute, não do value
+        const mac = opcaoSelecionada?.dataset.mac;
 
-            const select =
-                document.getElementById(
-                    "select_servidor"
-                );
+        if (!mac) return;
 
-            const mac =
-                select.value;
+        console.log("Buscando temperatura:", mac); // agora vai logar o MAC real
 
-            if (!mac || mac === "#") {
-                return;
-            }
+        const resposta = await fetch(
+            `/temperatura/${empresa}/${encodeURIComponent(mac)}/tempo_real`
+        );
 
-            console.log(
-                "Buscando temperatura:",
-                mac
-            );
+        if (!resposta.ok) throw new Error("Erro ao buscar temperatura");
 
-            const resposta =
-                await fetch(
-                    `/temperatura/${empresa}/${encodeURIComponent(mac)}/tempo_real`
-                );
 
-                
-            if (!resposta.ok) {
-
-                throw new Error(
-                    "Erro ao buscar temperatura"
-                );
-            }
 
             const json =
                 await resposta.json();
@@ -1155,26 +1140,6 @@
             const dados =
                 json.dados;
 
-            console.log(
-                "Agora navegador:",
-                new Date()
-            );
-
-            console.log(
-                "Primeiro timestamp:",
-                dados[0]?.timestamp
-            );
-
-            console.log(
-                "Agora:",
-                new Date()
-            );
-
-            console.log(
-                "Último dado:",
-                dados[dados.length - 1].timestamp
-            );
-
             if (!dados ||
                 dados.length === 0) {
 
@@ -1185,23 +1150,13 @@
                 return;
             }
 
-            const dadosFiltrados =
-            filtrarPorTempo(
-            dados,
-            filtroHoras
-            );
-
-            console.log("Dados filtrados:", dadosFiltrados);
+            const dadosFiltrados = filtrarPorTempo(dados, filtroHoras);
+            const dadosParaGrafico = dadosFiltrados.length > 0 ? dadosFiltrados : dados;
 
             atualizarCards(json);
 
-            atualizarGraficoCPU(
-                dadosFiltrados
-            );
-
-            atualizarGraficoLatencia(
-                dadosFiltrados
-            );
+            atualizarGraficoCPU(dadosParaGrafico);
+            atualizarGraficoLatencia(dadosParaGrafico);
 
             atualizarHeatmap(dados);
 
@@ -1296,9 +1251,11 @@
     function atualizarGraficoCPU(dados) {
 
         const labels =
-        dados.map(item =>
-            formatarHorario(item.timestamp)
-        );
+            dados.map(item => {
+
+                const d = new Date(item.timestamp);
+                return d.toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" });
+            });
 
         const temperaturas =
             dados.map(item =>
@@ -1374,10 +1331,12 @@
 
     function atualizarGraficoLatencia(dados) {
 
-            const labels =
-            dados.map(item =>
-                formatarHorario(item.timestamp)
-            );
+        const labels =
+            dados.map(item => {
+
+                const d = new Date(item.timestamp);
+                return d.toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" });
+            });
 
         const latencia =
             dados.map(item =>
@@ -1638,7 +1597,7 @@
         ) {
 
             status.innerHTML =
-                "CRITICO";
+                "CRÍTICO";
 
             status.style.background =
                 "#dc2626";
@@ -1706,90 +1665,18 @@
     // FILTRAR DADOS
 
     function filtrarPorTempo(dados, horas) {
-
     const agora = new Date();
+    const limite = new Date(agora.getTime() - horas * 60 * 60 * 1000);
 
-    const limite = new Date(
-        agora.getTime() - (horas * 60 * 60 * 1000)
-    );
-
-    return dados.filter(item => {
-
-        if (!item.timestamp) {
-            return false;
-        }
-
-        // exemplo:
-        // "2026-05-25 14:30:00"
-
-        const partes =
-            item.timestamp.split(/[- :]/);
-
-        if (partes.length < 6) {
-            return false;
-        }
-
-        const [
-            ano,
-            mes,
-            dia,
-            hora,
-            minuto,
-            segundo
-        ] = partes.map(Number);
-
-        // cria data LOCAL corretamente
-
-        const dataItem = new Date(
-            ano,
-            mes - 1,
-            dia,
-            hora,
-            minuto,
-            segundo
-        );
-
-        console.log(
-            "Timestamp:",
-            item.timestamp,
-            "Convertido:",
-            dataItem
-        );
-
+    const filtrados = dados.filter(item => {
+        const dataItem = new Date(item.timestamp.replace(" ", "T"));
         return dataItem >= limite;
     });
-}
 
-function formatarHorario(timestamp) {
+    console.log("Total:", dados.length, "| Filtrados:", filtrados.length);
+    console.log("Limite:", limite, "| Primeiro timestamp:", dados[0]?.timestamp);
 
-    const partes =
-        timestamp.split(/[- :]/);
-
-    const [
-        ano,
-        mes,
-        dia,
-        hora,
-        minuto,
-        segundo
-    ] = partes.map(Number);
-
-    const data = new Date(
-        ano,
-        mes - 1,
-        dia,
-        hora,
-        minuto,
-        segundo
-    );
-
-    return data.toLocaleTimeString(
-        "pt-BR",
-        {
-            hour: "2-digit",
-            minute: "2-digit"
-        }
-    );
+    return filtrados;
 }
 
     // AUTO UPDATE
@@ -1811,12 +1698,44 @@ function formatarHorario(timestamp) {
             }, 5000);
     }
 
+    function atualizarStatusServidor(status) {
+
+    const dot =
+        document.getElementById("status-dot");
+
+    if (!dot) return;
+
+    dot.classList.remove(
+        "verde",
+        "amarelo",
+        "vermelho",
+        "cinza"
+    );
+
+    switch (status) {
+
+        case "Critico":
+            dot.classList.add("vermelho");
+            break;
+
+        case "Atencao":
+            dot.classList.add("amarelo");
+            break;
+
+        case "Offline":
+            dot.classList.add("cinza");
+            break;
+
+        default:
+            dot.classList.add("verde");
+    }
+}
+
     // INIT
 
     window.onload = function () {
 
         listarServidores();
-        iniciarAtualizacao();
     };
 
 </script>

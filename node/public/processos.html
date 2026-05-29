@@ -21,7 +21,7 @@
     <link rel="stylesheet" href="./style.css">
     <link rel="stylesheet" href="style/padrao_dash.css">
     <link rel="stylesheet" href="style/processos.css">
-    
+   
 </head>
 
 <body>
@@ -40,14 +40,6 @@
                 <div class="categoria">Monitoramento</div>
                 <a class="item-menu selecionado">
                     <img src="./assets/imgs/painel/dash-selecionado.png" alt="">Dashboard
-                </a>
-
-                <div class="categoria adm" id="administracao">Administração </div>
-                <a href="dash_usuarios.html" class="item-menu adm" id="cadastrarUsuario">
-                    <img src="./assets/imgs/painel/cadastrar-usuario.png" alt="">Usuários
-                </a>
-                <a href="servidor-componente.html" class="item-menu adm" id="cadastrarServidor">
-                    <img src="./assets/imgs/painel/cadastrar-servidor.png" alt="">Cadastrar servidor
                 </a>
 
             </nav>
@@ -77,13 +69,13 @@
 
                             <div class="status-servidor">
                                 <div class="select-status">
-                                    <span id="status-dot" class="status-dot verde"></span>
+                                    <span id="status-dot" class="status-dot"></span>
 
                                     <select id="select_servidor">
                                     </select>
                                 </div>
 
-                                
+                               
                                 <!-- <div class="alertas">
                                     <img src="assets/imgs/processos/alerta-lar.png" alt="" style="height: 12px !important; width: 12px !important;"> 3 alertas
                                 </div> -->
@@ -269,7 +261,7 @@
                             <button id="btnRunning">Running (<span id="Running">0</span>)</button>
                             <button id="btnSleeping">Sleeping (<span id="Sleeping">0</span>)</button>
                             <button id="btnStopped">Stopped (<span id="Stopped">0</span>)</button>
-                        </div>   
+                        </div>  
                     </div>
                 </section>
 
@@ -283,7 +275,7 @@
                                 <!-- <th>CPU</th> -->
                                 <th onclick="ordenarTabela('cpu')">
                                     <div class="teste">
-                                        <span>CPU</span> 
+                                        <span>CPU</span>
                                         <span class="setas">
                                             <img class="seta-cinza cres" id="cpuSetaCres" src="./assets/imgs/processos/seta-cinza.png" alt="">
                                             <img class="seta-cinza" id="cpuSetaDecres" src="./assets/imgs/processos/seta-cinza.png" alt="">
@@ -292,7 +284,7 @@
                                 </th>
                                 <th onclick="ordenarTabela('ram')">
                                     <div class="teste">
-                                        <span>RAM</span> 
+                                        <span>RAM</span>
                                         <span class="setas">
                                             <img class="seta-cinza cres" id="ramSetaCres" src="./assets/imgs/processos/seta-cinza.png" alt="">
                                             <img class="seta-cinza" id="ramSetaDecres" src="./assets/imgs/processos/seta-cinza.png" alt="">
@@ -301,7 +293,7 @@
                                 </th>
                                 <th onclick="ordenarTabela('latencia')">
                                     <div class="teste">
-                                        <span>Latência</span> 
+                                        <span>Latência</span>
                                         <span class="setas">
                                             <img class="seta-cinza cres" id="latSetaCres" src="./assets/imgs/processos/seta-cinza.png" alt="">
                                             <img class="seta-cinza" id="latSetaDecres" src="./assets/imgs/processos/seta-cinza.png" alt="">
@@ -314,7 +306,7 @@
                                 <!-- <th>Tempo de Execução</th> -->
                                 <th onclick="ordenarTabela('tempo_execucao')">
                                     <div class="teste">
-                                        <span>Tempo de Execução</span> 
+                                        <span>Tempo de Execução</span>
                                         <span class="setas">
                                             <img class="seta-cinza cres" id="tempSetaCres" src="./assets/imgs/processos/seta-cinza.png" alt="">
                                             <img class="seta-cinza" id="tempSetaDecres" src="./assets/imgs/processos/seta-cinza.png" alt="">
@@ -344,17 +336,8 @@
         const agora = new Date();
         listarServidores()
 
-        /*window.onload = () => {const funcao = sessionStorage.getItem("FUNCAO_USUARIO");
 
-                    if (funcao == "Gestor") {
-                        document.getElementById("administracao").style.display = "block";
-                        document.getElementById("gerarRelatorio").style.display = "block";
-                        document.getElementById("cadastrarServidor").style.display = "flex";
-                        document.getElementById("cadastrarUsuario").style.display = "flex";
-                    }
-        }*/
-
-        // exibirUsuarioAtivo();
+        exibirUsuarioAtivo();
 
         //Modal para o menu sanduíche
 
@@ -413,42 +396,42 @@
         let criticos = null
         let graficoAtual = "cpu"
 
-        function atualizarStatusServidor(dados) {
+        // function atualizarStatusServidor(dados) {
 
-            const dot = document.getElementById("status-dot");
+        //     const dot = document.getElementById("status-dot");
 
-            if (!dot || !dados?.processos?.kpis) return;
+        //     if (!dot || !dados?.processos?.kpis) return;
 
-            dot.classList.remove(
-                "verde",
-                "amarelo",
-                "vermelho"
-            );
+        //     dot.classList.remove(
+        //         "verde",
+        //         "amarelo",
+        //         "vermelho"
+        //     );
 
-            const kpis = dados.processos.kpis;
+        //     const kpis = dados.processos.kpis;
 
-            const possuiCritico =
-                kpis.total > 0 ||
-                kpis.cpu > 0 ||
-                kpis.ram > 0 ||
-                kpis.latencia > 0;
+        //     const possuiCritico =
+        //         kpis.total > 0 ||
+        //         kpis.cpu > 0 ||
+        //         kpis.ram > 0 ||
+        //         kpis.latencia > 0;
 
-            const possuiAlerta =
-                kpis.running < 3;
+        //     const possuiAlerta =
+        //         kpis.running < 3;
 
-            if (possuiCritico) {
+        //     if (possuiCritico) {
 
-                dot.classList.add("vermelho");
+        //         dot.classList.add("vermelho");
 
-            } else if (possuiAlerta) {
+        //     } else if (possuiAlerta) {
 
-                dot.classList.add("amarelo");
+        //         dot.classList.add("amarelo");
 
-            } else {
+        //     } else {
 
-                dot.classList.add("verde");
-            }
-        }
+        //         dot.classList.add("verde");
+        //     }
+        // }
 
         async function capturarDados() {
 
@@ -470,13 +453,24 @@
                     throw new Error(`HTTP ${resposta.status}`);
                 }
 
-                
+               
                 const agora = new Date();
-                const horas = agora.getHours();       
+                const horas = agora.getHours();      
                 const minutos = agora.getMinutes();
-                    
+                   
                 dados = await resposta.json();
-                atualizarStatusServidor(dados);
+                console.log(dados);
+                //atualizarStatusServidor(status);
+                // dados = await resposta.json();
+
+                // const servidorSelecionado =
+                //     select_servidor.options[
+                //         select_servidor.selectedIndex
+                //     ];
+
+                // atualizarStatusServidor(
+                //     servidorSelecionado.dataset.status
+                // );
 
 
                 if (dados.processos.kpis.total > 0) {
@@ -507,9 +501,9 @@
                     ramQtdDiv.classList.add("info-alerta");
                 }
 
-                let running = dados.processos.kpis.running;
-                let sleeping = dados.processos.kpis.sleeping;
-                let stopped= dados.processos.kpis.stopped;
+                let running = dados.processos.kpis.Running;
+                let sleeping = dados.processos.kpis.Sleeping;
+                let stopped= dados.processos.kpis.Stopped;
                 let total = running + sleeping + stopped;
 
                 document.getElementById("latenciaQtd").innerHTML = dados.processos.kpis.latencia;
@@ -540,8 +534,6 @@
 
 
         }
-
-        capturarDados();
        
 
         function carregarDados() {
@@ -712,7 +704,7 @@
 
 
             gradient.addColorStop(0, 'rgba(255, 0, 111, 0.35)');
-            gradient.addColorStop(1, 'rgba(255, 0, 111, 0)');   
+            gradient.addColorStop(1, 'rgba(255, 0, 111, 0)');  
 
 
             criticos = new Chart(ctx, {
@@ -1029,13 +1021,13 @@
                     minutos * 60
                 );
             }
-            
+           
 
         function carregarTabela(statusFiltro = "todos", textoPesquisa = "") {
 
                 const processosFiltrados = obterProcessosFiltrados();
                 const tbody = document.getElementById("corpoTabela");
-                
+               
                 if (colunaOrdenacao) {
 
                     processosFiltrados.sort((a, b) => {
@@ -1329,6 +1321,56 @@
                 .join(':');
         }
 
+        // function listarServidores() {
+
+        //     const fkEmpresa = sessionStorage.ID_EMPRESA;
+
+        //     // transforma string em array
+        //     const servidores = JSON.parse(sessionStorage.ACESSO_SERVIDORES);
+
+        //     fetch(`/servidores/listarServidores`, {
+        //         method: "POST",
+        //         headers: {
+        //             "Content-Type": "application/json"
+        //         },
+        //         body: JSON.stringify({
+        //             fkEmpresaServer: fkEmpresa,
+        //             servidoresServer: servidores
+        //         })
+        //     })
+
+        //         .then(resposta => resposta.json())
+
+        //         .then((lista) => {
+
+        //             select_servidor.innerHTML =
+        //                 lista.map(servidor =>
+
+        //                     `<option value="${servidor.id_servidor}" id="${servidor.mac_address}">
+        //                 ${servidor.hostname}
+        //             </option>`
+
+        //                 ).join('');
+
+        //             nomeServidor.textContent =
+        //                 select_servidor.options[
+        //                     select_servidor.selectedIndex
+        //                 ].text;
+
+        //             capturarDados()
+        //         });
+
+        //     select_servidor.addEventListener("change", () => {
+
+        //         nomeServidor.textContent =
+        //             select_servidor.options[
+        //                 select_servidor.selectedIndex
+        //             ].text;
+
+        //         capturarDados()
+        //     });
+        // }
+
         function listarServidores() {
 
             const fkEmpresa = sessionStorage.ID_EMPRESA;
@@ -1336,7 +1378,7 @@
             // transforma string em array
             const servidores = JSON.parse(sessionStorage.ACESSO_SERVIDORES);
 
-            fetch(`/servidores/listarServidores`, {
+            fetch(`/servidores/listarServidores/`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
@@ -1348,13 +1390,11 @@
             })
 
                 .then(resposta => resposta.json())
-
                 .then((lista) => {
 
                     select_servidor.innerHTML =
                         lista.map(servidor =>
-
-                            `<option value="${servidor.id_servidor}" id="${servidor.mac_address}">
+                            `<option value="${servidor.id_servidor}" id="${servidor.mac_address}" data-status="${servidor.status_servidor}">
                         ${servidor.hostname}
                     </option>`
 
@@ -1365,20 +1405,61 @@
                             select_servidor.selectedIndex
                         ].text;
 
-                    capturarDados()
-                });
+                const servidorInicial =
+                    select_servidor.options[
+                        select_servidor.selectedIndex
+                    ];
+
+                atualizarStatusServidor(
+                    servidorInicial.dataset.status
+                )
+
+                capturarDados()
+           
+            });
 
             select_servidor.addEventListener("change", () => {
 
-                nomeServidor.textContent =
-                    select_servidor.options[
+                const servidor = select_servidor.options[
                         select_servidor.selectedIndex
-                    ].text;
+                    ]
+               
+                nomeServidor.textContent = servidor.text;
 
-                capturarDados()
+                const status = servidor.dataset.status;
+           
+            atualizarStatusServidor(status)
+            capturarDados()
             });
         }
 
+        function atualizarStatusServidor(status) {
+
+                    //Fetch para buscar o servidor
+                    const dot = document.getElementById("status-dot");
+
+                    if (!dot || !status) return;
+
+                    dot.classList.remove(
+                        "verde",
+                        "amarelo",
+                        "vermelho",
+                        "cinza"
+                    );
+
+                    if (status == "Critico") {
+                        dot.classList.add("vermelho");
+
+                    } else if (status == "Atencao") {
+                        dot.classList.add("amarelo");
+
+                    } else if (status == "Offline") {
+                        dot.classList.add("cinza");
+
+                    } else {
+                        dot.classList.add("verde");
+                    }
+            }
 
     </script>
 

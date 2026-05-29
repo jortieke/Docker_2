@@ -228,6 +228,10 @@ section{
   font-weight: 600;
 }
 
+.penalidades{
+  font-size: 11px;
+  color: #5F5F5F;
+}
 
 .conteudo {
   padding: 20px;
