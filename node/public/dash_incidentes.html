@@ -671,11 +671,11 @@
                 fundo: "#BFFBB0",
                 borda: "#20A200"
             },
-            'Atenção': {
+            'Atencao': {
                 fundo: "#FAFCA5",
                 borda: "#FFCC00"
             },
-            'Crítico': {
+            'Critico': {
                 fundo: "#FFB9B9",
                 borda: "#C70C0C"
             },
@@ -785,10 +785,7 @@
 
         const status = servidor[1];
 
-        const visual = status_servidor[status] || {
-            fundo: "#E5E7EB",
-            borda: "#9CA3AF"
-        };
+        const visual = status_servidor[status];
 
         console.log("STATUS:", status);
 

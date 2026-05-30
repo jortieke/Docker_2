@@ -501,9 +501,9 @@
                     ramQtdDiv.classList.add("info-alerta");
                 }
 
-                let running = dados.processos.kpis.Running;
-                let sleeping = dados.processos.kpis.Sleeping;
-                let stopped= dados.processos.kpis.Stopped;
+                let running = dados.processos.kpis.running;
+                let sleeping = dados.processos.kpis.sleeping;
+                let stopped= dados.processos.kpis.stopped;
                 let total = running + sleeping + stopped;
 
                 document.getElementById("latenciaQtd").innerHTML = dados.processos.kpis.latencia;
@@ -1080,6 +1080,7 @@
                     let usuario = "";
                     let nome = "";
                     let unidade = "";
+                    let cpu = "";
 
                 if (processo.cpu >= 80) {
                     classeCPU = "proc-grave";
@@ -1125,16 +1126,22 @@
                     icone = "./assets/imgs/processos/retangulo-amarelo.png";
                 }
 
-                if (processo.usuario == "") {
+                if (processo.usuario == "" || processo.usuario == null) {
                     usuario = `<i>usuário não identificado</i>`
                 } else {
                     usuario = processo.usuario
                 }
 
-                if (processo.nome == "") {
+                if (processo.nome == "" || processo.nome == null) {
                     nome = `<i>nome não identificado</i>`
                 } else {
                     nome = processo.nome
+                }
+
+                if (processo.cpu > 100) {
+                    cpu = 100
+                } else {
+                    cpu = processo.cpu
                 }
 
                     if (processo.ram_mb >= 1000) {
@@ -1152,7 +1159,7 @@
 
                             <td>
                                 <span class="${classeCPU}">
-                                    ${processo.cpu}%
+                                    ${cpu}%
                                 </span>
                             </td>
 
@@ -1228,7 +1235,8 @@
             graficoTop5.data.datasets[0].data = dadosGrafico.cpu;
             graficoTop5.data.datasets[0].label = 'CPU %';
             graficoTop5.data.datasets[0].backgroundColor = 'rgba(139, 92, 246, 0.75)';
-            graficoTop5.options.scales.x.max = 100;
+            const maiorCPU = Math.max(...dadosGrafico.cpu);
+            graficoTop5.options.scales.x.max = Math.ceil(maiorCPU);
             graficoTop5.options.scales.x.min = 0;
             graficoTop5.data.labels = [dados.processos.kpis["nome_cpu_1"], dados.processos.kpis["nome_cpu_2"], dados.processos.kpis["nome_cpu_3"],
             dados.processos.kpis["nome_cpu_4"], dados.processos.kpis["nome_cpu_5"]];

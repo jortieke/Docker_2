@@ -1054,29 +1054,39 @@
     );
 }
 
-function listarServidores() {
+async function listarServidores() {
 
-    const fkEmpresa = sessionStorage.ID_EMPRESA;
+    try {
 
-    const servidores =
-        JSON.parse(sessionStorage.ACESSO_SERVIDORES);
+        const fkEmpresa =
+            sessionStorage.ID_EMPRESA;
 
-    fetch(`/servidores/listarServidores`, {
-        method: "POST",
+        const servidores =
+            JSON.parse(
+                sessionStorage.ACESSO_SERVIDORES
+            );
 
-        headers: {
-            "Content-Type": "application/json"
-        },
+        const resposta =
+            await fetch(
+                "/servidores/listarServidores",
+                {
+                    method: "POST",
 
-        body: JSON.stringify({
-            fkEmpresaServer: fkEmpresa,
-            servidoresServer: servidores
-        })
-    })
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
 
-    .then(resposta => resposta.json())
+                    body: JSON.stringify({
+                        fkEmpresaServer: fkEmpresa,
+                        servidoresServer: servidores
+                    })
+                }
+            );
 
-    .then(lista => {
+        const lista =
+            await resposta.json();
+            
+        console.log(lista);
 
         select_servidor.innerHTML =
             lista.map(servidor => `
@@ -1093,20 +1103,28 @@ function listarServidores() {
 
         atualizarServidorSelecionado();
 
-        carregarTemperatura();
+        await carregarTemperatura();
 
         iniciarAtualizacao();
-    });
+
+    }
+
+    catch (erro) {
+
+        console.log(
+            "Erro ao listar servidores:",
+            erro
+        );
+    }
 
     select_servidor.onchange = async () => {
 
-    atualizarServidorSelecionado();
+        atualizarServidorSelecionado();
 
-    await carregarTemperatura();
-};
-}   
+        await carregarTemperatura();
+    };
+}
   
-
     // CARREGAR TEMPERATURA
 
     async function carregarTemperatura() {
@@ -1162,10 +1180,6 @@ function listarServidores() {
 
             atualizarNomeServidor();
 
-            atualizarStatus(
-                dados[dados.length - 1]
-            );
-
             atualizarHorarioUltimaAtualizacao();
 
             atualizarTooltips(
@@ -1178,47 +1192,6 @@ function listarServidores() {
             console.log(
                 "Erro temperatura:",
                 erro
-            );
-        }
-    }
-
-    // STATUS TOPO
-
-    function atualizarStatus(ultimo) {
-
-        const dot =
-            document.getElementById(
-                "status-dot"
-            );
-
-        dot.classList.remove(
-            "verde",
-            "amarelo",
-            "vermelho"
-        );
-
-        if (
-            ultimo.temp_max_cpu >= 85
-        ) {
-
-            dot.classList.add(
-                "vermelho"
-            );
-        }
-
-        else if (
-            ultimo.temp_max_cpu >= 70
-        ) {
-
-            dot.classList.add(
-                "amarelo"
-            );
-        }
-
-        else {
-
-            dot.classList.add(
-                "verde"
             );
         }
     }
@@ -1405,29 +1378,35 @@ function listarServidores() {
 
     // HEATMAP
 
-    function atualizarHeatmap(dados) {
+function atualizarHeatmap(dados) {
 
-        const heatmap =
-            document.querySelector(
-                ".heatmap"
-            );
+    const heatmap =
+        document.querySelector(".heatmap");
 
-        heatmap.innerHTML = "";
+    heatmap.innerHTML = "";
 
-        const ultimo =
-            dados[dados.length - 1];
+    const ultimo =
+        dados[dados.length - 1];
 
-        const base =
-            ultimo.temp_max_cpu || 40;
+let cores = ultimo.temperaturas_cores;
 
-        for (let i = 0; i < 12; i++) {
+if (!cores) return;
 
-            const temp =
-                Math.floor(
-                    base + (
-                        Math.random() * 10 - 5
-                    )
-                );
+// Se vier string, converte para JSON
+if (typeof cores === "string") {
+    try {
+        cores = JSON.parse(cores);
+    } catch (erro) {
+        console.log("Erro ao converter temperaturas_cores:", erro);
+        return;
+    }
+}
+
+console.log("CORES:", cores);
+
+Object.entries(cores).forEach(
+
+        ([nomeCore, temp]) => {
 
             let classe = "normal";
 
@@ -1449,14 +1428,21 @@ function listarServidores() {
             heatmap.innerHTML += `
 
                 <div class="core ${classe}">
-                    <small>C${i}</small>
-                    <span>${temp}°</span>
+
+                    <small>
+                        ${nomeCore.replace("_", " ").toUpperCase()}
+                    </small>
+
+                    <span>
+                        ${temp}°
+                    </span>
+
                 </div>
 
             `;
         }
-    }
-
+    );
+}
     // CARDS KPI
 
     function atualizarCards(json) {
@@ -1701,7 +1687,9 @@ function listarServidores() {
     function atualizarStatusServidor(status) {
 
     const dot =
-        document.getElementById("status-dot");
+        document.getElementById(
+            "status-dot"
+        );
 
     if (!dot) return;
 
