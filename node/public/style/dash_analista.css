@@ -829,6 +829,48 @@ body {
   padding: 6px;
 }
 
+.status-info .critico {
+  display: flex;
+  justify-content: center;
+  background-color: #e8b0b0;
+  width: 50%;
+  color: #a20000;
+  border: 2px solid #a20000;
+  border-left: none;
+  border-radius: 4px;
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+  padding: 6px;
+}
+
+.status-info .atencao {
+  display: flex;
+  justify-content: center;
+  background-color: #fcfc87;
+  width: 50%;
+  color: #d4d400;
+  border: 2px solid #d4d400;
+  border-left: none;
+  border-radius: 4px;
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+  padding: 6px;
+}
+
+.status-info .offline {
+  display: flex;
+  justify-content: center;
+  background-color: #A0A0A0;
+  width: 50%;
+  color: #484747;
+  border: 2px solid #484747;
+  border-left: none;
+  border-radius: 4px;
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+  padding: 6px;
+}
+
 .registro {
   color: black;
   font-size: 38px;             /* era 42px — levemente menor */

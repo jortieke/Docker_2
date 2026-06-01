@@ -342,13 +342,13 @@
             indicadorSaudePonto: document.getElementById("indicadorSaudePonto"),
             indicadorSaudeTexto: document.getElementById("indicadorSaudeTexto"),
 
-           
+
 
         };
 
-            console.log(els.cpuValue);
-            console.log(els.ramValue);
-            console.log(els.diskValue);
+        console.log(els.cpuValue);
+        console.log(els.ramValue);
+        console.log(els.diskValue);
 
 
         const JANELA = 24;
@@ -458,25 +458,32 @@
                         scales: {
                             x: {
                                 title: { display: true, text: 'Leituras (últimas 24h)' },
-                                ticks: { maxTicksLimit: 12, autoSkip: true }
+                                ticks: {
+                                     maxTicksLimit: 12, 
+                                    autoSkip: true,
+                                    callback: function (value, index) {
+                                        const label = this.getLabelForValue(value);
+
+                                        return label.split(" ")[1];
+                                    }
+                                },
+                                y: {
+                                    min: 0,
+                                    max: 100,
+                                    title: { display: true, text: 'Saúde (%)' },
+                                    ticks: { stepSize: 20, callback: val => val + '%' }
+                                }
                             },
-                            y: {
-                                min: 0,
-                                max: 100,
-                                title: { display: true, text: 'Saúde (%)' },
-                                ticks: { stepSize: 20, callback: val => val + '%' }
-                            }
-                        },
-                        plugins: {
-                            legend: { display: false },
-                            tooltip: {
-                                callbacks: {
-                                    label: ctx => `Saúde: ${ctx.parsed.y.toFixed(1)}%`
+                            plugins: {
+                                legend: { display: false },
+                                tooltip: {
+                                    callbacks: {
+                                        label: ctx => `Saúde: ${ctx.parsed.y.toFixed(1)}%`
+                                    }
                                 }
                             }
                         }
-                    }
-                });
+                    }});
             }
         }
 
@@ -948,14 +955,30 @@
 
         function atualizarStatusServidor(status) {
             const dot = document.getElementById("statusDot");
+            const status = document.getElementById("statusInfo");
             if (!dot || !status) return;
 
             dot.classList.remove("verde", "amarelo", "vermelho", "cinza");
 
-            if (status === "Critico") dot.classList.add("vermelho");
-            else if (status === "Atencao") dot.classList.add("amarelo");
-            else if (status === "Offline") dot.classList.add("cinza");
-            else dot.classList.add("verde");
+            if (status === "Critico") {
+                dot.classList.add("vermelho");
+                document.getElementById("statusInfo").innerHTML = "Crítico";
+                status.classList.add("critico");
+
+            } else if (status === "Atencao") {
+                dot.classList.add("amarelo");
+                document.getElementById("statusInfo").innerHTML = "Atenção"
+                status.classList.add("atencao");
+
+            } else if (status === "Offline") {
+                dot.classList.add("cinza");
+                document.getElementById("statusInfo").innerHTML = "Offline"
+                status.classList.add("offline");
+            
+            } else {
+                dot.classList.add("verde");
+                document.getElementById("statusInfo").innerHTML = "Online"
+            } 
         }
 
 
