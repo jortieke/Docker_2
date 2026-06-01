@@ -46,7 +46,7 @@ async function lerJson(key) {
 async function capturarDados(req, res) {
 
     const mac =
-        req.params.mac_address.toLowerCase();
+        req.params.mac_address;
 
     const id_empresa =
         req.params.id_empresa;
