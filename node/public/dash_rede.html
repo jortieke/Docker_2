@@ -323,8 +323,7 @@
         rotas: "24",
         transferencia: "24",
         perdaServicos: "24",
-        latenciaComponentes: "24",
-        banda: "24"
+        saudeComponentes: "24"
     };
 
     let graficoTransferencia = null;
@@ -664,11 +663,6 @@
                     valores: dadosOriginais.rastreamento
                 };
         
-        const tendencia =
-            calcularTendencia(
-                rastreamento.valores
-            );
-
         const rotas =
             agrupar
                 ? agruparDados(
@@ -691,6 +685,15 @@
                     valores: dadosOriginais.correlacao
                 };
 
+        const tendenciaRastreamento =
+            calcularTendencia(rastreamento.valores);
+
+        const tendenciaRotas =
+            calcularTendencia(rotas.valores);
+
+        const tendenciaCorrelacao =
+            calcularTendencia(correlacao.valores);
+
         const chartDom =
             document.getElementById("graficoTransferencia");
 
@@ -710,7 +713,10 @@
                 data: [
                     "Rastreamento",
                     "Rotas",
-                    "Correlação"
+                    "Correlação",
+                    "Trend Rastreamento",
+                    "Trend Rotas",
+                    "Trend Correlação"
                 ]
             },
 
@@ -755,19 +761,32 @@
                         rastreamento.valores
                 },
                 {
-                    name: "Tendência",
-
+                    name: "Trend Rastreamento",
                     type: "line",
-
-                    data: tendencia,
-
+                    data: tendenciaRastreamento,
+                    symbol: "none",
                     lineStyle: {
                         type: "dashed"
-                    },
-
-                    symbol: "none"
+                    }
                 },
-
+                {
+                    name: "Trend Rotas",
+                    type: "line",
+                    data: tendenciaRotas,
+                    symbol: "none",
+                    lineStyle: {
+                        type: "dashed"
+                    }
+                },
+                {
+                    name: "Trend Correlação",
+                    type: "line",
+                    data: tendenciaCorrelacao,
+                    symbol: "none",
+                    lineStyle: {
+                        type: "dashed"
+                    }
+                },
                 {
                     name: "Rotas",
                     type: "line",
@@ -929,34 +948,39 @@
 
     function calcularTendencia(valores) {
 
-            const n = valores.length;
-
-            let somaX = 0;
-            let somaY = 0;
-            let somaXY = 0;
-            let somaXX = 0;
-
-            for (let i = 0; i < n; i++) {
-
-                somaX += i;
-                somaY += valores[i];
-                somaXY += i * valores[i];
-                somaXX += i * i;
-            }
-
-            const m =
-                (n * somaXY - somaX * somaY)
-                /
-                (n * somaXX - somaX * somaX);
-
-            const b =
-                (somaY - m * somaX) / n;
-
-            return valores.map(
-                (_, i) => m * i + b
-            );
+        if (!valores || valores.length < 2) {
+            return valores || [];
         }
 
+        const n = valores.length;
+
+        let somaX = 0;
+        let somaY = 0;
+        let somaXY = 0;
+        let somaXX = 0;
+
+        for (let i = 0; i < n; i++) {
+            somaX += i;
+            somaY += Number(valores[i]) || 0;
+            somaXY += i * (Number(valores[i]) || 0);
+            somaXX += i * i;
+        }
+
+        const divisor =
+            (n * somaXX - somaX * somaX);
+
+        if (divisor === 0) {
+            return [...valores];
+        }
+
+        const m =
+            (n * somaXY - somaX * somaY) / divisor;
+
+        const b =
+            (somaY - m * somaX) / n;
+
+        return valores.map((_, i) => m * i + b);
+    }
     // Gerar Relatório
 
     function gerarRelatorio() {
