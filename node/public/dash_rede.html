@@ -275,27 +275,18 @@
                 </div>
 
                 <div class="linha-graficos">
-                    <div class="box-grafico">
-                        <div style="display: flex; justify-content: space-between;">
-                            <h3>Latência entre Componentes</h3>
-                            <select data-filtro="latenciaComponentes">
+                    <div class="box-grafico" style="width:100%">
+                        <div style="display:flex; justify-content:space-between;">
+                            <h3>Matriz de Saúde dos Componentes</h3>
+
+                            <select data-filtro="saudeComponentes">
                                 <option value="24">24 horas</option>
                                 <option value="3">3 dias</option>
                                 <option value="7">7 dias</option>
                             </select>
                         </div>
-                        <canvas id="graficoLatencia"></canvas>
-                    </div>
-                    <div class="box-grafico">
-                        <div style="display: flex; justify-content: space-between;">
-                            <h3>Processos com maior consumo de banda</h3>
-                            <select data-filtro="banda">
-                                <option value="24">24 horas</option>
-                                <option value="3">3 dias</option>
-                                <option value="7">7 dias</option>
-                            </select>
-                        </div>
-                        <canvas id="graficoBanda"></canvas>
+
+                        <canvas id="graficoSaude"></canvas>
                     </div>
                 </div>
             </section>
@@ -337,8 +328,7 @@
     };
 
     let graficoTransferencia = null;
-    let graficoLatencia = null;
-    let graficoBanda = null;
+    let graficoSaude = null;
     let alertasAtivos = [];
 
     async function carregarDashboards() {
@@ -431,12 +421,8 @@
                     renderizarPerdaPacotesServico();
                     break;
 
-                case "latenciaComponentes":
-                    renderizarGraficoLatencia();
-                    break;
-
-                case "banda":
-                    renderizarGraficoBanda();
+                case "saudeComponentes":
+                    renderizarGraficoSaude();
                     break;
             }
         });
@@ -451,8 +437,7 @@
     renderizarKPIRotas();
 
     renderizarGraficoTransferencia();
-    renderizarGraficoLatencia();
-    renderizarGraficoBanda();
+    renderizarGraficoSaude();
 
     renderizarPerdaPacotesServico();
 }
@@ -678,6 +663,11 @@
                     labels: dadosOriginais.labels,
                     valores: dadosOriginais.rastreamento
                 };
+        
+        const tendencia =
+            calcularTendencia(
+                rastreamento.valores
+            );
 
         const rotas =
             agrupar
@@ -764,6 +754,19 @@
                     data:
                         rastreamento.valores
                 },
+                {
+                    name: "Tendência",
+
+                    type: "line",
+
+                    data: tendencia,
+
+                    lineStyle: {
+                        type: "dashed"
+                    },
+
+                    symbol: "none"
+                },
 
                 {
                     name: "Rotas",
@@ -784,119 +787,99 @@
         });
     }
 
-    function renderizarGraficoLatencia() {
+    function renderizarGraficoSaude() {
 
-        const dados =
-            dashboards[filtros.latenciaComponentes];
+    const dados =
+        dashboards[filtros.saudeComponentes || "24"];
 
-        const ctx =
-            document.getElementById("graficoLatencia");
+    const latencias =
+        dados.grafico_latencia_componentes;
 
-        if (graficoLatencia) {
-            graficoLatencia.destroy();
-        }
+    const banda =
+        dados.consumo_banda;
 
-        graficoLatencia = new Chart(ctx, {
+    const perdas =
+        dados.perda_pacotes_servico;
 
-            type: "bar",
+    const pontos = [];
 
-            data: {
+    Object.keys(latencias).forEach(nome => {
 
-                labels: Object.keys(
-                    dados.grafico_latencia_componentes
-                ),
+        pontos.push({
 
-                datasets: [{
+            label: nome,
 
-                    label: "Latência (ms)",
+            x: banda[nome] || 0,
 
-                    data: Object.values(
-                        dados.grafico_latencia_componentes
-                    ),
+            y: latencias[nome] || 0,
 
-                    backgroundColor: [
-                        "#05056B",
-                        "#0A4A96",
-                        "#12B7E5",
-                        "#2F80ED",
-                        "#56CCF2"
-                    ],
+            r: ((perdas[nome] || 0) * 10) + 5
+        });
+    });
 
-                    borderRadius: 8
-                }]
+    const ctx =
+        document.getElementById("graficoSaude");
+
+    if (graficoSaude)
+        graficoSaude.destroy();
+
+    graficoSaude = new Chart(ctx, {
+
+        type: "bubble",
+
+        data: {
+
+            datasets: [{
+
+                label: "Componentes",
+
+                data: pontos
+            }]
+        },
+
+        options: {
+
+            plugins: {
+
+                tooltip: {
+
+                    callbacks: {
+
+                        label(context) {
+
+                            return context.raw.label
+                                + " | Banda: "
+                                + context.raw.x.toFixed(1)
+                                + " Mbps"
+                                + " | Latência: "
+                                + context.raw.y.toFixed(1)
+                                + " ms";
+                        }
+                    }
+                }
             },
 
-            options: {
+            scales: {
 
-                indexAxis: "y",
+                x: {
 
-                responsive: true,
-
-                plugins: {
-                    legend: {
-                        display: false
+                    title: {
+                        display: true,
+                        text: "Consumo de Banda (Mbps)"
                     }
                 },
 
-                scales: {
-                    x: {
-                        beginAtZero: true
+                y: {
+
+                    title: {
+                        display: true,
+                        text: "Latência (ms)"
                     }
                 }
             }
-        });
-    }
-
-    function renderizarGraficoBanda() {
-
-        const dados =
-            dashboards[filtros.banda];
-
-        const ctx =
-            document.getElementById("graficoBanda");
-
-        if (graficoBanda) {
-            graficoBanda.destroy();
         }
-
-        graficoBanda = new Chart(ctx, {
-
-            type: "bar",
-
-            data: {
-
-                labels: Object.keys(
-                    dados.consumo_banda
-                ),
-
-                datasets: [{
-
-                    label: "Mbps",
-
-                    data: Object.values(
-                        dados.consumo_banda
-                    ),
-
-                    backgroundColor: "#0E7AB5",
-
-                    borderRadius: 12
-                }]
-            },
-
-            options: {
-
-                indexAxis: "y",
-
-                responsive: true,
-
-                plugins: {
-                    legend: {
-                        display: false
-                    }
-                }
-            }
-        });
-    }
+    });
+}
 
     function renderizarPerdaPacotesServico() {
 
@@ -941,6 +924,36 @@
 
             </div>
         `;
+        }
+
+        function calcularTendencia(valores) {
+
+            const n = valores.length;
+
+            let somaX = 0;
+            let somaY = 0;
+            let somaXY = 0;
+            let somaXX = 0;
+
+            for (let i = 0; i < n; i++) {
+
+                somaX += i;
+                somaY += valores[i];
+                somaXY += i * valores[i];
+                somaXX += i * i;
+            }
+
+            const m =
+                (n * somaXY - somaX * somaY)
+                /
+                (n * somaXX - somaX * somaX);
+
+            const b =
+                (somaY - m * somaX) / n;
+
+            return valores.map(
+                (_, i) => m * i + b
+            );
         }
     }
 
