@@ -643,47 +643,24 @@
 
     function renderizarGraficoTransferencia() {
 
-        const dados =
-            dashboards[filtros.transferencia];
 
-        const agrupar =
-            filtros.transferencia === "24";
+        const dados = dashboards[filtros.transferencia];
+        const dadosOriginais = dados.grafico_transferencia;
 
-        const dadosOriginais =
-            dados.grafico_transferencia;
-
-        const rastreamento =
-            agrupar
-                ? agruparDados(
-                    dadosOriginais.labels,
-                    dadosOriginais.rastreamento
-                )
-                : {
-                    labels: dadosOriginais.labels,
-                    valores: dadosOriginais.rastreamento
-                };
         
-        const rotas =
-            agrupar
-                ? agruparDados(
-                    dadosOriginais.labels,
-                    dadosOriginais.rotas
-                )
-                : {
-                    labels: dadosOriginais.labels,
-                    valores: dadosOriginais.rotas
-                };
+        const deveAgrupar = dadosOriginais.labels.length > 24;
 
-        const correlacao =
-            agrupar
-                ? agruparDados(
-                    dadosOriginais.labels,
-                    dadosOriginais.correlacao
-                )
-                : {
-                    labels: dadosOriginais.labels,
-                    valores: dadosOriginais.correlacao
-                };
+        const rastreamento = deveAgrupar
+            ? agruparDados(dadosOriginais.labels, dadosOriginais.rastreamento)
+            : { labels: dadosOriginais.labels, valores: dadosOriginais.rastreamento };
+
+        const rotas = deveAgrupar
+            ? agruparDados(dadosOriginais.labels, dadosOriginais.rotas)
+            : { labels: dadosOriginais.labels, valores: dadosOriginais.rotas };
+
+        const correlacao = deveAgrupar
+            ? agruparDados(dadosOriginais.labels, dadosOriginais.correlacao)
+            : { labels: dadosOriginais.labels, valores: dadosOriginais.correlacao };
 
         const tendenciaRastreamento =
             calcularTendencia(rastreamento.valores);
