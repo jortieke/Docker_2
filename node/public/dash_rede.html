@@ -785,92 +785,71 @@
 
     function renderizarGraficoSaude() {
 
-    const dados =
-        dashboards[filtros.saudeComponentes || "24"];
+    const dados = dashboards[filtros.saudeComponentes || "24"];
+    const latencias = dados.grafico_latencia_componentes;
+    const banda = dados.consumo_banda;
+    const perdas = dados.perda_pacotes_servico;
 
-    const latencias =
-        dados.grafico_latencia_componentes;
+    const cores = [
+        "rgba(255, 99, 132, 0.7)",
+        "rgba(54, 162, 235, 0.7)",
+        "rgba(255, 206, 86, 0.7)",
+        "rgba(75, 192, 192, 0.7)",
+        "rgba(153, 102, 255, 0.7)",
+        "rgba(255, 159, 64, 0.7)",
+        "rgba(99, 255, 132, 0.7)",
+        "rgba(235, 54, 162, 0.7)",
+    ];
 
-    const banda =
-        dados.consumo_banda;
+    const coresBorda = cores.map(c => c.replace("0.7", "1"));
 
-    const perdas =
-        dados.perda_pacotes_servico;
-
-    const pontos = [];
-
-    Object.keys(latencias).forEach(nome => {
-
-        pontos.push({
-
-            label: nome,
-
+    const datasets = Object.keys(latencias).map((nome, i) => ({
+        label: nome,
+        data: [{
             x: banda[nome] || 0,
-
             y: latencias[nome] || 0,
-
             r: ((perdas[nome] || 0) * 10) + 5
-        });
-    });
+        }],
+        backgroundColor: cores[i % cores.length],
+        borderColor: coresBorda[i % coresBorda.length],
+        borderWidth: 1
+    }));
 
-    const ctx =
-        document.getElementById("graficoSaude");
+    const ctx = document.getElementById("graficoSaude");
 
-    if (graficoSaude)
-        graficoSaude.destroy();
+    if (graficoSaude) graficoSaude.destroy();
 
     graficoSaude = new Chart(ctx, {
-
         type: "bubble",
-
-        data: {
-
-            datasets: [{
-
-                label: "Componentes",
-
-                data: pontos
-            }]
-        },
-
+        data: { datasets },
         options: {
-
             plugins: {
-
+                legend: {
+                    display: true,
+                    position: "top"
+                },
                 tooltip: {
-
                     callbacks: {
-
                         label(context) {
-
-                            return context.raw.label
-                                + " | Banda: "
-                                + context.raw.x.toFixed(1)
-                                + " Mbps"
-                                + " | Latência: "
-                                + context.raw.y.toFixed(1)
-                                + " ms";
+                            const p = context.raw;
+                            const nome = context.dataset.label;
+                            const perda = ((p.r - 5) / 10).toFixed(1);
+                            return [
+                                nome,
+                                `Banda: ${p.x.toFixed(1)} Mbps`,
+                                `Latência: ${p.y.toFixed(1)} ms`,
+                                `Perda: ${perda}%`
+                            ];
                         }
                     }
                 }
             },
-
             scales: {
-
                 x: {
-
-                    title: {
-                        display: true,
-                        text: "Consumo de Banda (Mbps)"
-                    }
+                    title: { display: true, text: "Consumo de Banda (Mbps)" }
                 },
-
                 y: {
-
-                    title: {
-                        display: true,
-                        text: "Latência (ms)"
-                    }
+                    title: { display: true, text: "Latência (ms)" }
                 }
             }
         }
