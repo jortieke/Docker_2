@@ -55,7 +55,7 @@ async function buscarAlertas(req, res) {
         );
 
     const key =
-        `client/alertas/empresa_${idEmpresa}/${macAddress}/incidentes_rede_24h.json`;
+        `client/empresa_${idEmpresa}/${macAddress}/incidentes_rede_24h.json`;
 
     console.log("KEY:", key);
 
